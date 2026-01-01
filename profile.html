@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Buddika Stores</title>
+    <meta name="description" content="View your profile and order history at Buddika Stores.">
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        brand: {
+                            black: '#000000',
+                            dark: '#333333'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="bg-gray-50 text-black antialiased">
+
+    <!-- Dynamic Header -->
+    <div id="header-container"></div>
+
+    <main class="pt-24 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Welcome Section -->
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-center gap-4 fade-in-up">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold font-heading mb-2">My Profile</h1>
+                <p class="text-gray-500">Manage your account and view order history.</p>
+            </div>
+            <button onclick="handleLogout()"
+                class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-black font-bold rounded-lg transition-colors text-sm">
+                Log Out
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left: User Details Card -->
+            <div class="lg:col-span-1 fade-in-up delay-100">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 sticky top-28">
+                    <div class="flex flex-col items-center text-center mb-8">
+                        <div
+                            class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center text-3xl font-bold text-gray-400 mb-4 overflow-hidden">
+                            <img id="profile-img" src="" class="w-full h-full object-cover hidden">
+                            <span id="profile-initial">U</span>
+                        </div>
+                        <h2 id="profile-name" class="text-xl font-bold font-heading">Loading...</h2>
+                        <p id="profile-email" class="text-sm text-gray-500">user@example.com</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded-xl">
+                            <span
+                                class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Phone</span>
+                            <p id="profile-phone" class="font-medium text-gray-800">-</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Delivery
+                                Address</span>
+                            <p id="profile-address" class="font-medium text-gray-800 text-sm leading-relaxed">No address
+                                saved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order History -->
+            <div class="lg:col-span-2 fade-in-up delay-200">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 min-h-[500px]">
+                    <h3 class="text-xl font-bold font-heading mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        Order History
+                    </h3>
+
+                    <div id="orders-list" class="space-y-4">
+                        <div class="text-center py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
+                            <p class="text-gray-400 text-sm">Loading orders...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Dynamic Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { auth, db, signOut, onAuthStateChanged, doc, getDoc, setDoc, collection, query, where, getDocs, orderBy } from './assets/js/firebase-config.js';
+        import { escapeHtml } from './assets/js/utils.js';
+
+        let currentUserUid = null;
+
+        // Check Auth
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                renderProfile(user);
+                fetchOrders(user.uid);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        window.handleLogout = () => {
+            if (confirm("Are you sure you want to log out?")) {
+                signOut(auth).then(() => window.location.href = 'index.html');
+            }
+        };
+
+        async function renderProfile(user) {
+            document.getElementById('profile-name').innerText = user.displayName || "User";
+            document.getElementById('profile-email').innerText = user.email;
+
+            if (user.photoURL) {
+                const img = document.getElementById('profile-img');
+                img.src = user.photoURL;
+                img.classList.remove('hidden');
+                document.getElementById('profile-initial').classList.add('hidden');
+            } else {
+                document.getElementById('profile-initial').innerText = (user.displayName || "U").charAt(0).toUpperCase();
+            }
+
+            document.getElementById('profile-phone').innerText = user.phoneNumber || "Not linked";
+
+            // Fetch Additional Data (Address) from Firestore 'users' collection
+            try {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().address) {
+                    document.getElementById('profile-address').innerText = docSnap.data().address;
+                    document.getElementById('address-input').value = docSnap.data().address;
+                } else {
+                    document.getElementById('profile-address').innerText = "No address saved.";
+                }
+            } catch (e) {
+                console.error("Error loading profile:", e);
+                document.getElementById('profile-address').innerText = "Error loading address.";
+            }
+        }
+
+        window.toggleAddressEdit = () => {
+            const form = document.getElementById('address-form');
+            const display = document.getElementById('profile-address');
+
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                display.classList.add('hidden');
+            } else {
+                form.classList.add('hidden');
+                display.classList.remove('hidden');
+            }
+        }
+
+        window.saveAddress = async () => {
+            const newAddr = document.getElementById('address-input').value.trim();
+            if (!newAddr) { alert("Please enter an address"); return; }
+
+            const btn = document.querySelector('#address-form button:last-child');
+            const originalText = btn.innerText;
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            try {
+                // Save to Firestore 'users/{uid}'
+                await setDoc(doc(db, "users", currentUserUid), {
+                    address: newAddr,
+                    email: auth.currentUser.email, // Keep email in sync
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                document.getElementById('profile-address').innerText = newAddr;
+                toggleAddressEdit();
+                alert("Address saved successfully!");
+            } catch (e) {
+                console.error(e);
+                alert("Failed to save address: " + e.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function fetchOrders(uid) {
+            const list = document.getElementById('orders-list');
+            try {
+                // Determine 'orders' collection path. 
+                // Option A: Top-level 'orders' collection with 'userId' field.
+                // Option B: Sub-collection 'users/{uid}/orders'.
+                // Let's go with Option B as per plan.
+
+                // Note: Since we haven't implemented order saving yet, this will be empty.
+                const q = query(collection(db, `users/${uid}/orders`), orderBy('createdAt', 'desc'));
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    list.innerHTML = `
+                        <div class="text-center py-12 text-gray-400">
+                            <svg class="w-12 h-12 mx-auto mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            <p>No orders found yet.</p>
+                            <a href="products.html" class="inline-block mt-4 text-sm font-bold border-b border-black pb-1 hover:opacity-70">Start Shopping</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                list.innerHTML = snapshot.docs.map(doc => {
+                    const order = doc.data();
+                    const date = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+                    return `
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <div>
+                                <h4 class="font-bold text-sm">Order #${doc.id.slice(0, 8)}</h4>
+                                <p class="text-xs text-gray-500">${date} • ${order.items ? order.items.length : 0} Items</p>
+                            </div>
+                            <span class="font-bold text-sm">Rs. ${escapeHtml(order.total)}</span>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                list.innerHTML = `<p class="text-center text-red-500 py-8">Failed to load history.</p>`;
+            }
+        }
+    </script>
+    <script type="module" src="assets/js/components.js"></script>
+</body>
+
+</html>

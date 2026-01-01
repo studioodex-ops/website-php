@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System | Buddika Stores</title>
+    <meta name="description" content="Point of Sale system for Buddika Stores.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        gray: {
+                            50: '#fcfcfc',
+                            100: '#f4f4f5',
+                            900: '#18181b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        sinhala: ['Noto Sans Sinhala', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/receipt.css">
+
+    <!-- Sinhala Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        .product-grid-item:hover {
+            transform: scale(1.02);
+        }
+
+        .cart-item {
+            animation: slideIn 0.2s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-black antialiased">
+
+    <!-- Loading/Auth Check Container -->
+    <div id="login-container" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-black mx-auto mb-4"></div>
+            <p class="text-gray-500 text-sm">Checking authentication...</p>
+            <p class="text-xs text-gray-400 mt-2">Redirecting if not logged in...</p>
+        </div>
+    </div>
+
+    <!-- Main POS Interface -->
+    <div id="pos-container" class="hidden h-screen flex flex-col">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
+                    <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                        <span class="text-white text-lg">B</span>
+                    </div>
+                    <span>POS System</span>
+                </a>
+                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Online</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <p class="text-xs text-gray-500">Logged in as</p>
+                    <p id="cashier-name" class="font-bold text-sm">Cashier</p>
+                </div>
+                <button onclick="handleLogout()"
+                    class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+
+            <!-- Left: Products Section -->
+            <div class="flex-1 flex flex-col p-6 overflow-hidden">
+
+                <!-- Search & Filter -->
+                <div class="flex gap-4 mb-6">
+                    <div class="flex-1 relative">
+                        <input type="text" id="product-search" placeholder="Search products or scan barcode..."
+                            class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 pl-12 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="filterByCategory('all')"
+                            class="category-btn bg-black text-white px-4 py-2 rounded-lg text-sm font-bold"
+                            data-cat="all">All</button>
+                        <button onclick="filterByCategory('grocery')"
+                            class="category-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200"
+                            data-cat="grocery">Grocery</button>
+                        <button onclick="filterByCategory('stationery')"
+                            class="category-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200"
+                            data-cat="stationery">Stationery</button>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid"
+                    class="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pr-2">
+                    <!-- Products will be loaded here -->
+                    <div class="col-span-full text-center py-20 text-gray-400">
+                        <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <p>Loading products...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Cart Section -->
+            <div class="w-96 bg-white border-l border-gray-200 flex flex-col">
+
+                <!-- Cart Header -->
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-bold text-lg font-heading">Current Sale</h2>
+                        <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear
+                            All</button>
+                    </div>
+                </div>
+
+                <!-- Cart Items -->
+                <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3">
+                    <div class="text-center py-12 text-gray-400">
+                        <svg class="w-10 h-10 mx-auto mb-2 opacity-30" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <p class="text-sm">No items in cart</p>
+                    </div>
+                </div>
+
+                <!-- Cart Totals -->
+                <div class="border-t border-gray-100 p-4 space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Subtotal</span>
+                        <span id="cart-subtotal" class="font-bold">Rs. 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Discount</span>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="discount-input" value="0" min="0"
+                                class="w-16 text-right bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm"
+                                onchange="updateTotals()">
+                            <button id="discount-type-btn" onclick="toggleDiscountType()"
+                                class="text-xs font-bold bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 w-8">Rs</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xl font-bold border-t border-gray-100 pt-3">
+                        <span>Total</span>
+                        <span id="cart-total">Rs. 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="border-t border-gray-100 p-4 space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-gray-500 block mb-1">Received</label>
+                            <input type="number" id="received-amount" placeholder="0.00"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-lg font-bold text-right"
+                                oninput="calculateChange()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 block mb-1">Change</label>
+                            <div id="change-amount"
+                                class="w-full bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-lg font-bold text-right text-green-700">
+                                Rs. 0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="completeSale('cash')"
+                            class="bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            Cash
+                        </button>
+                        <button onclick="completeSale('card')"
+                            class="bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                </path>
+                            </svg>
+                            Card
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantity Input Modal -->
+    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-bold" id="qty-modal-title">Add Product</h3>
+                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-500 mb-4" id="qty-modal-desc">Enter quantity</p>
+                <div class="flex items-center gap-3 mb-6">
+                    <button onclick="adjustQtyInput(-1)"
+                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">-</button>
+                    <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
+                        class="flex-1 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-3 focus:ring-2 focus:ring-black outline-none">
+                    <button onclick="adjustQtyInput(1)"
+                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">+</button>
+                    <span id="qty-unit-label" class="text-lg font-bold text-gray-500 w-12">unit</span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeQtyModal()"
+                        class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button onclick="confirmAddToCart()"
+                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Print Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/80 z-[300] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between no-print">
+                <h3 class="font-bold">Receipt Preview</h3>
+                <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Receipt Content -->
+            <div id="receipt-print-area" class="p-4">
+                <div id="receipt-content" class="receipt-container">
+                    <!-- Receipt will be generated here -->
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-100 flex gap-3 no-print">
+                <button onclick="printReceipt()"
+                    class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                        </path>
+                    </svg>
+                    Print Receipt
+                </button>
+                <button onclick="closeReceiptModal()"
+                    class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, getDocs, doc, setDoc, updateDoc, increment, query, orderBy } from './assets/js/firebase-config.js';
+        import { escapeHtml } from './assets/js/utils.js';
+
+        // Global State
+        let allProducts = [];
+        let cart = [];
+        let currentUser = null;
+        let currentCategory = 'all';
+        let discountMode = 'rs'; // rs or percent
+
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const posContainer = document.getElementById('pos-container');
+        const productsGrid = document.getElementById('products-grid');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const searchInput = document.getElementById('product-search');
+
+        // Toggle Discount Type
+        window.toggleDiscountType = () => {
+            const btn = document.getElementById('discount-type-btn');
+            if (discountMode === 'rs') {
+                discountMode = 'percent';
+                btn.innerText = '%';
+                btn.classList.add('bg-black', 'text-white');
+                btn.classList.remove('bg-gray-200', 'text-gray-700');
+            } else {
+                discountMode = 'rs';
+                btn.innerText = 'Rs';
+                btn.classList.remove('bg-black', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            }
+            updateTotals();
+        };
+
+        // Auth State - Redirect to admin if not logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loginContainer.classList.add('hidden');
+                posContainer.classList.remove('hidden');
+                document.getElementById('cashier-name').innerText = user.displayName || user.email;
+                loadProducts();
+            } else {
+                // Not logged in - redirect to admin panel for login
+                window.location.href = 'admin.html';
+            }
+        });
+
+        // Logout
+        window.handleLogout = () => {
+            if (confirm('Are you sure you want to logout?')) {
+                signOut(auth);
+            }
+        };
+
+        // Load Products
+        async function loadProducts() {
+            try {
+                const q = query(collection(db, 'products'), orderBy('name'));
+                const snapshot = await getDocs(q);
+
+                allProducts = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-red-500">Failed to load products</div>';
+            }
+        }
+
+        // Render Products
+        function renderProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let filtered = allProducts;
+
+            // Filter by category
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(searchTerm) ||
+                    (p.sku && p.sku.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-gray-400"><p>No products found</p></div>';
+                return;
+            }
+
+            productsGrid.innerHTML = filtered.map(p => {
+                const stockClass = (p.stock <= 0) ? 'opacity-50 pointer-events-none' : '';
+                const stockBadge = (p.stock <= 5 && p.stock > 0) ? '<span class="absolute top-2 right-2 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full">Low Stock</span>' : '';
+                const outOfStock = (p.stock <= 0) ? '<span class="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">Out</span>' : '';
+
+                // Fix: Remove 'Rs.' and non-numeric chars, but be careful with dots in 'Rs.'
+                let priceStr = String(p.price).replace(/Rs\.?\s*/i, ''); // Remove Rs. or Rs
+                let priceNum = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+
+                const unit = (p.unit || 'unit').toLowerCase();
+                let displayPrice = priceNum;
+                let displayUnit = unit;
+
+                // Smart Heuristic:
+                // 1. If unit is 'g'/'ml', we want to show price per 'kg'/'l'.
+                // 2. If price is < 1 (e.g. 0.20), it's likely per-gram or mis-entered. Convert to per-kg (x1000).
+                // 3. If price is > 1 (e.g. 200), it's likely already per-kg. Keep it.
+
+                if (unit === 'g') {
+                    displayUnit = 'kg';
+                    // displayPrice adjustment removed to match Admin
+                } else if (unit === 'ml') {
+                    displayUnit = 'l';
+                    // displayPrice adjustment removed to match Admin
+                } else {
+                    // Start: Logic removed
+                    // Old logic multiplied by 1000 if price < 1
+                    // End: Logic removed
+                }
+
+                return `
+                    <div class="product-grid-item bg-white rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all relative ${stockClass}" onclick="addToCart('${p.id}')">
+                        ${stockBadge}${outOfStock}
+                        <div class="h-20 bg-gray-50 rounded-lg mb-3 flex items-center justify-center">
+                            ${p.image && p.image.startsWith('emoji:')
+                        ? `<span class="text-3xl">${p.image.split(':')[1]}</span>`
+                        : p.image
+                            ? `<img src="${p.image}" class="w-full h-full object-cover rounded-lg">`
+                            : '<div class="w-10 h-10 bg-gray-200 rounded"></div>'
+                    }
+                        </div>
+                        <h3 class="font-bold text-gray-800 text-lg leading-tight mb-1 truncate">${p.name}</h3>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-bold text-sm">Rs. ${displayPrice.toFixed(2)}</span>
+                            <span class="text-xs text-gray-400">${p.stock || 0} ${unit}</span>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1 text-right">
+                             (per ${displayUnit})
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Pending product for quantity modal
+        let pendingProduct = null;
+
+        // Add to Cart - Show quantity modal for kg/g/l/ml units
+        window.addToCart = (productId) => {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            if (product.stock <= 0) {
+                showToast('Product is out of stock!', 'error');
+                return;
+            }
+
+            const unit = product.unit || 'unit';
+            // Trigger modal for weights, volumes, and specific liquor units
+            const showModalUnits = ['kg', 'g', 'l', 'ml', '1 bottle', 'half bottle', 'quarter'];
+            const needsModal = showModalUnits.includes(unit.toLowerCase());
+
+            // Temporary Debug
+            // alert(`Product: ${product.name}\nUnit: ${unit}\nNeeds Modal: ${needsModal}`);
+
+            if (needsModal) {
+                // Show quantity modal
+                pendingProduct = product;
+                document.getElementById('qty-modal-title').innerText = product.name;
+                document.getElementById('qty-modal-desc').innerText = `Enter quantity of ${unit} (Available: ${product.stock})`;
+
+                const qtyInput = document.getElementById('qty-input');
+                qtyInput.value = '1';
+
+                // Set step: 0.1 for kg/l, 10 for g/ml, 1 for others (bottles/quarters)
+                const u = unit.toLowerCase();
+                if (u === 'kg' || u === 'l') {
+                    qtyInput.step = '0.1';
+                    qtyInput.value = '1'; // Default 1kg
+                } else if (u === 'g' || u === 'ml') {
+                    qtyInput.step = '10';
+                    qtyInput.value = '100'; // Default 100g
+                } else {
+                    qtyInput.step = '1'; // Default 1 bottle/quarter
+                    qtyInput.value = '1';
+                }
+
+                document.getElementById('qty-unit-label').innerText = unit;
+                document.getElementById('qty-modal').classList.remove('hidden');
+            } else {
+                // For regular units (Pack, Unit), add directly
+                addItemToCart(product, 1);
+            }
+        };
+
+        // Adjust quantity in modal
+        window.adjustQtyInput = (delta) => {
+            const input = document.getElementById('qty-input');
+            const step = parseFloat(input.step) || 0.1;
+            let value = parseFloat(input.value) || 0;
+            value = Math.max(step, value + (delta * step));
+            input.value = value.toFixed(step >= 1 ? 0 : 1);
+        };
+
+        // Close quantity modal
+        window.closeQtyModal = () => {
+            document.getElementById('qty-modal').classList.add('hidden');
+            pendingProduct = null;
+        };
+
+        // Confirm add to cart from quantity modal
+        window.confirmAddToCart = () => {
+            if (!pendingProduct) return;
+
+            const qty = parseFloat(document.getElementById('qty-input').value) || 0;
+            if (qty <= 0) {
+                showToast('Please enter a valid quantity!', 'error');
+                return;
+            }
+            if (qty > pendingProduct.stock) {
+                showToast(`Only ${pendingProduct.stock} ${pendingProduct.unit} available!`, 'error');
+                return;
+            }
+
+            addItemToCart(pendingProduct, qty);
+            closeQtyModal();
+        };
+
+        // Internal function to add item to cart
+        function addItemToCart(product, qty) {
+            const existingItem = cart.find(item => item.id === product.id);
+
+            if (existingItem) {
+                const newQty = existingItem.qty + qty;
+                if (newQty > product.stock) {
+                    showToast(`Only ${product.stock} ${product.unit || 'unit'} available!`, 'error');
+                    return;
+                }
+                existingItem.qty = newQty;
+            } else {
+                // Fix: Remove 'Rs.' and non-numeric chars logic
+                let priceStr = String(product.price).replace(/Rs\.?\s*/i, '');
+                const priceNum = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    nameSi: product.nameSi || '', // Store Sinhala Name
+                    price: priceNum,
+                    qty: qty,
+                    unit: product.unit || 'unit',
+                    maxStock: product.stock || 999,
+                    itemDiscount: 0
+                });
+            }
+
+            renderCart();
+            showToast(`Added ${qty} ${product.unit || 'unit'} of ${product.name}`);
+        }
+
+        // Prompt for Item Discount
+        window.promptForItemDiscount = (index) => {
+            const item = cart[index];
+            if (!item) return;
+
+            const input = prompt(`Enter discount amount for ${item.name} (Rs.):`, item.itemDiscount || 0);
+            if (input === null) return; // Cancelled
+
+            const discount = parseFloat(input);
+            if (isNaN(discount) || discount < 0) {
+                alert("Invalid discount amount");
+                return;
+            }
+
+            const itemTotal = item.price * item.qty;
+            if (discount > itemTotal) {
+                alert("Discount cannot exceed item total!");
+                return;
+            }
+
+            item.itemDiscount = discount;
+            renderCart();
+        };
+
+        // Render Cart
+        function renderCart() {
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <svg class="w-10 h-10 mx-auto mb-2 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <p class="text-sm">No items in cart</p>
+                    </div>
+                `;
+                updateTotals();
+                return;
+            }
+
+            cartItemsContainer.innerHTML = cart.map((item, index) => {
+                const itemTotal = (item.price * item.qty);
+                const afterDiscount = itemTotal - (item.itemDiscount || 0);
+
+                return `
+                <div class="cart-item bg-gray-50 rounded-lg p-3 flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm">${escapeHtml(item.name)}</h4>
+                            <p class="text-xs text-gray-500">Rs. ${item.price.toFixed(2)} x ${item.qty} ${item.unit}</p>
+                            ${item.itemDiscount > 0
+                        ? `<p class="text-xs text-green-600 font-bold">Disc: -Rs. ${item.itemDiscount.toFixed(2)}</p>`
+                        : ''}
+                        </div>
+                        <div class="text-right">
+                             <div class="font-bold text-sm">Rs. ${afterDiscount.toFixed(2)}</div>
+                             ${item.itemDiscount > 0
+                        ? `<div class="text-xs text-gray-400 line-through">Rs. ${itemTotal.toFixed(2)}</div>`
+                        : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-gray-100 pt-2">
+                         <button onclick="promptForItemDiscount(${index})" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                            Discount
+                         </button>
+                         <div class="flex items-center gap-2">
+                            <button onclick="updateCartQty(${index}, -1)" class="w-7 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-500 hover:bg-gray-100">-</button>
+                            <span class="w-8 text-center font-bold text-sm">${item.qty}</span>
+                            <button onclick="updateCartQty(${index}, 1)" class="w-7 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-500 hover:bg-gray-100">+</button>
+                            <button onclick="removeFromCart(${index})" class="w-7 h-7 bg-red-50 text-red-500 rounded flex items-center justify-center hover:bg-red-100 ml-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+
+            updateTotals();
+        }
+
+        // Update Cart Quantity
+        // Update Cart Quantity - Handle decimal steps
+        window.updateCartQty = (index, delta) => {
+            const item = cart[index];
+            if (!item) return;
+
+            const unit = (item.unit || 'unit').toLowerCase();
+            let step = 1;
+
+            // Determine step based on unit
+            if (unit === 'kg' || unit === 'l') {
+                step = 0.1;
+            } else if (unit === 'g' || unit === 'ml') {
+                step = 10;
+            }
+
+            // Calculate new quantity
+            let newQty = parseFloat(item.qty) + (delta * step);
+
+            // Fix floating point precision
+            if (unit === 'kg' || unit === 'l') {
+                newQty = parseFloat(newQty.toFixed(2));
+            } else {
+                newQty = Math.round(newQty);
+            }
+
+            if (newQty <= 0) {
+                if (confirm('Remove item from cart?')) {
+                    cart.splice(index, 1);
+                }
+            } else if (newQty > item.maxStock) {
+                showToast(`Maximum stock reached! Only ${item.maxStock} available.`, 'error');
+                return;
+            } else {
+                item.qty = newQty;
+            }
+
+            renderCart();
+        };
+
+        // Remove from Cart
+        window.removeFromCart = (index) => {
+            cart.splice(index, 1);
+            renderCart();
+        };
+
+        // Clear Cart
+        window.clearCart = () => {
+            if (cart.length === 0) return;
+            if (confirm('Clear all items from cart?')) {
+                cart = [];
+                renderCart();
+            }
+        };
+
+        // Update Totals
+        window.updateTotals = () => {
+            const subtotal = cart.reduce((sum, item) => {
+                const itemTotal = (item.price * item.qty);
+                const discount = item.itemDiscount || 0;
+                return sum + Math.max(0, itemTotal - discount);
+            }, 0);
+            const inputVal = parseFloat(document.getElementById('discount-input').value) || 0;
+
+            let discount = 0;
+            if (discountMode === 'percent') {
+                discount = subtotal * (inputVal / 100);
+            } else {
+                discount = inputVal;
+            }
+
+            const total = Math.max(0, subtotal - discount);
+
+            document.getElementById('cart-subtotal').innerText = `Rs. ${subtotal.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `Rs. ${total.toFixed(2)}`;
+
+            calculateChange();
+        };
+
+        // Calculate Change
+        window.calculateChange = () => {
+            const subtotal = cart.reduce((sum, item) => {
+                const itemTotal = (item.price * item.qty);
+                const discount = item.itemDiscount || 0;
+                return sum + Math.max(0, itemTotal - discount);
+            }, 0);
+            const inputVal = parseFloat(document.getElementById('discount-input').value) || 0;
+
+            let discount = 0;
+            if (discountMode === 'percent') {
+                discount = subtotal * (inputVal / 100);
+            } else {
+                discount = inputVal;
+            }
+
+            const total = Math.max(0, subtotal - discount);
+            const received = parseFloat(document.getElementById('received-amount').value) || 0;
+            const change = Math.max(0, received - total);
+
+            document.getElementById('change-amount').innerText = `Rs. ${change.toFixed(2)}`;
+        };
+
+        // Filter by Category
+        window.filterByCategory = (category) => {
+            currentCategory = category;
+
+            // Update button styles
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.add('bg-black', 'text-white');
+                    btn.classList.remove('bg-gray-100', 'text-gray-700');
+                } else {
+                    btn.classList.remove('bg-black', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                }
+            });
+
+            renderProducts();
+        };
+
+        // Search Products
+        searchInput.addEventListener('input', renderProducts);
+
+        // Complete Sale
+        window.completeSale = async (paymentMethod) => {
+            if (cart.length === 0) {
+                showToast('Cart is empty!', 'error');
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const discount = parseFloat(document.getElementById('discount-input').value) || 0;
+            const total = Math.max(0, subtotal - discount);
+            const received = parseFloat(document.getElementById('received-amount').value) || 0;
+
+            if (paymentMethod === 'cash' && received < total) {
+                showToast('Received amount is less than total!', 'error');
+                return;
+            }
+
+            try {
+                // Generate sale ID
+                const saleId = 'SALE-' + Date.now();
+
+                // Prepare sale data
+                const saleData = {
+                    id: saleId,
+                    items: cart.map(item => ({
+                        productId: item.id,
+                        name: item.name,
+                        nameSi: item.nameSi || '', // Pass Sinhala Name to Sale
+                        qty: item.qty,
+                        price: item.price,
+                        itemDiscount: item.itemDiscount || 0,
+                        total: (item.price * item.qty) - (item.itemDiscount || 0)
+                    })),
+                    subtotal: subtotal,
+                    discount: discount,
+                    total: total,
+                    received: paymentMethod === 'cash' ? received : total,
+                    change: paymentMethod === 'cash' ? Math.max(0, received - total) : 0,
+                    paymentMethod: paymentMethod,
+                    cashierId: currentUser.uid,
+                    cashierName: currentUser.displayName || currentUser.email,
+                    createdAt: new Date()
+                };
+
+                // Save sale to Firestore
+                await setDoc(doc(db, 'sales', saleId), saleData);
+
+                // Update product stock
+                for (const item of cart) {
+                    const productRef = doc(db, 'products', item.id);
+                    await updateDoc(productRef, {
+                        stock: increment(-item.qty)
+                    });
+                }
+
+                // Update local products
+                cart.forEach(item => {
+                    const product = allProducts.find(p => p.id === item.id);
+                    if (product) {
+                        product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                    }
+                });
+
+                // Generate and show receipt
+                generateReceipt(saleData);
+
+                // Clear cart
+                cart = [];
+                renderCart();
+                document.getElementById('discount-input').value = 0;
+                document.getElementById('received-amount').value = '';
+                renderProducts();
+
+                showToast('Sale completed successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error completing sale:', error);
+                showToast('Failed to complete sale: ' + error.message, 'error');
+            }
+        };
+
+        // Generate Receipt
+        function generateReceipt(sale) {
+            const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            const itemsHtml = sale.items.map(item => `
+                <tr>
+                    <td>
+                        <span class="font-bold">${item.nameSi ? item.nameSi : ''}</span>
+                        ${item.nameSi ? '<br>' : ''}
+                        ${escapeHtml(item.name)}<br>
+                        <small>${item.qty} x Rs. ${item.price.toFixed(2)}</small>
+                        ${item.itemDiscount > 0 ? `<br><small style="color:red;">Discount: -Rs. ${item.itemDiscount.toFixed(2)}</small>` : ''}
+                    </td>
+                    <td>Rs. ${item.total.toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('receipt-content').innerHTML = `
+                <div class="receipt-header">
+                    <h2 class="font-sinhala">බුද්ධික ස්ටෝර්ස්</h2>
+                    <p class="font-bold">BUDDIKA STORES</p>
+                    <p class="font-sinhala">අංක 48, මහනුවර පාර, වලපනේ</p>
+                    <p>No 48, Kandy Road, Walapane</p>
+                    <p>Tel: 052-2279101 / 077-5192756</p>
+                </div>
+                
+                <div class="receipt-info">
+                    <p><strong>Receipt:</strong> ${escapeHtml(sale.id)}</p>
+                    <p><strong>Date:</strong> ${receiptDate}</p>
+                    <p><strong>Cashier:</strong> ${escapeHtml(sale.cashierName)}</p>
+                </div>
+                
+                <div class="receipt-items">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item / අයිතමය</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="receipt-totals">
+                    <div class="total-row">
+                        <span>Subtotal / උප එකතුව</span>
+                        <span>Rs. ${sale.subtotal.toFixed(2)}</span>
+                    </div>
+                    ${sale.discount > 0 ? `
+                    <div class="total-row">
+                        <span>Discount / වට්ටම</span>
+                        <span>- Rs. ${sale.discount.toFixed(2)}</span>
+                    </div>
+                    ` : ''}
+                    <div class="total-row grand-total">
+                        <span>Total / එකතුව</span>
+                        <span>Rs. ${sale.total.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Received / ලැබුණු</span>
+                        <span>Rs. ${sale.received.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Change / ඉතිරි</span>
+                        <span>Rs. ${sale.change.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Payment / ගෙවීම</span>
+                        <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    <p class="font-sinhala">ස්තූතියි! නැවත එන්න.</p>
+                    <p class="thank-you">Thank You! Please Come Again.</p>
+                    <p style="margin-top: 10px;">www.buddikastores.com</p>
+                    <p style="margin-top: 5px; font-size: 10px; color: #555;">Software by Odex Studio (0784-66-88-3)</p>
+                </div>
+            `;
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        // Print Receipt
+        window.printReceipt = () => {
+            window.print();
+        };
+
+        // Close Receipt Modal
+        window.closeReceiptModal = () => {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        };
+
+        // Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'error' ? 'bg-red-600' : type === 'success' ? 'bg-green-600' : 'bg-black';
+            toast.className = `fixed bottom-5 right-5 ${bgColor} text-white px-6 py-3 rounded-lg shadow-xl z-[400] transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+    </script>
+
+</body>
+
+</html>

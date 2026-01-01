@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary SEO Meta Tags -->
+    <title>Shop Products | Buddika Stores - Grocery, Stationery & More</title>
+    <meta name="title" content="Shop Products | Buddika Stores - Grocery, Stationery & More">
+    <meta name="description"
+        content="Browse our wide range of products: grocery items, school stationery, newspapers, and daily essentials. Shop online and order via WhatsApp for delivery in Walapane.">
+    <meta name="keywords"
+        content="products, grocery, stationery, newspapers, Buddika Stores, Walapane, online shop, delivery">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://buddikastores.com/products.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buddikastores.com/products.html">
+    <meta property="og:title" content="Shop Products | Buddika Stores">
+    <meta property="og:description"
+        content="Browse our wide range of grocery, stationery, and daily essentials. Order via WhatsApp!">
+    <meta property="og:image" content="https://buddikastores.com/assets/images/og-products.jpg">
+    <meta property="og:site_name" content="Buddika Stores">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shop Products | Buddika Stores">
+    <meta name="twitter:description" content="Browse our wide range of grocery, stationery, and daily essentials.">
+    <meta name="twitter:image" content="https://buddikastores.com/assets/images/og-products.jpg">
+
+    <!-- JSON-LD Structured Data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://buddikastores.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Products",
+                "item": "https://buddikastores.com/products.html"
+            }
+        ]
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: ItemList (Product Collection) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Buddika Stores Products",
+        "description": "Browse our collection of grocery items, stationery, newspapers, and daily essentials.",
+        "url": "https://buddikastores.com/products.html",
+        "numberOfItems": 100,
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Grocery Items"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "School Stationery"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Daily Newspapers"
+            }
+        ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        gray: {
+                            50: '#fcfcfc',
+                            100: '#f4f4f5',
+                            900: '#18181b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="bg-gray-50 text-black antialiased">
+
+    <div id="header-container"></div>
+
+    <main class="pt-20">
+        <section class="bg-gray-100 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold font-heading mb-4 tracking-tighter">Our Products</h1>
+                <p class="text-gray-500 max-w-xl mx-auto">Browse through our wide selection of items.</p>
+            </div>
+        </section>
+
+        <section class="py-16 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Category Filter -->
+                <div class="flex justify-center mb-12 flex-wrap gap-4">
+                    <button
+                        class="filter-btn active px-6 py-2 rounded-full border border-black bg-black text-white text-sm font-bold uppercase transition-all"
+                        data-filter="all">All</button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
+                        data-filter="grocery">Grocery</button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
+                        data-filter="stationery">Stationery</button>
+                    <button
+                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
+                        data-filter="news">Newspapers</button>
+
+                    <!-- Sorting -->
+                    <select id="sort-select"
+                        class="px-4 py-2 rounded-full border border-gray-200 text-gray-500 text-sm font-bold uppercase focus:border-black focus:ring-0 outline-none cursor-pointer">
+                        <option value="default">Sort By</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="name">Name (A-Z)</option>
+                    </select>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="product-grid">
+                    <!-- Products will be injected here via JS -->
+                </div>
+
+                <!-- Load More Button -->
+                <div id="load-more-container" class="text-center mt-12 hidden">
+                    <button id="load-more-btn"
+                        class="px-8 py-3 bg-white border border-gray-300 text-black font-bold rounded-full hover:bg-black hover:text-white transition-all shadow-sm">
+                        Load More Products
+                    </button>
+                    <p class="text-xs text-gray-400 mt-2">Showing partial results for performance</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script type="module" src="assets/js/components.js"></script>
+    <script type="module" src="assets/js/cart.js"></script>
+
+    <!-- Main Logic -->
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
+        import { escapeHtml, escapeJs } from './assets/js/utils.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('product-grid');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const loadMoreContainer = document.getElementById('load-more-container');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const sortSelect = document.getElementById('sort-select');
+
+            // State
+            let allProducts = [];
+            let lastVisible = null;
+            let PRODUCTS_PER_PAGE = 12;
+            let isFetching = false;
+            let noMoreProducts = false;
+
+            // Handle URL Query Params
+            const params = new URLSearchParams(window.location.search);
+            const urlCategory = params.get('category');
+            let currentCategory = (urlCategory && ['grocery', 'stationery', 'news'].includes(urlCategory)) ? urlCategory : 'all';
+
+            // Update Active Button UI
+            filterBtns.forEach(btn => {
+                if (btn.dataset.filter === currentCategory) {
+                    btn.classList.remove('text-gray-500', 'border-gray-200');
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+                } else {
+                    btn.classList.remove('bg-black', 'text-white', 'border-black');
+                    btn.classList.add('text-gray-500', 'border-gray-200');
+                }
+            });
+
+            // Initial Loading State
+            grid.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
+                    <p class="text-gray-400">Loading ${currentCategory === 'all' ? 'products' : currentCategory}...</p>
+                </div>
+            `;
+
+            // --- FETCH DATA (PAGINATED & FILTERED) ---
+            async function fetchProducts(isLoadMore = false) {
+                if (isFetching || (noMoreProducts && isLoadMore)) return;
+                isFetching = true;
+
+                if (isLoadMore) {
+                    loadMoreBtn.innerText = "Loading...";
+                    loadMoreBtn.disabled = true;
+                } else {
+                    // Reset grid for new category load
+                    grid.innerHTML = `
+                        <div class="col-span-full flex flex-col items-center justify-center py-20">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
+                            <p class="text-gray-400">Loading...</p>
+                        </div>
+                    `;
+                    loadMoreContainer.classList.add('hidden');
+                }
+
+                try {
+                    let q;
+                    const productsRef = collection(db, "products");
+
+                    // Query Logic
+                    // Removed orderBy("createdAt") to prevent empty results if migration data lacks timestamp.
+                    // This ensures all products are fetched.
+                    if (currentCategory === 'all') {
+                        if (isLoadMore && lastVisible) {
+                            q = query(productsRef, startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                        } else {
+                            q = query(productsRef, limit(PRODUCTS_PER_PAGE));
+                        }
+                    } else {
+                        // Filtered Query
+                        if (isLoadMore && lastVisible) {
+                            q = query(productsRef, where("category", "==", currentCategory), startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                        } else {
+                            q = query(productsRef, where("category", "==", currentCategory), limit(PRODUCTS_PER_PAGE));
+                        }
+                    }
+
+                    const querySnapshot = await getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        noMoreProducts = true;
+                        if (!isLoadMore) {
+                            grid.innerHTML = '<p class="text-center col-span-full text-gray-400 py-12">No products found in this category.</p>';
+                        }
+                        loadMoreContainer.classList.add('hidden');
+                        isFetching = false;
+                        if (!isLoadMore) allProducts = [];
+                        return;
+                    }
+
+                    // Update Cursor
+                    lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+                    // Process Data
+                    const newProducts = [];
+                    querySnapshot.forEach((doc) => {
+                        newProducts.push({ id: doc.id, ...doc.data() }); // Ensure ID is captured
+                    });
+
+                    if (isLoadMore) {
+                        allProducts = [...allProducts, ...newProducts];
+                    } else {
+                        allProducts = newProducts;
+                        noMoreProducts = false;
+                    }
+
+                    renderProducts();
+
+                    // Show/Hide Load More
+                    if (querySnapshot.docs.length < PRODUCTS_PER_PAGE) {
+                        noMoreProducts = true;
+                        loadMoreContainer.classList.add('hidden');
+                    } else {
+                        loadMoreContainer.classList.remove('hidden');
+                        noMoreProducts = false;
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching products:", error);
+                    if (!isLoadMore) {
+                        grid.innerHTML = `
+                            <div class="col-span-full text-center py-20 text-red-500">
+                                <p>Unable to load products. Please check your connection.</p>
+                                <p class="text-xs mt-2 text-gray-400">${error.message}</p>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    isFetching = false;
+                    if (isLoadMore) {
+                        loadMoreBtn.innerText = "Load More";
+                        loadMoreBtn.disabled = false;
+                    }
+                }
+            }
+
+            // --- RENDER FUNCTION ---
+            function renderProducts() {
+                let filtered = allProducts;
+                const sortValue = sortSelect.value;
+
+                // Sort client-side since we fetched chunk without sort
+                filtered = [...filtered];
+
+                if (sortValue === 'price-asc') {
+                    filtered.sort((a, b) => parseFloat(a.price.replace(/Rs\.|,/g, '')) - parseFloat(b.price.replace(/Rs\.|,/g, '')));
+                } else if (sortValue === 'price-desc') {
+                    filtered.sort((a, b) => parseFloat(b.price.replace(/Rs\.|,/g, '')) - parseFloat(a.price.replace(/Rs\.|,/g, '')));
+                } else if (sortValue === 'name') {
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                }
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<p class="text-center col-span-full text-gray-400 py-12">No products found.</p>';
+                    return;
+                }
+
+                grid.innerHTML = filtered.map(p => {
+                    let imageHTML = '';
+                    if (p.image && p.image.startsWith('emoji:')) {
+                        const emoji = p.image.split(':')[1];
+                        imageHTML = `<span class="text-4xl">${emoji}</span>`;
+                    } else {
+                        const imgSrc = p.image || 'https://placehold.co/400x400?text=No+Image';
+                        imageHTML = `<img src="${imgSrc}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`;
+                    }
+
+                    const unit = p.unit || 'unit';
+                    const step = unit === 'kg' ? 0.5 : 1;
+                    const min = unit === 'kg' ? 0.5 : 1;
+                    const initialQty = min;
+
+                    const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.active === false;
+
+                    return `
+                        <div class="product-card group relative bg-gray-50 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 animate-fade-in flex flex-col h-full ${isOutOfStock ? 'opacity-75 grayscale' : ''}">
+                            ${isOutOfStock ? '<div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">Out of Stock</div>' : ''}
+                            <div class="aspect-w-1 aspect-h-1 bg-white flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} h-64 overflow-hidden relative">
+                                ${imageHTML}
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">${escapeHtml(p.category)} ${p.subcategory ? '• ' + escapeHtml(p.subcategory) : ''}</span>
+                                <h3 class="text-lg font-bold font-heading mb-2 leading-tight">${escapeHtml(p.name)}</h3>
+                                <p class="text-gray-500 text-sm mb-4 line-clamp-1">${escapeHtml(p.desc)}</p>
+                                <div class="mt-auto">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="font-bold text-lg">${escapeHtml(p.price)} <span class="text-xs text-gray-400 font-normal">/ ${escapeHtml(unit)}</span></span>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-3 bg-white border border-gray-200 rounded-lg p-1">
+                                        <div class="flex items-center">
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', -${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-black hover:bg-gray-100 rounded-md transition-colors font-bold text-lg">-</button>
+                                            <span id="qty-${escapeHtml(p.id)}" class="w-12 text-center font-bold text-sm bg-transparent">${initialQty}</span>
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-black hover:bg-gray-100 rounded-md transition-colors font-bold text-lg">+</button>
+                                        </div>
+                                        <button onclick="window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}', ${p.stock !== undefined ? p.stock : 999999})"
+                                            ${isOutOfStock ? 'disabled' : ''}
+                                            class="flex-1 bg-black text-white py-2 rounded-md font-bold text-sm hover:bg-gray-800 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                                            ${isOutOfStock ? 'Sold Out' : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> Add`}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Expose Logic
+            window.adjustQty = (id, change, min) => {
+                const qtyEl = document.getElementById(`qty-${id}`);
+                let currentQty = parseFloat(qtyEl.innerText);
+                let newQty = currentQty + change;
+                if (newQty < min) newQty = min;
+                newQty = Math.round(newQty * 100) / 100;
+                qtyEl.innerText = newQty;
+            };
+
+            window.addToCartWithQty = (id, name, price, unit, maxStock) => {
+                const qtyEl = document.getElementById(`qty-${id}`);
+                const qty = parseFloat(qtyEl.innerText);
+                window.addToCart(name, price, qty, unit, maxStock);
+            };
+
+            // --- EVENT LISTENERS ---
+
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', () => {
+                    fetchProducts(true);
+                });
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-black', 'text-white', 'border-black');
+                        b.classList.add('text-gray-500', 'border-gray-200');
+                    });
+                    btn.classList.remove('text-gray-500', 'border-gray-200');
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+
+                    currentCategory = btn.dataset.filter;
+                    // Reset Logic
+                    allProducts = [];
+                    lastVisible = null;
+                    noMoreProducts = false;
+                    fetchProducts(false);
+                });
+            });
+
+            // Sort Listener
+            sortSelect.addEventListener('change', () => {
+                renderProducts();
+            });
+
+            fetchProducts();
+        });
+    </script>
+</body>
+
+</html>
+```

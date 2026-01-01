@@ -1,0 +1,15 @@
+# Buddika Stores Website
+
+User-agent: *
+Allow: /
+
+# Disallow admin and login pages from indexing
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /profile.html
+
+# Allow CSS and JS for rendering
+Allow: /assets/
+
+# Sitemap location
+Sitemap: https://buddikastores.com/sitemap.xml
