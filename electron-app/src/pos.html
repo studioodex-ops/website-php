@@ -84,6 +84,18 @@
                     <span>POS System</span>
                 </a>
                 <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Online</span>
+                <!-- Admin Panel Button (Electron only) -->
+                <button id="admin-btn" onclick="openAdminPanel()"
+                    class="hidden bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Admin Panel
+                </button>
             </div>
             <div class="flex items-center gap-6">
                 <div class="text-right">
@@ -308,7 +320,7 @@
 
     <!-- Scripts -->
     <script type="module">
-        import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, getDocs, doc, setDoc, updateDoc, increment, query, orderBy, addDoc } from './assets/js/firebase-config.js';
+        import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, getDocs, doc, setDoc, updateDoc, increment, query, orderBy } from './assets/js/firebase-config.js';
         import { escapeHtml } from './assets/js/utils.js';
 
         // Global State
@@ -342,19 +354,188 @@
             updateTotals();
         };
 
-        // Auth State - Redirect to admin if not logged in
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                loginContainer.classList.add('hidden');
-                posContainer.classList.remove('hidden');
-                document.getElementById('cashier-name').innerText = user.displayName || user.email;
-                loadProducts();
-            } else {
-                // Not logged in - redirect to admin panel for login
+        // Check if running in Electron (Desktop App)
+        const isElectron = typeof window.electronAPI !== 'undefined';
+
+        if (isElectron) {
+            // Desktop Mode - Skip Firebase Auth, use local data
+            console.log('🖥️ Running in Electron Desktop Mode');
+            currentUser = { displayName: 'Cashier (Offline)', email: 'offline@buddikastores.lk' };
+            loginContainer.classList.add('hidden');
+            posContainer.classList.remove('hidden');
+            document.getElementById('cashier-name').innerText = 'Offline Mode';
+
+            // Update online status indicator
+            const statusBadge = document.querySelector('header .text-xs.bg-green-100');
+            if (statusBadge) {
+                statusBadge.innerHTML = '🔴 Offline';
+                statusBadge.className = 'text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold';
+            }
+
+            // Show Admin Panel button in Electron mode
+            const adminBtn = document.getElementById('admin-btn');
+            if (adminBtn) {
+                adminBtn.classList.remove('hidden');
+            }
+
+            loadProductsOffline();
+        } else {
+            // Online Mode - Use Firebase Auth
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    loginContainer.classList.add('hidden');
+                    posContainer.classList.remove('hidden');
+                    document.getElementById('cashier-name').innerText = user.displayName || user.email;
+                    loadProducts();
+                } else {
+                    window.location.href = 'admin.html';
+                }
+            });
+        }
+
+        // Open Admin Panel (Electron only)
+        window.openAdminPanel = () => {
+            if (isElectron) {
                 window.location.href = 'admin.html';
             }
-        });
+        };
+
+        // Load Products Offline (for Electron)
+        async function loadProductsOffline() {
+            try {
+                console.log('📦 Loading products from local database...');
+                const products = await window.electronAPI.db.getProducts();
+
+                if (products.length === 0) {
+                    productsGrid.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <div class="bg-orange-50 border border-orange-200 rounded-2xl p-8 max-w-md mx-auto">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                </svg>
+                                <p class="text-orange-700 font-bold text-lg mb-2">No products in local database</p>
+                                <p class="text-orange-600 text-sm mb-6">Connect to internet and sync products from Firebase</p>
+                                <button onclick="syncFromFirebase()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2 mx-auto">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Sync Products from Firebase
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                allProducts = products.map(p => ({
+                    id: p.id,
+                    name: p.name_en,
+                    nameSi: p.name_si,
+                    price: p.price,
+                    category: p.category,
+                    unit: p.unit || 'pcs',
+                    stock: 999, // No stock tracking offline
+                    image: p.image
+                }));
+
+                console.log(`✅ Loaded ${allProducts.length} products offline`);
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products offline:', error);
+                productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-red-500"><p>Failed to load products</p><p class="text-sm">Error: ' + error.message + '</p></div>';
+            }
+        }
+
+        // Sync products from Firebase to local database
+        window.syncFromFirebase = async () => {
+            if (!isElectron) {
+                alert('This function is only available in desktop app');
+                return;
+            }
+
+            productsGrid.innerHTML = `
+                <div class="col-span-full text-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+                    <p class="text-gray-600 font-bold">Syncing products from Firebase...</p>
+                    <p class="text-sm text-gray-400">Please wait, this may take a moment</p>
+                </div>
+            `;
+
+            try {
+                // Fetch from Firebase
+                console.log('🔄 Fetching products from Firebase...');
+                const q = query(collection(db, 'products'), orderBy('name'));
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-orange-500"><p>No products found in Firebase</p></div>';
+                    return;
+                }
+
+                const products = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    // Debug: log first product's raw price
+                    if (snapshot.docs.indexOf(doc) === 0) {
+                        console.log('📊 Sample product raw data:', { name: data.name, price: data.price, rawPrice: typeof data.price });
+                    }
+
+                    // Parse price - handle string with "Rs." prefix
+                    let priceValue = 0;
+                    if (typeof data.price === 'number') {
+                        priceValue = data.price;
+                    } else if (typeof data.price === 'string') {
+                        // Remove "Rs.", "Rs", commas and spaces
+                        const cleanPrice = data.price.replace(/Rs\.?\s*/gi, '').replace(/,/g, '').trim();
+                        priceValue = parseFloat(cleanPrice) || 0;
+                    }
+
+                    return {
+                        id: doc.id,
+                        name_en: data.name || '',
+                        name_si: data.nameSi || '',
+                        price: priceValue,
+                        category: data.category || '',
+                        unit: data.unit || 'pcs',
+                        barcode: data.barcode || data.sku || '',
+                        image: data.image || ''
+                    };
+                });
+
+                console.log(`📦 Fetched ${products.length} products from Firebase`);
+
+                // Save to local database
+                for (const p of products) {
+                    await window.electronAPI.db.addProduct(p);
+                }
+
+                console.log('✅ Products saved to local database');
+
+                // Update status badge to show online
+                const statusBadge = document.querySelector('header .text-xs');
+                if (statusBadge) {
+                    statusBadge.innerHTML = '🟢 Synced';
+                    statusBadge.className = 'text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold';
+                }
+
+                // Reload products from local database
+                await loadProductsOffline();
+
+                alert(`✅ Successfully synced ${products.length} products!\n\nYou can now work offline.`);
+
+            } catch (error) {
+                console.error('Sync error:', error);
+                productsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-20 text-red-500">
+                        <p class="font-bold">Sync Failed</p>
+                        <p class="text-sm">${error.message}</p>
+                        <button onclick="syncFromFirebase()" class="mt-4 bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold hover:bg-red-200">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        };
 
         // Logout
         window.handleLogout = () => {
@@ -574,15 +755,57 @@
             showToast(`Added ${qty} ${product.unit || 'unit'} of ${product.name}`);
         }
 
-        // Prompt for Item Discount
+        // Prompt for Item Discount - Custom modal for Electron
+        let discountItemIndex = null;
+
         window.promptForItemDiscount = (index) => {
             const item = cart[index];
             if (!item) return;
 
-            const input = prompt(`Enter discount amount for ${item.name} (Rs.):`, item.itemDiscount || 0);
-            if (input === null) return; // Cancelled
+            discountItemIndex = index;
 
+            // Create modal if not exists
+            let modal = document.getElementById('discount-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'discount-modal';
+                modal.className = 'fixed inset-0 bg-black/80 z-[300] flex items-center justify-center p-4';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-2xl max-w-sm w-full p-6">
+                        <h3 class="font-bold text-lg mb-4">Enter Discount Amount</h3>
+                        <p id="discount-modal-item" class="text-sm text-gray-500 mb-4"></p>
+                        <input type="number" id="discount-modal-input" class="w-full border border-gray-300 rounded-xl p-3 text-lg mb-4" placeholder="Enter Rs. amount">
+                        <div class="flex gap-3">
+                            <button onclick="closeDiscountModal()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold">Cancel</button>
+                            <button onclick="applyItemDiscount()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold">Apply</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            // Show modal with item info
+            document.getElementById('discount-modal-item').innerText = `${item.name} - Rs. ${(item.price * item.qty).toFixed(2)}`;
+            document.getElementById('discount-modal-input').value = item.itemDiscount || 0;
+            modal.classList.remove('hidden');
+            document.getElementById('discount-modal-input').focus();
+        };
+
+        window.closeDiscountModal = () => {
+            const modal = document.getElementById('discount-modal');
+            if (modal) modal.classList.add('hidden');
+            discountItemIndex = null;
+        };
+
+        window.applyItemDiscount = () => {
+            if (discountItemIndex === null) return;
+
+            const item = cart[discountItemIndex];
+            if (!item) return;
+
+            const input = document.getElementById('discount-modal-input').value;
             const discount = parseFloat(input);
+
             if (isNaN(discount) || discount < 0) {
                 alert("Invalid discount amount");
                 return;
@@ -596,6 +819,8 @@
 
             item.itemDiscount = discount;
             renderCart();
+            closeDiscountModal();
+            showToast(`Discount Rs. ${discount.toFixed(2)} applied!`);
         };
 
         // Render Cart
@@ -818,35 +1043,36 @@
                     received: paymentMethod === 'cash' ? received : total,
                     change: paymentMethod === 'cash' ? Math.max(0, received - total) : 0,
                     paymentMethod: paymentMethod,
-                    cashierId: currentUser.uid,
-                    cashierName: currentUser.displayName || currentUser.email,
+                    cashierId: currentUser.uid || 'offline',
+                    cashierName: currentUser.displayName || currentUser.email || 'Offline Cashier',
                     createdAt: new Date()
                 };
 
-                // Save sale to Firestore
-                await setDoc(doc(db, 'sales', saleId), saleData);
-
-                // Update product stock
-                // Update product stock & Log Movement
-                for (const item of cart) {
-                    const productRef = doc(db, 'products', item.id);
-                    await updateDoc(productRef, {
-                        stock: increment(-item.qty)
+                // Check if Electron mode - save to local SQLite
+                if (isElectron) {
+                    console.log('💾 Saving sale to local database...');
+                    await window.electronAPI.db.saveSale({
+                        id: saleId,
+                        items: saleData.items,
+                        subtotal: subtotal,
+                        discount: discount,
+                        total: total,
+                        payment_method: paymentMethod,
+                        customer_name: '',
+                        customer_phone: '',
+                        cashier: saleData.cashierName
                     });
+                    console.log('✅ Sale saved locally:', saleId);
+                } else {
+                    // Save sale to Firestore (online mode)
+                    await setDoc(doc(db, 'sales', saleId), saleData);
 
-                    // Log Movement
-                    try {
-                        await addDoc(collection(db, 'stock_movements'), {
-                            type: 'sale',
-                            productId: item.id,
-                            productName: item.name,
-                            quantity: -item.qty,
-                            reason: `POS Sale #${saleId}`,
-                            performedBy: currentUser.displayName || currentUser.email,
-                            timestamp: new Date()
+                    // Update product stock in Firebase
+                    for (const item of cart) {
+                        const productRef = doc(db, 'products', item.id);
+                        await updateDoc(productRef, {
+                            stock: increment(-item.qty)
                         });
-                    } catch (err) {
-                        console.error("Error logging movement:", err);
                     }
                 }
 

@@ -84,21 +84,9 @@
         "openingHoursSpecification": [
             {
                 "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                "opens": "07:00",
-                "closes": "21:00"
-            },
-            {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": "Saturday",
-                "opens": "07:00",
-                "closes": "21:00"
-            },
-            {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": "Sunday",
-                "opens": "08:00",
-                "closes": "20:00"
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                "opens": "08:30",
+                "closes": "20:30"
             }
         ]
     }
@@ -361,6 +349,81 @@
             </div>
         </section>
 
+        <!-- Book List Package Offer Banner -->
+        <section class="py-16 bg-gradient-to-r from-amber-400 via-orange-400 to-red-400" id="book-list-offer">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <div class="grid md:grid-cols-2 gap-0">
+                        <!-- Left: Content -->
+                        <div class="p-8 md:p-12 flex flex-col justify-center">
+                            <span class="text-xs font-bold tracking-widest uppercase text-orange-600 mb-2">🎒 Back to
+                                School</span>
+                            <h2 class="text-2xl md:text-3xl font-bold text-black mb-4 leading-tight">
+                                "පොත් ලිස්ට්" පැකේජය
+                            </h2>
+                            <p class="text-gray-600 mb-6">
+                                ඔයාගේ පොත් ලිස්ට් එක අපිට WhatsApp කරන්න, <br>
+                                අපි ඔක්කොම ලෑස්ති කරලා තියන්නම්!
+                            </p>
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">10%
+                                        OFF</span>
+                                    <span class="text-gray-700">සම්පූර්ණ ලිස්ට් එකෙන්</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">OLD
+                                        PRICE</span>
+                                    <span class="text-gray-700">*පරණ මිලටම පොත් ගන්න</span>
+                                </div>
+                            </div>
+                            <a href="https://wa.me/94775192756?text=Hi!%20I%20want%20to%20submit%20my%20book%20list%20for%20the%20Back%20to%20School%20offer."
+                                target="_blank"
+                                class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl transition-colors w-full md:w-auto text-center">
+                                <span class="text-xl">📱</span> WhatsApp: 077-5192756
+                            </a>
+                            <p class="text-xs text-gray-400 mt-3">*Conditions apply for old prices</p>
+                        </div>
+                        <!-- Right: Visual -->
+                        <div
+                            class="bg-gradient-to-br from-orange-100 to-amber-100 p-8 flex items-center justify-center">
+                            <div class="text-center">
+                                <span class="text-8xl mb-4 block">📚</span>
+                                <p class="text-lg font-bold text-orange-800">ලිස්ට් එක දෙන්න</p>
+                                <p class="text-orange-600">අපි හොයලා දෙන්නම්!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Smart Bundles Section -->
+        <section class="py-24 bg-gradient-to-b from-purple-50 to-white" id="bundles">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-bold tracking-widest uppercase text-purple-600 mb-2 block">Save
+                        More</span>
+                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-black">
+                        📦 Smart Bundles
+                    </h2>
+                    <p class="text-gray-500">Buy together, save together! Special discounts on curated product bundles.
+                    </p>
+                </div>
+
+                <div id="bundles-display-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Loading State -->
+                    <div class="col-span-full text-center py-12">
+                        <div
+                            class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600">
+                        </div>
+                        <p class="mt-2 text-gray-400 text-sm">Loading bundles...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Testimonials Section -->
         <section class="py-24 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -507,12 +570,15 @@
     <div id="footer-container"></div>
 
     <!-- Scripts -->
-    <script type="module" src="assets/js/components.js"></script>
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
     <script src="assets/js/products_db.js"></script> <!-- Load Database -->
-    <script type="module" src="assets/js/cart.js"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
     <script src="assets/js/main.js"></script>
     <script type="module" src="assets/js/promotions.js"></script>
     <script type="module" src="assets/js/news.js"></script>
+    <script type="module" src="assets/js/bundles.js?v=1.0"></script>
+    <script type="module" src="assets/js/countdown.js?v=1.1"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+
 
 </html>
-```

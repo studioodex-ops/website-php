@@ -158,19 +158,28 @@
                     </button>
                     <p class="text-xs text-gray-400 mt-2">Showing partial results for performance</p>
                 </div>
+
+                <!-- Recommendations Section -->
+                <div id="recommendations-container" class="mt-12 hidden">
+                    <!-- Will be populated by recommender.js -->
+                </div>
             </div>
         </section>
     </main>
 
     <div id="footer-container"></div>
 
-    <script type="module" src="assets/js/components.js"></script>
-    <script type="module" src="assets/js/cart.js"></script>
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+    <script type="module" src="assets/js/recommender.js?v=1.0"></script>
+
 
     <!-- Main Logic -->
     <script type="module">
         import { db, collection, getDocs, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
         import { escapeHtml, escapeJs } from './assets/js/utils.js';
+        import { addToCart } from './assets/js/cart.js'; // Explicit Import
 
         document.addEventListener('DOMContentLoaded', async () => {
             const grid = document.getElementById('product-grid');
@@ -368,7 +377,7 @@
                                             <span id="qty-${escapeHtml(p.id)}" class="w-12 text-center font-bold text-sm bg-transparent">${initialQty}</span>
                                             <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-black hover:bg-gray-100 rounded-md transition-colors font-bold text-lg">+</button>
                                         </div>
-                                        <button onclick="window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}', ${p.stock !== undefined ? p.stock : 999999})"
+                                        <button onclick="try { window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}', ${p.stock !== undefined ? p.stock : 999999}); } catch(e) { alert('JS Error: ' + e); }"
                                             ${isOutOfStock ? 'disabled' : ''}
                                             class="flex-1 bg-black text-white py-2 rounded-md font-bold text-sm hover:bg-gray-800 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed">
                                             ${isOutOfStock ? 'Sold Out' : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> Add`}
@@ -379,6 +388,18 @@
                         </div>
                     `;
                 }).join('');
+
+                // Show recommendations based on first product
+                if (filtered.length > 0 && window.getRecommendations && window.renderRecommendations) {
+                    setTimeout(async () => {
+                        try {
+                            const recs = await window.getRecommendations(filtered[0], 4);
+                            window.renderRecommendations('recommendations-container', recs);
+                        } catch (e) {
+                            console.warn('Error showing recommendations:', e);
+                        }
+                    }, 500);
+                }
             }
 
             // Expose Logic
@@ -394,7 +415,8 @@
             window.addToCartWithQty = (id, name, price, unit, maxStock) => {
                 const qtyEl = document.getElementById(`qty-${id}`);
                 const qty = parseFloat(qtyEl.innerText);
-                window.addToCart(name, price, qty, unit, maxStock);
+                // Directly call the imported function
+                addToCart(name, price, qty, unit, maxStock);
             };
 
             // --- EVENT LISTENERS ---

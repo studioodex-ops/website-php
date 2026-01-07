@@ -190,151 +190,219 @@
     </div>
 
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-black text-white flex flex-col hidden md:flex h-full">
-        <div class="h-20 flex items-center justify-center border-b border-gray-800">
-            <h1 class="text-xl font-bold font-heading uppercase tracking-widest">Admin Panel</h1>
+    <aside
+        class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex h-full font-sans transition-all duration-300">
+        <!-- Brand / Header -->
+        <div class="h-20 flex items-center px-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <div class="flex items-center gap-3">
+                <div class="bg-black rounded-lg p-1.5 text-white shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-gray-900 uppercase tracking-widest font-heading">Buddika Stores
+                    </h1>
+                    <span class="text-[10px] text-gray-400 font-bold tracking-wide">PREMIUM EDITION</span>
+                </div>
+            </div>
         </div>
-        <nav class="flex-1 overflow-y-auto py-6">
-            <a href="#" onclick="switchTab('products')" id="tab-products"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-white bg-gray-900">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
-                Products
-            </a>
-            <a href="#" onclick="switchTab('orders')" id="tab-orders"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                    </path>
-                </svg>
-                Orders
-            </a>
-            <a href="#" onclick="switchTab('promotions')" id="tab-promotions"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z">
-                    </path>
-                </svg>
-                Promotions
-            </a>
-            <!-- NEW SETTINGS BUTTON -->
-            <a href="#" onclick="openSettingsModal()"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400 mt-auto border-t border-gray-800">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                Settings
-            </a>
-            <a href="#" onclick="switchTab('news')" id="tab-news"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
-                    </path>
-                </svg>
-                News
-            </a>
-            <a href="#" onclick="switchTab('reports')" id="tab-reports"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                    </path>
-                </svg>
-                Reports
-            </a>
 
-            <a href="#" onclick="switchTab('inventory')" id="tab-inventory"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
-                    </path>
-                </svg>
-                Inventory
-            </a>
-            <a href="#" onclick="switchTab('labels')" id="tab-labels"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-yellow-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
-                    </path>
-                </svg>
-                Print Labels
-            </a>
-            <a href="#" onclick="switchTab('abandoned')" id="tab-abandoned"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-red-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                    </path>
-                </svg>
-                Abandoned Carts
-            </a>
-            <a href="#" onclick="switchTab('bundles')" id="tab-bundles"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-purple-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                    </path>
-                </svg>
-                Smart Bundles
-            </a>
-            <a href="#" onclick="switchTab('bookorders')" id="tab-bookorders"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-cyan-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                    </path>
-                </svg>
-                Book Orders
-            </a>
-            <a href="#" onclick="switchTab('luckydraw')" id="tab-luckydraw"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-yellow-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
-                </svg>
-                🎰 Lucky Draw
-            </a>
-            <a href="pos.html" id="tab-pos"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-green-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
-                    </path>
-                </svg>
-                Open POS →
-            </a>
-            <a href="#" onclick="openSettingsModal()"
-                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-gray-400 mt-auto mb-6">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                Settings
-            </a>
+        <!-- Scrollable Nav -->
+        <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-2 scrollbar-thin scrollbar-thumb-gray-200">
+
+            <!-- GROUP: GENERAL -->
+            <div
+                class="nav-group bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+                <button onclick="toggleNavGroup('nav-general', this)"
+                    class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="p-1.5 bg-gray-200 rounded text-gray-600 group-hover:bg-black group-hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span
+                            class="text-xs font-bold uppercase tracking-widest text-gray-600 group-hover:text-gray-900">General</span>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="nav-general" class="hidden border-t border-gray-100">
+                    <a href="#" onclick="switchTab('reports')" id="tab-reports"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-black hover:bg-gray-50 font-medium border-l-2 border-transparent hover:border-black transition-all">
+                        Dashboard
+                    </a>
+                    <a href="#" onclick="openSettingsModal()"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-black hover:bg-gray-50 font-medium border-l-2 border-transparent hover:border-black transition-all">
+                        Settings
+                    </a>
+                </div>
+            </div>
+
+            <!-- GROUP: SALES -->
+            <div
+                class="nav-group bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+                <button onclick="toggleNavGroup('nav-sales', this)"
+                    class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="p-1.5 bg-green-100 rounded text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span
+                            class="text-xs font-bold uppercase tracking-widest text-gray-600 group-hover:text-gray-900">Sales</span>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="nav-sales" class="hidden border-t border-gray-100">
+                    <a href="#" onclick="switchTab('orders')" id="tab-orders"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-green-600 hover:bg-green-50 font-medium border-l-2 border-transparent hover:border-green-600 transition-all">
+                        Sales Orders
+                    </a>
+                    <a href="#" onclick="switchTab('bookorders')" id="tab-bookorders"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 font-medium border-l-2 border-transparent hover:border-cyan-600 transition-all">
+                        Book Orders
+                    </a>
+                    <a href="#" onclick="switchTab('abandoned')" id="tab-abandoned"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 font-medium border-l-2 border-transparent hover:border-red-600 transition-all">
+                        Abandoned Carts
+                    </a>
+                </div>
+            </div>
+
+            <!-- GROUP: INVENTORY -->
+            <div
+                class="nav-group bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+                <button onclick="toggleNavGroup('nav-inventory', this)"
+                    class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="p-1.5 bg-blue-100 rounded text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                        <span
+                            class="text-xs font-bold uppercase tracking-widest text-gray-600 group-hover:text-gray-900">Inventory</span>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="nav-inventory" class="border-t border-gray-100">
+                    <!-- Default Open? Or javascript handle? Let's hide by default -->
+                    <a href="#" onclick="switchTab('products')" id="tab-products"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 font-medium border-l-2 border-transparent hover:border-blue-600 transition-all">
+                        Product List
+                    </a>
+                    <a href="#" onclick="switchTab('inventory')" id="tab-inventory"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-blue-600 hover:bg-blue-50 font-medium border-l-2 border-transparent hover:border-blue-600 transition-all">
+                        Current Stock
+                    </a>
+                    <a href="#" onclick="switchTab('labels')" id="tab-labels"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 font-medium border-l-2 border-transparent hover:border-yellow-600 transition-all">
+                        Print Labels
+                    </a>
+                    <a href="#" onclick="switchTab('movements')" id="tab-movements"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 font-medium border-l-2 border-transparent hover:border-indigo-600 transition-all">
+                        Movement History
+                    </a>
+                </div>
+            </div>
+
+            <!-- GROUP: MARKETING -->
+            <div
+                class="nav-group bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+                <button onclick="toggleNavGroup('nav-marketing', this)"
+                    class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="p-1.5 bg-purple-100 rounded text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span
+                            class="text-xs font-bold uppercase tracking-widest text-gray-600 group-hover:text-gray-900">Marketing</span>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="nav-marketing" class="hidden border-t border-gray-100">
+                    <a href="#" onclick="switchTab('promotions')" id="tab-promotions"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-purple-600 hover:bg-purple-50 font-medium border-l-2 border-transparent hover:border-purple-600 transition-all">
+                        Promotions
+                    </a>
+                    <a href="#" onclick="switchTab('bundles')" id="tab-bundles"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-purple-600 hover:bg-purple-50 font-medium border-l-2 border-transparent hover:border-purple-600 transition-all">
+                        Smart Bundles
+                    </a>
+                    <a href="#" onclick="switchTab('luckydraw')" id="tab-luckydraw"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-yellow-600 hover:bg-yellow-50 font-medium border-l-2 border-transparent hover:border-yellow-600 transition-all">
+                        Lucky Draw
+                    </a>
+                    <a href="#" onclick="switchTab('news')" id="tab-news"
+                        class="nav-item block py-2.5 px-12 text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-100 font-medium border-l-2 border-transparent hover:border-gray-900 transition-all">
+                        News & Updates
+                    </a>
+                </div>
+            </div>
+
+            <!-- GROUP: POS -->
+            <div class="pt-4">
+                <a href="pos.html"
+                    class="flex items-center justify-center gap-2 w-full bg-black hover:bg-gray-800 text-white py-3.5 rounded-xl transition-all text-sm font-bold shadow-lg active:scale-95 group">
+                    <svg class="w-5 h-5 text-green-400 group-hover:text-green-300" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    OPEN POS
+                </a>
+            </div>
+
         </nav>
-        <div class="p-4 border-t border-gray-800">
-            <div class="mb-4 px-2">
-                <p class="text-xs text-gray-500 uppercase tracking-widest">Logged in as</p>
-                <p class="text-xs font-bold truncate" id="admin-email">...</p>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-100 bg-gray-50/50">
+            <div class="flex items-center gap-3 mb-3 bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
+                <div
+                    class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center text-xs font-bold shadow-inner">
+                    BS</div>
+                <div class="overflow-hidden">
+                    <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Logged In</p>
+                    <p class="text-xs font-bold text-gray-900 truncate" id="admin-email">admin@buddika.store</p>
+                </div>
             </div>
             <button onclick="handleLogout()"
-                class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-colors text-sm font-bold">
-                Log Out
+                class="w-full flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-gray-500 py-2.5 rounded-lg text-xs font-bold transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+                Sign Out
             </button>
         </div>
     </aside>
@@ -759,6 +827,59 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: MOVEMENT HISTORY -->
+            <div id="view-movements" class="hidden max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold font-heading text-gray-900">📉 Movement History</h2>
+                        <p class="text-gray-500 text-sm mt-1">Audit trail of all stock changes, sales, and adjustments.
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="fetchMovements()"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                </path>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Movements Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
+                                <tr>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Type</th>
+                                    <th class="p-4">Product</th>
+                                    <th class="p-4 text-right">Qty Change</th>
+                                    <th class="p-4">Reason / Ref</th>
+                                    <th class="p-4">User</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movements-list" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td colspan="6" class="p-12 text-center text-gray-400">Loading history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination (Simple) -->
+                    <div class="p-4 border-t border-gray-100 flex justify-center gap-2">
+                        <button onclick="prevMovementsPage()" id="btn-prev-movements"
+                            class="px-3 py-1 bg-gray-100 rounded text-xs font-bold disabled:opacity-50">Prev</button>
+                        <span id="page-movements" class="px-3 py-1 text-xs font-bold">Page 1</span>
+                        <button onclick="nextMovementsPage()" id="btn-next-movements"
+                            class="px-3 py-1 bg-gray-100 rounded text-xs font-bold disabled:opacity-50">Next</button>
                     </div>
                 </div>
             </div>
@@ -1350,7 +1471,7 @@
 
     <!-- MAIN LOGIC -->
     <script type="module">
-        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment } from './assets/js/firebase-config.js';
+        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment, addDoc } from './assets/js/firebase-config.js';
         import { escapeHtml } from './assets/js/utils.js';
 
         // Initialize Global Objects
@@ -1377,27 +1498,41 @@
         const loginContainer = document.getElementById('login-container');
         const adminEmail = document.getElementById('admin-email');
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Logged In
-                loginContainer.classList.add('hidden');
-                adminEmail.innerText = user.email;
-                fetchAndRenderProducts();
-            } else {
-                // Show Login
-                loginContainer.classList.remove('hidden');
-                loginContainer.innerHTML = `
-            <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
-                <h2 class="text-2xl font-bold font-heading mb-2">Admin Access</h2>
-                <p class="text-gray-500 mb-6 text-sm">Please log in to manage store.</p>
-                <button onclick="handleLogin()" class="w-full bg-black text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-transform">
-                    Log In with Google
-                </button>
-                <a href="index.html" class="block mt-6 text-xs text-gray-400 hover:text-black font-bold uppercase tracking-widest">Back to Shop</a>
-            </div>
-            `;
-            }
-        });
+        // Check if running in Electron (Desktop App)
+        const isElectron = typeof window.electronAPI !== 'undefined';
+
+        if (isElectron) {
+            // Desktop Mode - Skip Firebase Auth
+            console.log('🖥️ Admin running in Electron Desktop Mode');
+            loginContainer.classList.add('hidden');
+            adminEmail.innerText = 'Offline Admin';
+
+            // Load products from local SQLite
+            fetchProductsOffline();
+        } else {
+            // Online Mode - Use Firebase Auth
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // Logged In
+                    loginContainer.classList.add('hidden');
+                    adminEmail.innerText = user.email;
+                    fetchAndRenderProducts();
+                } else {
+                    // Show Login
+                    loginContainer.classList.remove('hidden');
+                    loginContainer.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+                    <h2 class="text-2xl font-bold font-heading mb-2">Admin Access</h2>
+                    <p class="text-gray-500 mb-6 text-sm">Please log in to manage store.</p>
+                    <button onclick="handleLogin()" class="w-full bg-black text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-transform">
+                        Log In with Google
+                    </button>
+                    <a href="index.html" class="block mt-6 text-xs text-gray-400 hover:text-black font-bold uppercase tracking-widest">Back to Shop</a>
+                </div>
+                `;
+                }
+            });
+        }
 
         window.handleLogin = () => {
             signInWithPopup(auth, googleProvider).catch(e => alert(e.message));
@@ -1409,97 +1544,75 @@
 
         // TAB LOGIC
         window.switchTab = (tab) => {
-            const pView = document.getElementById('view-products');
-            const oView = document.getElementById('view-orders');
-            const mView = document.getElementById('view-promotions');
-            const nView = document.getElementById('view-news');
-            const iView = document.getElementById('view-inventory');
-            const rView = document.getElementById('view-reports');
+            // Views
+            const views = {
+                'products': document.getElementById('view-products'),
+                'orders': document.getElementById('view-orders'),
+                'promotions': document.getElementById('view-promotions'),
+                'news': document.getElementById('view-news'),
+                'inventory': document.getElementById('view-inventory'),
+                'reports': document.getElementById('view-reports'),
+                'labels': document.getElementById('view-labels'),
+                'abandoned': document.getElementById('view-abandoned'),
+                'bundles': document.getElementById('view-bundles'),
+                'bookorders': document.getElementById('view-bookorders'),
+                'luckydraw': document.getElementById('view-luckydraw'),
+                'movements': document.getElementById('view-movements')
+            };
 
-            const tProd = document.getElementById('tab-products');
-            const tOrd = document.getElementById('tab-orders');
-            const tPromo = document.getElementById('tab-promotions');
-            const tNews = document.getElementById('tab-news');
-            const tInv = document.getElementById('tab-inventory');
-            const tRep = document.getElementById('tab-reports');
+            // Tabs (Buttons)
+            const tabs = {
+                'products': document.getElementById('tab-products'),
+                'orders': document.getElementById('tab-orders'),
+                'promotions': document.getElementById('tab-promotions'),
+                'news': document.getElementById('tab-news'),
+                'inventory': document.getElementById('tab-inventory'),
+                'reports': document.getElementById('tab-reports'),
+                'labels': document.getElementById('tab-labels'),
+                'abandoned': document.getElementById('tab-abandoned'),
+                'bundles': document.getElementById('tab-bundles'),
+                'bookorders': document.getElementById('tab-bookorders'),
+                'luckydraw': document.getElementById('tab-luckydraw'),
+                'movements': document.getElementById('tab-movements')
+            };
 
-            // Reset all
-            [pView, oView, mView, nView, iView, rView].forEach(el => el && el.classList.add('hidden'));
-            [tProd, tOrd, tPromo, tNews, tInv, tRep].forEach(el => {
+            // 1. Hide all views
+            Object.values(views).forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+
+            // 2. Reset all tabs to Inactive State
+            Object.values(tabs).forEach(el => {
                 if (el) {
-                    el.classList.add('border-transparent', 'text-gray-400');
-                    el.classList.remove('bg-gray-900', 'border-white', 'text-white');
+                    // Remove Active Classes
+                    el.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-600', 'bg-gray-900', 'text-white', 'border-white');
+                    // Add Inactive Classes
+                    el.classList.add('text-gray-500', 'border-transparent');
                 }
             });
 
-            if (tab === 'products') {
-                pView.classList.remove('hidden');
-                tProd.classList.remove('border-transparent', 'text-gray-400');
-                tProd.classList.add('bg-gray-900', 'border-white', 'text-white');
-            } else if (tab === 'orders') {
-                oView.classList.remove('hidden');
-                tOrd.classList.remove('border-transparent', 'text-gray-400');
-                tOrd.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchOrders();
-            } else if (tab === 'promotions') {
-                mView.classList.remove('hidden');
-                tPromo.classList.remove('border-transparent', 'text-gray-400');
-                tPromo.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchPromotions();
-            } else if (tab === 'news') {
-                nView.classList.remove('hidden');
-                tNews.classList.remove('border-transparent', 'text-gray-400');
-                tNews.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchNews();
-            } else if (tab === 'reports') {
-                rView.classList.remove('hidden');
-                tRep.classList.add('bg-black', 'text-white'); // Fix color
-                document.getElementById('tab-reports').classList.remove('text-gray-400', 'border-transparent');
-                document.getElementById('tab-reports').classList.add('bg-gray-900', 'border-white', 'text-white');
+            // 3. Show Target View & Activate Target Tab
+            if (views[tab]) views[tab].classList.remove('hidden');
+            if (tabs[tab]) {
+                tabs[tab].classList.remove('text-gray-500', 'border-transparent');
+                tabs[tab].classList.add('bg-blue-50', 'text-blue-700', 'border-blue-600');
+            }
 
+            // 4. Trigger Fetch Functions
+            if (tab === 'orders') fetchOrders();
+            else if (tab === 'promotions') fetchPromotions();
+            else if (tab === 'news') fetchNews();
+            else if (tab === 'reports') {
                 setReportDate('today');
                 fetchLowStock();
-            } else if (tab === 'inventory') {
-                iView.classList.remove('hidden');
-                tInv.classList.remove('border-transparent', 'text-gray-400');
-                tInv.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchInventory();
-            } else if (tab === 'labels') {
-                const lView = document.getElementById('view-labels');
-                const tLab = document.getElementById('tab-labels');
-                lView.classList.remove('hidden');
-                tLab.classList.remove('border-transparent', 'text-yellow-400');
-                tLab.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchLabelsProducts();
-            } else if (tab === 'abandoned') {
-                const aView = document.getElementById('view-abandoned');
-                const tAbn = document.getElementById('tab-abandoned');
-                aView.classList.remove('hidden');
-                tAbn.classList.remove('border-transparent', 'text-red-400');
-                tAbn.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchAbandonedCarts();
-            } else if (tab === 'bundles') {
-                const bView = document.getElementById('view-bundles');
-                const tBun = document.getElementById('tab-bundles');
-                bView.classList.remove('hidden');
-                tBun.classList.remove('border-transparent', 'text-purple-400');
-                tBun.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchBundles();
-            } else if (tab === 'bookorders') {
-                const boView = document.getElementById('view-bookorders');
-                const tBo = document.getElementById('tab-bookorders');
-                boView.classList.remove('hidden');
-                tBo.classList.remove('border-transparent', 'text-cyan-400');
-                tBo.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchBookOrders();
-            } else if (tab === 'luckydraw') {
-                const ldView = document.getElementById('view-luckydraw');
-                const tLd = document.getElementById('tab-luckydraw');
-                ldView.classList.remove('hidden');
-                tLd.classList.remove('border-transparent', 'text-yellow-400');
-                tLd.classList.add('bg-gray-900', 'border-white', 'text-white');
-                fetchLuckyDrawEntries();
             }
+            else if (tab === 'inventory') fetchInventory();
+            else if (tab === 'labels') fetchLabelsProducts();
+            else if (tab === 'abandoned') fetchAbandonedCarts();
+            else if (tab === 'bundles') fetchBundles();
+            else if (tab === 'bookorders') fetchBookOrders();
+            else if (tab === 'luckydraw') fetchLuckyDrawEntries();
+            else if (tab === 'movements') fetchMovements();
         }
 
         // --- BUNDLES LOGIC ---
@@ -2419,10 +2532,12 @@ Buddika Stores
             }
         };
 
-        window.adjustStock = async (productId, direction) => {
+        window.adjustStock = async (productId, direction, productName = 'Unknown Product') => {
             const input = document.getElementById(`stock-adj-${productId}`);
             const amount = parseInt(input.value) || 1;
             const adjustment = direction * amount;
+
+            if (amount === 0) return;
 
             try {
                 const productRef = doc(db, 'products', productId);
@@ -2430,12 +2545,110 @@ Buddika Stores
                     stock: increment(adjustment)
                 });
 
-                alert(`Stock ${direction > 0 ? 'added' : 'reduced'} by ${amount}`);
-                fetchInventory();
+                // LOG MOVEMENT
+                try {
+                    await addDoc(collection(db, 'stock_movements'), {
+                        type: 'adjustment',
+                        productId: productId,
+                        productName: productName,
+                        quantity: adjustment,
+                        reason: 'Manual Adjustment',
+                        performedBy: auth.currentUser ? (auth.currentUser.email || 'Admin') : 'Admin',
+                        timestamp: new Date()
+                    });
+                } catch (logErr) {
+                    console.error("Failed to log movement:", logErr);
+                }
+
+                showToast(`Stock updated!`);
+                input.value = '';
+                fetchInventory(); // Refresh list
             } catch (e) {
-                alert('Error adjusting stock: ' + e.message);
+                console.error("Error updating stock:", e);
+                showToast("Failed to update stock", "error");
             }
         };
+
+        // --- MOVEMENT HISTORY LOGIC ---
+        let lastMovementDoc = null;
+        let movementsPage = 1;
+
+        window.fetchMovements = async (direction = 'first') => {
+            const list = document.getElementById('movements-list');
+            const btnPrev = document.getElementById('btn-prev-movements');
+            const btnNext = document.getElementById('btn-next-movements');
+            const pageSpan = document.getElementById('page-movements');
+
+            list.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-gray-400">Loading history...</td></tr>';
+
+            try {
+                let q = query(collection(db, 'stock_movements'), orderBy('timestamp', 'desc'), limit(20));
+
+                if (direction === 'next' && lastMovementDoc) {
+                    q = query(collection(db, 'stock_movements'), orderBy('timestamp', 'desc'), startAfter(lastMovementDoc), limit(20));
+                    movementsPage++;
+                } else if (direction === 'first') {
+                    movementsPage = 1;
+                    lastMovementDoc = null;
+                }
+
+                if (direction === 'prev') {
+                    q = query(collection(db, 'stock_movements'), orderBy('timestamp', 'desc'), limit(20));
+                    movementsPage = 1;
+                    lastMovementDoc = null;
+                }
+
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    list.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-gray-400">No movements recorded yet.</td></tr>';
+                    btnNext.disabled = true;
+                    if (movementsPage === 1) btnPrev.disabled = true;
+                    return;
+                }
+
+                lastMovementDoc = snap.docs[snap.docs.length - 1]; // Save last doc for next page
+                btnNext.disabled = snap.docs.length < 20;
+                btnPrev.disabled = movementsPage === 1;
+                pageSpan.innerText = `Page ${movementsPage}`;
+
+                list.innerHTML = snap.docs.map(doc => {
+                    const m = doc.data();
+                    const date = m.timestamp ? new Date(m.timestamp.seconds * 1000).toLocaleString() : 'N/A';
+
+                    let typeClass = 'bg-gray-100 text-gray-600';
+                    let typeIcon = '📝';
+                    if (m.type === 'sale') { typeClass = 'bg-green-100 text-green-700'; typeIcon = '💰'; }
+                    else if (m.type === 'adjustment') { typeClass = 'bg-blue-100 text-blue-700'; typeIcon = '🔧'; }
+                    else if (m.type === 'restock') { typeClass = 'bg-purple-100 text-purple-700'; typeIcon = '📦'; }
+
+                    const qtyClass = m.quantity > 0 ? 'text-green-600' : 'text-red-600';
+                    const qtyPrefix = m.quantity > 0 ? '+' : '';
+
+                    return `
+                        <tr class="hover:bg-gray-50 border-b border-gray-50">
+                            <td class="p-4 text-gray-500">${date}</td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded text-xs font-bold ${typeClass} flex w-fit items-center gap-1">
+                                    ${typeIcon} ${m.type.toUpperCase()}
+                                </span>
+                            </td>
+                            <td class="p-4 font-medium text-gray-900">${escapeHtml(m.productName || 'Unknown')}</td>
+                            <td class="p-4 text-right font-bold ${qtyClass}">${qtyPrefix}${m.quantity}</td>
+                            <td class="p-4 text-gray-500 italic">${escapeHtml(m.reason || '-')}</td>
+                            <td class="p-4 text-xs text-gray-400">${escapeHtml(m.performedBy || 'System')}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error("Error fetching movements:", e);
+                list.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-red-400">Error loading history. Check console.</td></tr>';
+            }
+        }
+
+        window.nextMovementsPage = () => fetchMovements('next');
+        window.prevMovementsPage = () => fetchMovements('prev');
 
         window.quickRestock = async (productId) => {
             const amount = prompt('Enter restock quantity:', '50');
@@ -2458,6 +2671,92 @@ Buddika Stores
             } catch (e) {
                 alert('Error restocking: ' + e.message);
             }
+        };
+
+        // --- PRODUCTS LOGIC FOR OFFLINE (ELECTRON) ---
+        async function fetchProductsOffline() {
+            const list = document.getElementById('products-list');
+            list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400">Loading from local database...</td></tr>';
+
+            try {
+                const products = await window.electronAPI.db.getProducts();
+
+                if (products.length === 0) {
+                    list.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="p-12 text-center">
+                                <div class="text-orange-500 mb-4">No products in local database</div>
+                                <p class="text-sm text-gray-400 mb-4">Sync products from POS first to manage them here.</p>
+                                <a href="pos.html" class="inline-block bg-green-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-green-700">Go to POS → Sync</a>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                list.innerHTML = products.map(p => {
+                    window.productsData[p.id] = p;
+
+                    let imageHTML = '';
+                    if (p.image && p.image.startsWith('emoji:')) {
+                        imageHTML = `<span class="text-2xl">${p.image.split(':')[1]}</span>`;
+                    } else if (p.image) {
+                        imageHTML = `<img src="${p.image}" class="w-8 h-8 rounded object-cover border border-gray-200" onerror="this.style.display='none'">`;
+                    } else {
+                        imageHTML = `<div class="w-8 h-8 bg-gray-100 rounded border border-gray-200"></div>`;
+                    }
+
+                    return `
+                        <tr class="hover:bg-gray-50 group border-b border-gray-50 last:border-0">
+                            <td class="p-4 flex items-center gap-3">
+                                ${imageHTML}
+                                <div>
+                                    <div class="font-bold text-gray-900">${escapeHtml(p.name_en || p.name || '')}</div>
+                                    ${p.name_si ? `<div class="text-xs text-gray-400 font-sinhala">${escapeHtml(p.name_si)}</div>` : ''}
+                                </div>
+                            </td>
+                            <td class="p-4 text-gray-600">
+                                <span class="px-2 py-1 bg-gray-100 rounded text-xs font-bold uppercase tracking-wide">${escapeHtml(p.category || 'uncategorized')}</span>
+                            </td>
+                            <td class="p-4 font-bold text-gray-900">Rs. ${parseFloat(p.price || 0).toFixed(2)}</td>
+                            <td class="p-4">
+                                <span class="text-gray-500">--</span>
+                                <span class="text-xs text-gray-400">${escapeHtml(p.unit || 'unit')}</span>
+                            </td>
+                            <td class="p-4 text-right">
+                                <button onclick="editProductOffline('${p.id}')" class="text-sm font-bold text-blue-600 hover:text-blue-800 mr-3">Edit</button>
+                                <button onclick="deleteProductOffline('${p.id}')" class="text-sm font-bold text-red-500 hover:text-red-700">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                console.log(`✅ Loaded ${products.length} products from SQLite`);
+
+                // Hide pagination buttons in offline mode
+                const btnPrev = document.getElementById('prev-btn');
+                const btnNext = document.getElementById('next-btn');
+                if (btnPrev) btnPrev.classList.add('hidden');
+                if (btnNext) btnNext.classList.add('hidden');
+
+            } catch (error) {
+                console.error('Error loading offline products:', error);
+                list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-red-500">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        // Edit product offline (placeholder - opens modal with local data)
+        window.editProductOffline = (id) => {
+            const p = window.productsData[id];
+            if (!p) return;
+            alert(`Edit offline:\n\n${p.name_en || p.name}\n\nNote: Full edit functionality coming soon. Changes will sync when online.`);
+        };
+
+        // Delete product offline (placeholder)
+        window.deleteProductOffline = async (id) => {
+            if (!confirm('Delete this product from local database?')) return;
+            // For now, just remove from display - real delete needs DB support
+            alert('Delete functionality will be added. Product will be removed when synced online.');
         };
 
         // --- PRODUCTS LOGIC ---
@@ -3549,6 +3848,22 @@ Buddika Stores
             } catch (e) {
                 console.error(e);
                 showToast("Failed to save: " + e.message, "error");
+            }
+        };
+
+        // --- SIDEBAR ACCORDION ---
+        window.toggleNavGroup = (groupId, btn) => {
+            const content = document.getElementById(groupId);
+            const icon = btn.querySelector('svg.transform');
+
+            if (content.classList.contains('hidden')) {
+                // Open
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                // Close
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
             }
         };
     </script>

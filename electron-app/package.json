@@ -1,0 +1,36 @@
+{
+  "name": "buddika-stores-pos",
+  "version": "1.0.0",
+  "description": "Buddika Stores POS - Full Offline Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "pack": "electron-builder --dir"
+  },
+  "author": "Buddika Stores",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "sql.js": "^1.10.2",
+    "firebase": "^10.7.1"
+  },
+  "build": {
+    "appId": "com.buddhikastores.pos",
+    "productName": "Buddika Stores POS",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "dir"
+    },
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/.cache/**"
+    ]
+  }
+}

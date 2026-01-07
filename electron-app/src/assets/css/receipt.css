@@ -1,0 +1,152 @@
+/* Receipt Printing Styles */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap');
+
+/* Screen styles for receipt preview */
+.receipt-container {
+    font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
+    width: 80mm;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+    background: white;
+    border: 1px dashed #ccc;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.receipt-container .receipt-header {
+    text-align: center;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.receipt-container .receipt-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+}
+
+.receipt-container .receipt-header p {
+    margin: 2px 0;
+    font-size: 11px;
+}
+
+.receipt-container .receipt-info {
+    border-bottom: 1px dashed #000;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.receipt-container .receipt-info p {
+    margin: 3px 0;
+    font-size: 11px;
+}
+
+.receipt-container .receipt-items {
+    border-bottom: 1px dashed #000;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.receipt-container .receipt-items table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.receipt-container .receipt-items th {
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 0;
+    border-bottom: 1px solid #000;
+}
+
+.receipt-container .receipt-items th:last-child,
+.receipt-container .receipt-items td:last-child {
+    text-align: right;
+}
+
+.receipt-container .receipt-items td {
+    padding: 4px 0;
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.receipt-container .receipt-totals {
+    margin-bottom: 10px;
+}
+
+.receipt-container .receipt-totals .total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 11px;
+}
+
+.receipt-container .receipt-totals .total-row.grand-total {
+    font-weight: 700;
+    font-size: 14px;
+    border-top: 1px dashed #000;
+    padding-top: 8px;
+    margin-top: 5px;
+}
+
+.receipt-container .receipt-footer {
+    text-align: center;
+    padding-top: 10px;
+    border-top: 1px dashed #000;
+}
+
+.receipt-container .receipt-footer p {
+    margin: 3px 0;
+    font-size: 10px;
+}
+
+.receipt-container .receipt-footer .thank-you {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+/* Print-specific styles */
+@media print {
+    /* Hide everything except receipt */
+    body * {
+        visibility: hidden;
+    }
+    
+    #receipt-print-area,
+    #receipt-print-area * {
+        visibility: visible;
+    }
+    
+    #receipt-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80mm;
+    }
+    
+    .receipt-container {
+        border: none;
+        padding: 5px;
+        width: 80mm;
+        font-size: 11px;
+    }
+    
+    .receipt-container .receipt-header h2 {
+        font-size: 14px;
+    }
+    
+    /* Remove any page margins */
+    @page {
+        margin: 0;
+        size: 80mm auto;
+    }
+    
+    /* Hide non-printable elements */
+    .no-print {
+        display: none !important;
+    }
+}
