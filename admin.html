@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/label-print.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- SheetJS for Excel Import/Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body class="bg-gray-100 flex h-screen overflow-hidden font-sans">
@@ -261,6 +263,15 @@
                 </svg>
                 Inventory
             </a>
+            <a href="#" onclick="switchTab('suppliers')" id="tab-suppliers"
+                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-blue-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
+                </svg>
+                Suppliers
+            </a>
             <a href="#" onclick="switchTab('labels')" id="tab-labels"
                 class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-yellow-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,6 +316,15 @@
                     </path>
                 </svg>
                 🎰 Lucky Draw
+            </a>
+            <a href="#" onclick="switchTab('finance')" id="tab-finance"
+                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-emerald-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                💰 Finance
             </a>
             <a href="pos.html" id="tab-pos"
                 class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-green-400">
@@ -488,6 +508,35 @@
                     </div>
                 </div>
 
+                <!-- Additional Reports Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Expiry Alerts -->
+                    <div class="bg-orange-50 p-6 rounded-2xl shadow-sm border border-orange-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs font-bold text-orange-600 uppercase tracking-widest">⏰ Expiry Alerts
+                            </div>
+                            <button onclick="fetchExpiryAlerts()"
+                                class="text-xs font-bold text-orange-600 hover:text-orange-800">Refresh</button>
+                        </div>
+                        <div id="expiry-alerts-list" class="space-y-2 overflow-y-auto max-h-[200px]">
+                            <div class="text-center text-xs text-gray-400 py-4">Loading...</div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Movement Summary -->
+                    <div class="bg-blue-50 p-6 rounded-2xl shadow-sm border border-blue-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">📦 Recent Stock
+                                Changes</div>
+                            <button onclick="fetchStockMovements()"
+                                class="text-xs font-bold text-blue-600 hover:text-blue-800">Refresh</button>
+                        </div>
+                        <div id="stock-movements-list" class="space-y-2 overflow-y-auto max-h-[200px]">
+                            <div class="text-center text-xs text-gray-400 py-4">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Transaction Table -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="p-6 border-b border-gray-100 flex justify-between items-center">
@@ -524,6 +573,192 @@
                 </div>
             </div>
 
+            <!-- VIEW: INVENTORY -->
+            <div id="view-inventory" class="hidden max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold font-heading text-gray-900">Inventory Management</h2>
+                        <p class="text-gray-500 text-sm mt-1">Monitor and adjust stock levels for all products.</p>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button onclick="exportProductsToExcel()"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📤 Export Excel
+                        </button>
+                        <button onclick="document.getElementById('excel-import-file').click()"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📥 Import Excel
+                        </button>
+                        <input type="file" id="excel-import-file" accept=".xlsx,.xls" class="hidden"
+                            onchange="importProductsFromExcel(this)">
+                        <button onclick="exportReorderListCSV()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📥 CSV
+                        </button>
+                        <button onclick="copyReorderListWhatsApp()"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📱 WhatsApp
+                        </button>
+                        <button onclick="printStockList()"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            🖨️ Print
+                        </button>
+                        <button onclick="fetchInventory()"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex items-center gap-2 text-sm">
+                            🔄 Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="bg-white rounded-xl p-2 border border-gray-100 shadow-sm mb-6 flex gap-2 flex-wrap">
+                    <button onclick="filterInventory('all')" id="inv-filter-all"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-black text-white transition-colors">
+                        📦 All Products
+                    </button>
+                    <button onclick="filterInventory('low')" id="inv-filter-low"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
+                        ⚠️ Low Stock (&lt;10)
+                    </button>
+                    <button onclick="filterInventory('out')" id="inv-filter-out"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors">
+                        🚫 Out of Stock
+                    </button>
+                </div>
+
+                <!-- Stock Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">📦</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest">Total Products</p>
+                                <p class="text-2xl font-bold" id="inv-total-products">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">⚠️</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest">Low Stock</p>
+                                <p class="text-2xl font-bold text-orange-500" id="inv-low-stock">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">🚫</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest">Out of Stock</p>
+                                <p class="text-2xl font-bold text-red-500" id="inv-out-stock">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
+                                <tr>
+                                    <th class="p-4">Product</th>
+                                    <th class="p-4">Current Stock</th>
+                                    <th class="p-4">Adjust</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-list" class="text-sm">
+                                <tr>
+                                    <td colspan="4" class="p-12 text-center text-gray-400">Click "Refresh" to load
+                                        inventory...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: SUPPLIERS -->
+            <div id="view-suppliers" class="hidden max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold font-heading text-gray-900">Supplier Management</h2>
+                        <p class="text-gray-500 text-sm mt-1">Manage your suppliers and generate purchase orders.</p>
+                    </div>
+                    <div class="flex gap-3 flex-wrap">
+                        <button onclick="generatePurchaseOrderAll()"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📦 Order Low Stock
+                        </button>
+                        <button onclick="openSupplierModal()"
+                            class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            ➕ Add Supplier
+                        </button>
+                        <button onclick="fetchSuppliers()"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex items-center gap-2 text-sm">
+                            🔄 Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Supplier Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">👥</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest">Total Suppliers</p>
+                                <p class="text-2xl font-bold" id="sup-total">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest">Active Suppliers</p>
+                                <p class="text-2xl font-bold text-green-500" id="sup-active">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suppliers Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
+                                <tr>
+                                    <th class="p-4">Supplier</th>
+                                    <th class="p-4">Contact</th>
+                                    <th class="p-4">Categories</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliers-list" class="text-sm">
+                                <tr>
+                                    <td colspan="5" class="p-12 text-center text-gray-400">Click "Refresh" to load
+                                        suppliers...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- VIEW: PRODUCTS -->
             <div id="view-products" class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -551,6 +786,7 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         <input type="text" id="admin-search" placeholder="Search products by name..."
+                            onkeyup="if(event.key === 'Enter') fetchAndRenderProducts(false, false)"
                             class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-black outline-none transition-all">
                     </div>
                     <button onclick="fetchAndRenderProducts(false, false)"
@@ -1063,6 +1299,391 @@
             </div>
         </div>
 
+        <!-- VIEW: FINANCE -->
+        <div id="view-finance" class="hidden max-w-7xl mx-auto space-y-6">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold font-heading text-gray-900">💰 Finance Manager</h2>
+                    <p class="text-gray-500 text-sm mt-1">Track deposits, expenses, payments, and credit sales.</p>
+                </div>
+                <button onclick="fetchFinanceData()"
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm flex items-center gap-2">
+                    🔄 Refresh
+                </button>
+            </div>
+
+            <!-- Finance Sub-Tabs -->
+            <div class="bg-white rounded-xl p-2 border border-gray-100 shadow-sm flex gap-2 flex-wrap">
+                <button onclick="showFinanceTab('deposits')" id="fin-tab-deposits"
+                    class="px-4 py-2 rounded-lg font-bold text-sm bg-emerald-600 text-white transition-colors">
+                    💵 Deposits
+                </button>
+                <button onclick="showFinanceTab('expenses')" id="fin-tab-expenses"
+                    class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                    💳 Expenses
+                </button>
+                <button onclick="showFinanceTab('supplier-payments')" id="fin-tab-supplier-payments"
+                    class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                    🧾 Supplier Payments
+                </button>
+                <button onclick="showFinanceTab('credit-sales')" id="fin-tab-credit-sales"
+                    class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                    📋 Credit Sales
+                </button>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">💰</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Total Deposits</p>
+                            <p class="text-2xl font-bold text-emerald-600" id="fin-total-deposits">Rs. 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">💸</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Total Expenses</p>
+                            <p class="text-2xl font-bold text-red-600" id="fin-total-expenses">Rs. 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">🧾</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Supplier Payments</p>
+                            <p class="text-2xl font-bold text-blue-600" id="fin-total-supplier">Rs. 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">📋</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-widest">Outstanding Credit</p>
+                            <p class="text-2xl font-bold text-orange-600" id="fin-total-credit">Rs. 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEPOSITS TAB CONTENT -->
+            <div id="fin-content-deposits" class="space-y-6">
+                <!-- Add Deposit Form -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="font-bold text-lg mb-4">➕ Add Bank Deposit</h3>
+                    <form onsubmit="addDeposit(event)" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Date</label>
+                            <input type="date" id="deposit-date" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Bank Account</label>
+                            <select id="deposit-bank" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="BOC">BOC</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Amount (Rs.)</label>
+                            <input type="number" id="deposit-amount" step="0.01" required placeholder="e.g. 5000"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Reference No.</label>
+                            <input type="text" id="deposit-reference" placeholder="Slip No. / Ref"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                Add Deposit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Deposits Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="font-bold">Recent Deposits</h3>
+                        <input type="month" id="deposit-filter-month" onchange="fetchDeposits()"
+                            class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1 text-sm">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Bank</th>
+                                    <th class="p-4">Amount</th>
+                                    <th class="p-4">Reference</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deposits-list">
+                                <tr>
+                                    <td colspan="5" class="p-8 text-center text-gray-400">No deposits yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPENSES TAB CONTENT -->
+            <div id="fin-content-expenses" class="hidden space-y-6">
+                <!-- Expense Categories Settings -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">💳 Add Expense</h3>
+                        <button onclick="openExpenseCategoryModal()" class="text-sm text-blue-600 hover:underline">
+                            ⚙️ Manage Categories
+                        </button>
+                    </div>
+                    <form onsubmit="addExpense(event)" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Date</label>
+                            <input type="date" id="expense-date" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Category</label>
+                            <select id="expense-category" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                                <option value="Electricity">Electricity</option>
+                                <option value="Water">Water</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Supplies">Supplies</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Amount (Rs.)</label>
+                            <input type="number" id="expense-amount" step="0.01" required placeholder="e.g. 1500"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Description</label>
+                            <input type="text" id="expense-description" placeholder="Bill details..."
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                Add Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Expenses Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="font-bold">Recent Expenses</h3>
+                        <div class="flex gap-2">
+                            <select id="expense-filter-category" onchange="fetchExpenses()"
+                                class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1 text-sm">
+                                <option value="">All Categories</option>
+                                <option value="Electricity">Electricity</option>
+                                <option value="Water">Water</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Supplies">Supplies</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="month" id="expense-filter-month" onchange="fetchExpenses()"
+                                class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1 text-sm">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Amount</th>
+                                    <th class="p-4">Description</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-list">
+                                <tr>
+                                    <td colspan="5" class="p-8 text-center text-gray-400">No expenses yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUPPLIER PAYMENTS TAB CONTENT -->
+            <div id="fin-content-supplier-payments" class="hidden space-y-6">
+                <!-- Add Supplier Payment Form -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="font-bold text-lg mb-4">🧾 Record Supplier Payment</h3>
+                    <form onsubmit="addSupplierPayment(event)" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Date</label>
+                            <input type="date" id="suppay-date" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Supplier</label>
+                            <select id="suppay-supplier" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="">-- Select Supplier --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Amount (Rs.)</label>
+                            <input type="number" id="suppay-amount" step="0.01" required placeholder="e.g. 10000"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Payment Method</label>
+                            <select id="suppay-method"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                Record Payment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Supplier Payments Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100">
+                        <h3 class="font-bold">Payment History</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Supplier</th>
+                                    <th class="p-4">Amount</th>
+                                    <th class="p-4">Method</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplier-payments-list">
+                                <tr>
+                                    <td colspan="5" class="p-8 text-center text-gray-400">No payments recorded</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREDIT SALES TAB CONTENT -->
+            <div id="fin-content-credit-sales" class="hidden space-y-6">
+                <!-- Add Credit Sale Form -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="font-bold text-lg mb-4">📋 Record Credit Sale (ණයට විකුණුම)</h3>
+                    <form onsubmit="addCreditSale(event)" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Date</label>
+                            <input type="date" id="credit-date" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Customer Name</label>
+                            <input type="text" id="credit-customer" required placeholder="Customer name"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone</label>
+                            <input type="tel" id="credit-phone" placeholder="07XXXXXXXX"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Amount (Rs.)</label>
+                            <input type="number" id="credit-amount" step="0.01" required placeholder="e.g. 2500"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Due Date</label>
+                            <input type="date" id="credit-due"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                Add Credit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Credit Sales Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="font-bold">Outstanding Credits</h3>
+                        <select id="credit-filter-status" onchange="fetchCreditSales()"
+                            class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1 text-sm">
+                            <option value="pending">Pending</option>
+                            <option value="partial">Partial</option>
+                            <option value="paid">Paid</option>
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Customer</th>
+                                    <th class="p-4">Phone</th>
+                                    <th class="p-4">Total</th>
+                                    <th class="p-4">Paid</th>
+                                    <th class="p-4">Balance</th>
+                                    <th class="p-4">Due Date</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="credit-sales-list">
+                                <tr>
+                                    <td colspan="9" class="p-8 text-center text-gray-400">No credit sales recorded</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- PRODUCT MODAL -->
@@ -1105,6 +1726,31 @@
                         </select>
                     </div>
                     <div>
+                        <label
+                            class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Supplier</label>
+                        <select id="p-supplier"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <option value="">-- No Supplier --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">SKU /
+                            Barcode</label>
+                        <div class="relative">
+                            <input type="text" id="p-sku" placeholder="Scan or type barcode..."
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 pr-12 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <button type="button" onclick="openAdminBarcodeScanner()"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                                title="Scan Barcode">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Sub
                             Category</label>
                         <input type="text" id="p-subcategory" placeholder="e.g. Rice, Pens"
@@ -1140,6 +1786,13 @@
                             <option value="half bottle">Half Bottle (1/2)</option>
                             <option value="quarter">Quarter (1/4)</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Expiry
+                            Date</label>
+                        <input type="date" id="p-expiry"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                        <p class="text-[10px] text-gray-400 mt-1">Optional - for perishable items</p>
                     </div>
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Image
@@ -1350,12 +2003,27 @@
 
     <!-- MAIN LOGIC -->
     <script type="module">
-        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment } from './assets/js/firebase-config.js';
+        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment, addDoc } from './assets/js/firebase-config.js';
         import { escapeHtml } from './assets/js/utils.js';
 
         // Initialize Global Objects
         window.promoData = {};
         window.newsData = {};
+
+        // Expose Firebase functions globally for external scripts
+        window.db = db;
+        window.collection = collection;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.getDocs = getDocs;
+        window.getDoc = getDoc;
+        window.doc = doc;
+        window.addDoc = addDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.where = where;
+        window.escapeHtml = escapeHtml;
 
         // Helper: Upload Image
         async function uploadImage(file, pathPrefix) {
@@ -1377,9 +2045,36 @@
         const loginContainer = document.getElementById('login-container');
         const adminEmail = document.getElementById('admin-email');
 
+        // Allowed Admin Emails - Only these can access
+        const ALLOWED_ADMINS = [
+            'tmayuranga1928@gmail.com',
+            'studioodex@gmail.com',
+            'dailydosegenz@gmail.com',
+            'pissudaadey@gmail.com',
+            'walapaneonline@gmail.com'
+        ];
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Logged In
+                // Check if user email is in allowed list
+                if (!ALLOWED_ADMINS.includes(user.email.toLowerCase())) {
+                    // Unauthorized - deny access
+                    loginContainer.classList.remove('hidden');
+                    loginContainer.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+                        <div class="text-6xl mb-4">🚫</div>
+                        <h2 class="text-2xl font-bold font-heading mb-2 text-red-600">Access Denied</h2>
+                        <p class="text-gray-500 mb-4 text-sm">Sorry, <strong>${user.email}</strong> is not authorized to access the admin panel.</p>
+                        <button onclick="handleLogout()" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors">
+                            Sign Out
+                        </button>
+                        <a href="index.html" class="block mt-6 text-xs text-gray-400 hover:text-black font-bold uppercase tracking-widest">Back to Shop</a>
+                    </div>
+                    `;
+                    return;
+                }
+
+                // Authorized - grant access
                 loginContainer.classList.add('hidden');
                 adminEmail.innerText = user.email;
                 fetchAndRenderProducts();
@@ -1459,6 +2154,8 @@
 
                 setReportDate('today');
                 fetchLowStock();
+                fetchExpiryAlerts();
+                fetchStockMovements();
             } else if (tab === 'inventory') {
                 iView.classList.remove('hidden');
                 tInv.classList.remove('border-transparent', 'text-gray-400');
@@ -1499,8 +2196,500 @@
                 tLd.classList.remove('border-transparent', 'text-yellow-400');
                 tLd.classList.add('bg-gray-900', 'border-white', 'text-white');
                 fetchLuckyDrawEntries();
+            } else if (tab === 'suppliers') {
+                const sView = document.getElementById('view-suppliers');
+                const tSup = document.getElementById('tab-suppliers');
+                sView.classList.remove('hidden');
+                tSup.classList.remove('border-transparent', 'text-blue-400');
+                tSup.classList.add('bg-gray-900', 'border-white', 'text-white');
+                fetchSuppliers();
+            } else if (tab === 'finance') {
+                const fView = document.getElementById('view-finance');
+                const tFin = document.getElementById('tab-finance');
+                fView.classList.remove('hidden');
+                tFin.classList.remove('border-transparent', 'text-emerald-400');
+                tFin.classList.add('bg-gray-900', 'border-white', 'text-white');
+                initFinanceModule();
             }
         }
+
+        // --- FINANCE MODULE ---
+        let currentFinanceTab = 'deposits';
+
+        window.initFinanceModule = async () => {
+            // Set default dates to today
+            const today = new Date().toISOString().split('T')[0];
+            const depositDate = document.getElementById('deposit-date');
+            const expenseDate = document.getElementById('expense-date');
+            const suppayDate = document.getElementById('suppay-date');
+            const creditDate = document.getElementById('credit-date');
+
+            if (depositDate) depositDate.value = today;
+            if (expenseDate) expenseDate.value = today;
+            if (suppayDate) suppayDate.value = today;
+            if (creditDate) creditDate.value = today;
+
+            // Set month filters to current month
+            const currentMonth = today.substring(0, 7);
+            const depositFilterMonth = document.getElementById('deposit-filter-month');
+            const expenseFilterMonth = document.getElementById('expense-filter-month');
+            if (depositFilterMonth) depositFilterMonth.value = currentMonth;
+            if (expenseFilterMonth) expenseFilterMonth.value = currentMonth;
+
+            // Load supplier dropdown for supplier payments
+            await loadSuppliersForFinance();
+
+            // Fetch all data
+            await fetchFinanceData();
+        };
+
+        window.showFinanceTab = (tab) => {
+            currentFinanceTab = tab;
+            const tabs = ['deposits', 'expenses', 'supplier-payments', 'credit-sales'];
+
+            tabs.forEach(t => {
+                const content = document.getElementById(`fin-content-${t}`);
+                const tabBtn = document.getElementById(`fin-tab-${t}`);
+
+                if (content) {
+                    if (t === tab) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                }
+
+                if (tabBtn) {
+                    if (t === tab) {
+                        tabBtn.classList.remove('bg-gray-100', 'text-gray-600');
+                        tabBtn.classList.add('bg-emerald-600', 'text-white');
+                    } else {
+                        tabBtn.classList.remove('bg-emerald-600', 'text-white');
+                        tabBtn.classList.add('bg-gray-100', 'text-gray-600');
+                    }
+                }
+            });
+        };
+
+        window.fetchFinanceData = async () => {
+            await Promise.all([
+                fetchDeposits(),
+                fetchExpenses(),
+                fetchSupplierPayments(),
+                fetchCreditSales()
+            ]);
+        };
+
+        async function loadSuppliersForFinance() {
+            try {
+                const q = query(collection(db, 'suppliers'), orderBy('name'));
+                const snap = await getDocs(q);
+                const select = document.getElementById('suppay-supplier');
+                if (!select) return;
+
+                select.innerHTML = '<option value="">-- Select Supplier --</option>';
+                snap.forEach(d => {
+                    const s = d.data();
+                    select.innerHTML += `<option value="${d.id}" data-name="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`;
+                });
+            } catch (e) {
+                console.error('Error loading suppliers:', e);
+            }
+        }
+
+        // --- DEPOSITS ---
+        window.addDeposit = async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('deposit-date').value;
+            const bank = document.getElementById('deposit-bank').value;
+            const amount = parseFloat(document.getElementById('deposit-amount').value);
+            const reference = document.getElementById('deposit-reference').value.trim();
+
+            if (!date || !bank || isNaN(amount) || amount <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'finance_deposits'), {
+                    date,
+                    bank,
+                    amount,
+                    reference,
+                    createdAt: new Date()
+                });
+
+                showToast('Deposit added successfully! 💰', 'success');
+                document.getElementById('deposit-amount').value = '';
+                document.getElementById('deposit-reference').value = '';
+                await fetchDeposits();
+            } catch (e) {
+                console.error('Error adding deposit:', e);
+                alert('Error: ' + e.message);
+            }
+        };
+
+        window.fetchDeposits = async () => {
+            const tbody = document.getElementById('deposits-list');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const filterMonth = document.getElementById('deposit-filter-month')?.value;
+                let q = query(collection(db, 'finance_deposits'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+
+                let totalDeposits = 0;
+                const rows = [];
+
+                snap.forEach(d => {
+                    const data = d.data();
+
+                    // Filter by month if selected
+                    if (filterMonth && !data.date.startsWith(filterMonth)) return;
+
+                    totalDeposits += data.amount;
+                    rows.push(`
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4">${data.date}</td>
+                            <td class="p-4">${escapeHtml(data.bank)}</td>
+                            <td class="p-4 font-bold text-emerald-600">Rs. ${data.amount.toFixed(2)}</td>
+                            <td class="p-4 text-gray-500">${escapeHtml(data.reference || '-')}</td>
+                            <td class="p-4">
+                                <button onclick="deleteDeposit('${d.id}')" class="text-red-500 hover:underline text-sm">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                tbody.innerHTML = rows.length > 0 ? rows.join('') : '<tr><td colspan="5" class="p-8 text-center text-gray-400">No deposits found</td></tr>';
+                document.getElementById('fin-total-deposits').innerText = `Rs. ${totalDeposits.toFixed(2)}`;
+            } catch (e) {
+                console.error('Error fetching deposits:', e);
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500">Error loading deposits</td></tr>';
+            }
+        };
+
+        window.deleteDeposit = async (id) => {
+            if (!confirm('Delete this deposit?')) return;
+            try {
+                await deleteDoc(doc(db, 'finance_deposits', id));
+                showToast('Deposit deleted', 'success');
+                await fetchDeposits();
+            } catch (e) {
+                console.error('Error deleting deposit:', e);
+            }
+        };
+
+        // --- EXPENSES ---
+        window.addExpense = async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('expense-date').value;
+            const category = document.getElementById('expense-category').value;
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const description = document.getElementById('expense-description').value.trim();
+
+            if (!date || !category || isNaN(amount) || amount <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'finance_expenses'), {
+                    date,
+                    category,
+                    amount,
+                    description,
+                    createdAt: new Date()
+                });
+
+                showToast('Expense added! 💳', 'success');
+                document.getElementById('expense-amount').value = '';
+                document.getElementById('expense-description').value = '';
+                await fetchExpenses();
+            } catch (e) {
+                console.error('Error adding expense:', e);
+                alert('Error: ' + e.message);
+            }
+        };
+
+        window.fetchExpenses = async () => {
+            const tbody = document.getElementById('expenses-list');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const filterMonth = document.getElementById('expense-filter-month')?.value;
+                const filterCategory = document.getElementById('expense-filter-category')?.value;
+
+                let q = query(collection(db, 'finance_expenses'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+
+                let totalExpenses = 0;
+                const rows = [];
+
+                snap.forEach(d => {
+                    const data = d.data();
+
+                    // Apply filters
+                    if (filterMonth && !data.date.startsWith(filterMonth)) return;
+                    if (filterCategory && data.category !== filterCategory) return;
+
+                    totalExpenses += data.amount;
+                    rows.push(`
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4">${data.date}</td>
+                            <td class="p-4"><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">${escapeHtml(data.category)}</span></td>
+                            <td class="p-4 font-bold text-red-600">Rs. ${data.amount.toFixed(2)}</td>
+                            <td class="p-4 text-gray-500">${escapeHtml(data.description || '-')}</td>
+                            <td class="p-4">
+                                <button onclick="deleteExpense('${d.id}')" class="text-red-500 hover:underline text-sm">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                tbody.innerHTML = rows.length > 0 ? rows.join('') : '<tr><td colspan="5" class="p-8 text-center text-gray-400">No expenses found</td></tr>';
+                document.getElementById('fin-total-expenses').innerText = `Rs. ${totalExpenses.toFixed(2)}`;
+            } catch (e) {
+                console.error('Error fetching expenses:', e);
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500">Error loading expenses</td></tr>';
+            }
+        };
+
+        window.deleteExpense = async (id) => {
+            if (!confirm('Delete this expense?')) return;
+            try {
+                await deleteDoc(doc(db, 'finance_expenses', id));
+                showToast('Expense deleted', 'success');
+                await fetchExpenses();
+            } catch (e) {
+                console.error('Error deleting expense:', e);
+            }
+        };
+
+        window.openExpenseCategoryModal = () => {
+            alert('Category management coming soon! Currently using default categories: Electricity, Water, Internet, Phone, Supplies, Transport, Salary, Maintenance, Other');
+        };
+
+        // --- SUPPLIER PAYMENTS ---
+        window.addSupplierPayment = async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('suppay-date').value;
+            const supplierSelect = document.getElementById('suppay-supplier');
+            const supplierId = supplierSelect.value;
+            const supplierName = supplierSelect.options[supplierSelect.selectedIndex]?.getAttribute('data-name') || '';
+            const amount = parseFloat(document.getElementById('suppay-amount').value);
+            const method = document.getElementById('suppay-method').value;
+
+            if (!date || !supplierId || isNaN(amount) || amount <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'finance_supplier_payments'), {
+                    date,
+                    supplierId,
+                    supplierName,
+                    amount,
+                    method,
+                    createdAt: new Date()
+                });
+
+                showToast('Payment recorded! 🧾', 'success');
+                document.getElementById('suppay-amount').value = '';
+                document.getElementById('suppay-supplier').value = '';
+                await fetchSupplierPayments();
+            } catch (e) {
+                console.error('Error adding supplier payment:', e);
+                alert('Error: ' + e.message);
+            }
+        };
+
+        window.fetchSupplierPayments = async () => {
+            const tbody = document.getElementById('supplier-payments-list');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                let q = query(collection(db, 'finance_supplier_payments'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+
+                let totalPayments = 0;
+                const rows = [];
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    totalPayments += data.amount;
+                    rows.push(`
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4">${data.date}</td>
+                            <td class="p-4 font-medium">${escapeHtml(data.supplierName)}</td>
+                            <td class="p-4 font-bold text-blue-600">Rs. ${data.amount.toFixed(2)}</td>
+                            <td class="p-4 text-gray-500">${escapeHtml(data.method)}</td>
+                            <td class="p-4">
+                                <button onclick="deleteSupplierPayment('${d.id}')" class="text-red-500 hover:underline text-sm">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                tbody.innerHTML = rows.length > 0 ? rows.join('') : '<tr><td colspan="5" class="p-8 text-center text-gray-400">No payments recorded</td></tr>';
+                document.getElementById('fin-total-supplier').innerText = `Rs. ${totalPayments.toFixed(2)}`;
+            } catch (e) {
+                console.error('Error fetching supplier payments:', e);
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500">Error loading payments</td></tr>';
+            }
+        };
+
+        window.deleteSupplierPayment = async (id) => {
+            if (!confirm('Delete this payment record?')) return;
+            try {
+                await deleteDoc(doc(db, 'finance_supplier_payments', id));
+                showToast('Payment deleted', 'success');
+                await fetchSupplierPayments();
+            } catch (e) {
+                console.error('Error deleting payment:', e);
+            }
+        };
+
+        // --- CREDIT SALES ---
+        window.addCreditSale = async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('credit-date').value;
+            const customer = document.getElementById('credit-customer').value.trim();
+            const phone = document.getElementById('credit-phone').value.trim();
+            const amount = parseFloat(document.getElementById('credit-amount').value);
+            const dueDate = document.getElementById('credit-due').value || null;
+
+            if (!date || !customer || isNaN(amount) || amount <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'finance_credit_sales'), {
+                    date,
+                    customer,
+                    phone,
+                    totalAmount: amount,
+                    paidAmount: 0,
+                    dueDate,
+                    status: 'pending',
+                    createdAt: new Date()
+                });
+
+                showToast('Credit sale recorded! 📋', 'success');
+                document.getElementById('credit-customer').value = '';
+                document.getElementById('credit-phone').value = '';
+                document.getElementById('credit-amount').value = '';
+                document.getElementById('credit-due').value = '';
+                await fetchCreditSales();
+            } catch (e) {
+                console.error('Error adding credit sale:', e);
+                alert('Error: ' + e.message);
+            }
+        };
+
+        window.fetchCreditSales = async () => {
+            const tbody = document.getElementById('credit-sales-list');
+            tbody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const filterStatus = document.getElementById('credit-filter-status')?.value;
+                let q = query(collection(db, 'finance_credit_sales'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+
+                let totalOutstanding = 0;
+                const rows = [];
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    const balance = data.totalAmount - (data.paidAmount || 0);
+
+                    // Determine status
+                    let status = data.status || 'pending';
+                    if (balance <= 0) status = 'paid';
+                    else if (data.paidAmount > 0) status = 'partial';
+
+                    // Apply filter
+                    if (filterStatus && status !== filterStatus) return;
+
+                    if (status !== 'paid') totalOutstanding += balance;
+
+                    const statusColors = {
+                        'pending': 'bg-orange-100 text-orange-700',
+                        'partial': 'bg-blue-100 text-blue-700',
+                        'paid': 'bg-green-100 text-green-700'
+                    };
+
+                    const isOverdue = data.dueDate && new Date(data.dueDate) < new Date() && status !== 'paid';
+
+                    rows.push(`
+                        <tr class="border-b hover:bg-gray-50 ${isOverdue ? 'bg-red-50' : ''}">
+                            <td class="p-4">${data.date}</td>
+                            <td class="p-4 font-medium">${escapeHtml(data.customer)}</td>
+                            <td class="p-4 text-gray-500">${escapeHtml(data.phone || '-')}</td>
+                            <td class="p-4">Rs. ${data.totalAmount.toFixed(2)}</td>
+                            <td class="p-4 text-green-600">Rs. ${(data.paidAmount || 0).toFixed(2)}</td>
+                            <td class="p-4 font-bold ${balance > 0 ? 'text-orange-600' : 'text-green-600'}">Rs. ${balance.toFixed(2)}</td>
+                            <td class="p-4 ${isOverdue ? 'text-red-600 font-bold' : ''}">${data.dueDate || '-'}</td>
+                            <td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${statusColors[status]}">${status.toUpperCase()}</span></td>
+                            <td class="p-4">
+                                ${status !== 'paid' ? `<button onclick="collectCreditPayment('${d.id}', ${balance})" class="text-green-600 hover:underline text-sm mr-2">Collect</button>` : ''}
+                                <button onclick="deleteCreditSale('${d.id}')" class="text-red-500 hover:underline text-sm">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                tbody.innerHTML = rows.length > 0 ? rows.join('') : '<tr><td colspan="9" class="p-8 text-center text-gray-400">No credit sales found</td></tr>';
+                document.getElementById('fin-total-credit').innerText = `Rs. ${totalOutstanding.toFixed(2)}`;
+            } catch (e) {
+                console.error('Error fetching credit sales:', e);
+                tbody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-red-500">Error loading credit sales</td></tr>';
+            }
+        };
+
+        window.collectCreditPayment = async (id, balance) => {
+            const amount = prompt(`Enter payment amount (Balance: Rs. ${balance.toFixed(2)}):`);
+            if (!amount) return;
+
+            const paymentAmount = parseFloat(amount);
+            if (isNaN(paymentAmount) || paymentAmount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            try {
+                const docRef = doc(db, 'finance_credit_sales', id);
+                const docSnap = await getDoc(docRef);
+                const data = docSnap.data();
+
+                const newPaidAmount = (data.paidAmount || 0) + paymentAmount;
+                const newStatus = newPaidAmount >= data.totalAmount ? 'paid' : 'partial';
+
+                await updateDoc(docRef, {
+                    paidAmount: newPaidAmount,
+                    status: newStatus
+                });
+
+                showToast('Payment collected! 💵', 'success');
+                await fetchCreditSales();
+            } catch (e) {
+                console.error('Error collecting payment:', e);
+                alert('Error: ' + e.message);
+            }
+        };
+
+        window.deleteCreditSale = async (id) => {
+            if (!confirm('Delete this credit sale record?')) return;
+            try {
+                await deleteDoc(doc(db, 'finance_credit_sales', id));
+                showToast('Credit sale deleted', 'success');
+                await fetchCreditSales();
+            } catch (e) {
+                console.error('Error deleting credit sale:', e);
+            }
+        };
 
         // --- BUNDLES LOGIC ---
         let allProductsForBundles = [];
@@ -2424,16 +3613,168 @@ Buddika Stores
             const amount = parseInt(input.value) || 1;
             const adjustment = direction * amount;
 
+            // Get reason for stock change
+            const reason = prompt(`Reason for stock ${direction > 0 ? 'addition' : 'reduction'}:`,
+                direction > 0 ? 'Restock from supplier' : 'Damage/Adjustment');
+            if (!reason) return;
+
             try {
                 const productRef = doc(db, 'products', productId);
+                const productSnap = await getDoc(productRef);
+                const productData = productSnap.data();
+                const previousStock = productData.stock || 0;
+                const newStock = previousStock + adjustment;
+
+                // Update product stock
                 await updateDoc(productRef, {
                     stock: increment(adjustment)
                 });
 
-                alert(`Stock ${direction > 0 ? 'added' : 'reduced'} by ${amount}`);
+                // Log stock movement
+                await logStockMovement({
+                    productId: productId,
+                    productName: productData.name,
+                    type: direction > 0 ? 'add' : 'reduce',
+                    quantity: Math.abs(adjustment),
+                    previousStock: previousStock,
+                    newStock: newStock,
+                    reason: reason
+                });
+
+                showToast(`Stock ${direction > 0 ? 'added' : 'reduced'} by ${amount} ✅`, 'success');
                 fetchInventory();
             } catch (e) {
                 alert('Error adjusting stock: ' + e.message);
+            }
+        };
+
+        // Stock Movement Logger
+        window.logStockMovement = async (data) => {
+            try {
+                await setDoc(doc(collection(db, 'stock_movements')), {
+                    ...data,
+                    user: auth.currentUser?.email || 'unknown',
+                    createdAt: new Date()
+                });
+            } catch (e) {
+                console.error('Error logging stock movement:', e);
+            }
+        };
+
+        // Fetch Expiry Alerts
+        window.fetchExpiryAlerts = async () => {
+            const list = document.getElementById('expiry-alerts-list');
+            if (!list) return;
+
+            list.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">Loading...</div>';
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'products'), orderBy('expiryDate')));
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const alerts = [];
+
+                snapshot.docs.forEach(doc => {
+                    const p = doc.data();
+                    if (!p.expiryDate) return;
+
+                    const expiryDate = new Date(p.expiryDate);
+                    const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+                    if (daysUntilExpiry <= 30) {
+                        let color, badge;
+                        if (daysUntilExpiry <= 0) {
+                            color = 'bg-red-100 border-red-200 text-red-700';
+                            badge = '🔴 EXPIRED';
+                        } else if (daysUntilExpiry <= 7) {
+                            color = 'bg-orange-100 border-orange-200 text-orange-700';
+                            badge = `🟠 ${daysUntilExpiry} days`;
+                        } else {
+                            color = 'bg-yellow-100 border-yellow-200 text-yellow-700';
+                            badge = `🟡 ${daysUntilExpiry} days`;
+                        }
+
+                        alerts.push({
+                            name: p.name,
+                            expiryDate: p.expiryDate,
+                            daysUntilExpiry,
+                            color,
+                            badge,
+                            stock: p.stock
+                        });
+                    }
+                });
+
+                if (alerts.length === 0) {
+                    list.innerHTML = '<div class="text-center text-xs text-green-600 py-4">✅ No expiring items in next 30 days!</div>';
+                    return;
+                }
+
+                // Sort by urgency (expired first)
+                alerts.sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
+
+                list.innerHTML = alerts.map(a => `
+                    <div class="flex justify-between items-center p-2 rounded-lg border ${a.color}">
+                        <div>
+                            <span class="font-bold text-xs">${escapeHtml(a.name)}</span>
+                            <span class="text-[10px] ml-2">(${a.stock} in stock)</span>
+                        </div>
+                        <span class="text-[10px] font-bold">${a.badge}</span>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error('Error fetching expiry alerts:', e);
+                list.innerHTML = '<div class="text-center text-xs text-red-500 py-4">Error loading data</div>';
+            }
+        };
+
+        // Fetch Stock Movements
+        window.fetchStockMovements = async () => {
+            const list = document.getElementById('stock-movements-list');
+            if (!list) return;
+
+            list.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">Loading...</div>';
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'stock_movements'), orderBy('createdAt', 'desc'), limit(20)));
+
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="text-center text-xs text-gray-400 py-4">No stock movements yet</div>';
+                    return;
+                }
+
+                list.innerHTML = snapshot.docs.map(doc => {
+                    const m = doc.data();
+                    const date = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleString('en-GB', {
+                        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                    }) : 'Unknown';
+
+                    const isAdd = m.type === 'add';
+                    const icon = isAdd ? '➕' : '➖';
+                    const colorClass = isAdd ? 'text-green-600' : 'text-red-600';
+
+                    return `
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-white border border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span class="${colorClass}">${icon}</span>
+                                <div>
+                                    <div class="font-bold text-xs text-gray-800">${escapeHtml(m.productName || 'Unknown')}</div>
+                                    <div class="text-[10px] text-gray-500">${escapeHtml(m.reason || '')}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-xs ${colorClass}">${isAdd ? '+' : '-'}${m.quantity}</div>
+                                <div class="text-[10px] text-gray-400">${date}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Error fetching stock movements:', e);
+                list.innerHTML = '<div class="text-center text-xs text-red-500 py-4">Error loading data</div>';
             }
         };
 
@@ -2460,6 +3801,215 @@ Buddika Stores
             }
         };
 
+        // --- EXCEL IMPORT/EXPORT FUNCTIONS ---
+        window.exportProductsToExcel = async () => {
+            showToast('Preparing Excel export...', 'info');
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'products'), orderBy('name')));
+
+                if (snapshot.empty) {
+                    showToast('No products to export!', 'error');
+                    return;
+                }
+
+                // Prepare data for Excel
+                const data = snapshot.docs.map(doc => {
+                    const p = doc.data();
+                    return {
+                        'Product Name': p.name || '',
+                        'Product Name (Sinhala)': p.nameSi || '',
+                        'Category': p.category || '',
+                        'Sub Category': p.subcategory || '',
+                        'Supplier': p.supplierId || '',
+                        'SKU / Barcode': p.sku || '',
+                        'Selling Price (Rs.)': p.price || 0,
+                        'Buying Price / Cost (Rs.)': p.cost || 0,
+                        'Stock Qty': p.stock || 0,
+                        'Unit': p.unit || 'unit',
+                        'Expiry Date': p.expiryDate || '',
+                        '_id': doc.id // Hidden ID for updates
+                    };
+                });
+
+                // Create workbook and worksheet
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Products');
+
+                // Auto-size columns
+                const colWidths = [
+                    { wch: 30 }, // Product Name
+                    { wch: 25 }, // Sinhala Name
+                    { wch: 15 }, // Category
+                    { wch: 15 }, // Sub Category
+                    { wch: 15 }, // Supplier
+                    { wch: 15 }, // SKU
+                    { wch: 15 }, // Selling Price
+                    { wch: 18 }, // Cost
+                    { wch: 10 }, // Stock
+                    { wch: 10 }, // Unit
+                    { wch: 25 }  // ID
+                ];
+                ws['!cols'] = colWidths;
+
+                // Generate filename with date
+                const date = new Date().toISOString().split('T')[0];
+                const filename = `BuddikaStores_Products_${date}.xlsx`;
+
+                // Download file using FileSaver pattern for reliable filename
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+
+                // Create download link
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+
+                // Use setTimeout to ensure the link is in DOM before clicking
+                setTimeout(() => {
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(link.href);
+                }, 100);
+
+                showToast(`Exported ${data.length} products! ✅`, 'success');
+
+            } catch (e) {
+                console.error('Export error:', e);
+                showToast('Export failed: ' + e.message, 'error');
+            }
+        };
+
+        window.importProductsFromExcel = async (input) => {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Reset input so same file can be selected again
+            input.value = '';
+
+            showToast('Reading Excel file...', 'info');
+
+            try {
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data);
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                if (jsonData.length === 0) {
+                    showToast('Excel file is empty!', 'error');
+                    return;
+                }
+
+                // Show import options
+                const choice = prompt(
+                    `Found ${jsonData.length} products in Excel file.\n\n` +
+                    `Choose import mode:\n` +
+                    `1 = Update existing products (match by _id or SKU)\n` +
+                    `2 = Add all as new products\n` +
+                    `3 = Cancel\n\n` +
+                    `Enter 1, 2, or 3:`
+                );
+
+                if (choice === '3' || !choice) {
+                    showToast('Import cancelled', 'info');
+                    return;
+                }
+
+                const isUpdateMode = choice === '1';
+                let successCount = 0;
+                let errorCount = 0;
+                const errors = [];
+
+                showToast(`Importing ${jsonData.length} products...`, 'info');
+
+                for (const row of jsonData) {
+                    try {
+                        // Map Excel columns to product data
+                        const productData = {
+                            name: row['Product Name'] || '',
+                            nameSi: row['Product Name (Sinhala)'] || '',
+                            category: row['Category'] || 'Grocery',
+                            subcategory: row['Sub Category'] || '',
+                            supplierId: row['Supplier'] || '',
+                            sku: row['SKU / Barcode'] || '',
+                            price: parseFloat(row['Selling Price (Rs.)']) || 0,
+                            cost: parseFloat(row['Buying Price / Cost (Rs.)']) || 0,
+                            stock: parseFloat(row['Stock Qty']) || 0,
+                            unit: row['Unit'] || 'unit',
+                            expiryDate: row['Expiry Date'] || '',
+                            updatedAt: new Date().toISOString()
+                        };
+
+                        // Validate required fields
+                        if (!productData.name) {
+                            errors.push(`Row skipped: Missing product name`);
+                            errorCount++;
+                            continue;
+                        }
+
+                        if (isUpdateMode) {
+                            // Try to find existing product by _id or SKU
+                            const existingId = row['_id'];
+
+                            if (existingId) {
+                                // Update by document ID
+                                await setDoc(doc(db, 'products', existingId), productData, { merge: true });
+                                successCount++;
+                            } else if (productData.sku) {
+                                // Try to find by SKU
+                                const skuQuery = query(collection(db, 'products'), where('sku', '==', productData.sku));
+                                const skuSnapshot = await getDocs(skuQuery);
+
+                                if (!skuSnapshot.empty) {
+                                    await setDoc(doc(db, 'products', skuSnapshot.docs[0].id), productData, { merge: true });
+                                    successCount++;
+                                } else {
+                                    // Create new if not found
+                                    productData.createdAt = new Date().toISOString();
+                                    await setDoc(doc(collection(db, 'products')), productData);
+                                    successCount++;
+                                }
+                            } else {
+                                // Create new if no ID or SKU
+                                productData.createdAt = new Date().toISOString();
+                                await setDoc(doc(collection(db, 'products')), productData);
+                                successCount++;
+                            }
+                        } else {
+                            // Add as new product
+                            productData.createdAt = new Date().toISOString();
+                            await setDoc(doc(collection(db, 'products')), productData);
+                            successCount++;
+                        }
+
+                    } catch (rowError) {
+                        console.error('Row import error:', rowError);
+                        errors.push(`Error: ${row['Product Name'] || 'Unknown'} - ${rowError.message}`);
+                        errorCount++;
+                    }
+                }
+
+                // Show results
+                if (errorCount > 0) {
+                    console.log('Import errors:', errors);
+                    showToast(`Imported ${successCount} products. ${errorCount} errors. Check console for details.`, 'warning');
+                } else {
+                    showToast(`Successfully imported ${successCount} products! ✅`, 'success');
+                }
+
+                // Refresh inventory display
+                fetchInventory();
+
+            } catch (e) {
+                console.error('Import error:', e);
+                showToast('Import failed: ' + e.message, 'error');
+            }
+        };
+
         // --- PRODUCTS LOGIC ---
         window.fetchAndRenderProducts = async (isNext = false, isPrev = false) => {
             const list = document.getElementById('products-list');
@@ -2474,9 +4024,73 @@ Buddika Stores
                 console.log('Fetching products. Term:', term, 'Next:', isNext, 'Prev:', isPrev, 'Page:', currentPage, 'StackSize:', pageStack.length);
 
                 if (term) {
-                    q = query(ref, orderBy('name'), startAt(term), endAt(term + '\\uf8ff'), limit(PER_PAGE));
+                    // Fetch all products and filter client-side for case-insensitive partial matching
+                    const termLower = term.toLowerCase();
+                    const allSnapshot = await getDocs(query(ref, orderBy('name')));
+                    const matchingDocs = allSnapshot.docs.filter(doc => {
+                        const p = doc.data();
+                        const nameMatch = p.name && p.name.toLowerCase().includes(termLower);
+                        const nameSiMatch = p.nameSi && p.nameSi.toLowerCase().includes(termLower);
+                        const skuMatch = p.sku && p.sku.toLowerCase().includes(termLower);
+                        return nameMatch || nameSiMatch || skuMatch;
+                    });
+
+                    // Clear pagination for search
                     pageStack = [];
                     currentPage = 1;
+
+                    const btnPrev = document.getElementById('prev-btn');
+                    const btnNext = document.getElementById('next-btn');
+
+                    if (matchingDocs.length === 0) {
+                        list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400">No products found.</td></tr>';
+                        if (btnPrev) btnPrev.disabled = true;
+                        if (btnNext) btnNext.disabled = true;
+                        return;
+                    }
+
+                    // Render matching products
+                    list.innerHTML = matchingDocs.map(doc => {
+                        const p = doc.data();
+                        window.productsData[doc.id] = p;
+
+                        let imageHTML = '';
+                        if (p.image && p.image.startsWith('emoji:')) {
+                            imageHTML = `<span class="text-2xl">${p.image.split(':')[1]}</span>`;
+                        } else if (p.image) {
+                            imageHTML = `<img src="${p.image}" class="w-8 h-8 rounded object-cover border border-gray-200">`;
+                        } else {
+                            imageHTML = `<div class="w-8 h-8 bg-gray-100 rounded border border-gray-200"></div>`;
+                        }
+
+                        return `
+                <tr class="hover:bg-gray-50 group border-b border-gray-50 last:border-0">
+                    <td class="p-4 flex items-center gap-3">
+                        ${imageHTML}
+                        <div>
+                            <div class="font-bold text-gray-900">${escapeHtml(p.name)}</div>
+                        </div>
+                    </td>
+                    <td class="p-4 text-gray-600">
+                        <span class="px-2 py-1 bg-gray-100 rounded text-xs font-bold uppercase tracking-wide">${escapeHtml(p.category)}</span>
+                        ${p.subcategory ? `<span class="text-xs text-gray-400 ml-1">(${escapeHtml(p.subcategory)})</span>` : ''}
+                    </td>
+                    <td class="p-4 font-bold text-gray-900">${escapeHtml(p.price)}</td>
+                    <td class="p-4">
+                        <span class="${(p.stock > 10) ? 'text-green-600' : 'text-red-500 font-bold'}">${escapeHtml(p.stock || 0)}</span>
+                        <span class="text-xs text-gray-400">${escapeHtml(p.unit || 'unit')}</span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button onclick="editProduct('${doc.id}')" class="text-sm font-bold text-blue-600 hover:text-blue-800 mr-3">Edit</button>
+                        <button onclick="deleteProduct('${doc.id}')" class="text-sm font-bold text-red-500 hover:text-red-700">Delete</button>
+                    </td>
+                </tr>
+                `;
+                    }).join('');
+
+                    if (btnPrev) btnPrev.disabled = true;
+                    if (btnNext) btnNext.disabled = true;
+                    return;
                 } else if (isNext && lastVisible) {
                     q = query(ref, orderBy("name"), startAfter(lastVisible), limit(PER_PAGE));
                     pageStack.push(lastVisible);
@@ -2694,7 +4308,16 @@ Buddika Stores
             document.getElementById('p-stock').value = p.stock !== undefined ? p.stock : 0;
             document.getElementById('p-unit').value = p.unit || 'unit';
             document.getElementById('p-subcategory').value = p.subcategory || '';
+            document.getElementById('p-sku').value = p.sku || '';
+            document.getElementById('p-expiry').value = p.expiryDate || '';
             document.getElementById('modal-title').innerText = "Edit Product";
+            // Set supplier dropdown if exists
+            setTimeout(() => {
+                const supplierSelect = document.getElementById('p-supplier');
+                if (supplierSelect && p.supplierId) {
+                    supplierSelect.value = p.supplierId;
+                }
+            }, 100);
         }
 
         document.getElementById('product-form').addEventListener('submit', async (e) => {
@@ -2707,9 +4330,12 @@ Buddika Stores
                 cost: document.getElementById('p-cost').value, // Save Cost
                 category: document.getElementById('p-category').value,
                 subcategory: document.getElementById('p-subcategory').value,
+                sku: document.getElementById('p-sku').value,
                 image: document.getElementById('p-image').value,
                 stock: parseFloat(document.getElementById('p-stock').value),
                 unit: document.getElementById('p-unit').value,
+                supplierId: document.getElementById('p-supplier')?.value || '',
+                expiryDate: document.getElementById('p-expiry').value || '',
                 createdAt: new Date().toISOString()
             };
 
@@ -3587,5 +5213,287 @@ Buddika Stores
     </div>
 
     <!-- NOTIFICATION -->
+
+    <!-- SUPPLIER MODAL -->
+    <div id="supplier-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4">
+        <div id="supplier-modal-content"
+            class="bg-white rounded-2xl w-full max-w-lg p-8 transform scale-95 opacity-0 transition-all duration-300 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold font-heading mb-6" id="supplier-modal-title">Add New Supplier</h2>
+
+            <form id="supplier-form" onsubmit="saveSupplier(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Supplier Name
+                        *</label>
+                    <input type="text" id="sup-name" required placeholder="ABC Distributors"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Phone</label>
+                        <input type="tel" id="sup-phone" placeholder="077-1234567"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">WhatsApp</label>
+                        <input type="text" id="sup-whatsapp" placeholder="94771234567"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Email</label>
+                    <input type="email" id="sup-email" placeholder="supplier@abc.lk"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Address</label>
+                    <input type="text" id="sup-address" placeholder="Colombo, Sri Lanka"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Categories
+                        (comma separated)</label>
+                    <input type="text" id="sup-categories" placeholder="Stationery, Grocery"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Notes</label>
+                    <textarea id="sup-notes" rows="2" placeholder="Additional notes..."
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none transition-all resize-none"></textarea>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="sup-active-check" checked class="w-4 h-4 rounded">
+                    <label for="sup-active-check" class="text-sm">Active Supplier</label>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeSupplierModal()"
+                        class="px-6 py-3 rounded-xl text-gray-500 hover:bg-gray-100 font-bold transition-colors">Cancel</button>
+                    <button type="submit"
+                        class="px-6 py-3 rounded-xl bg-black text-white hover:bg-gray-800 font-bold shadow-lg transition-transform active:scale-95">Save
+                        Supplier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stock Management Module -->
+    <script src="assets/js/stock-management.js"></script>
+
+    <!-- Supplier Management Module -->
+    <script src="assets/js/supplier-management.js"></script>
+
+    <!-- Offline Database Module -->
+    <script src="assets/js/offline-db.js"></script>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator"
+        class="hidden fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+        <span class="w-2 h-2 bg-white rounded-full"></span>
+        <span class="text-sm font-bold">Offline Mode</span>
+    </div>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                    });
+            });
+        }
+    </script>
+
+    <!-- Admin Barcode Scanner Modal -->
+    <div id="admin-barcode-modal" class="fixed inset-0 bg-black/90 z-[500] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-black text-white">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                        </path>
+                    </svg>
+                    <h3 class="font-bold text-lg">Scan Product Barcode</h3>
+                </div>
+                <button onclick="closeAdminBarcodeScanner()" class="text-white/70 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scanner View -->
+            <div class="relative bg-black" style="height: 300px;">
+                <div id="admin-barcode-scanner-view" class="w-full h-full"></div>
+                <!-- Scan Line Animation -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-64 h-48 border-2 border-green-400 rounded-lg relative">
+                        <div class="absolute inset-x-0 h-0.5 bg-green-400"
+                            style="top: 50%; animation: adminScanLine 2s infinite;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Entry -->
+            <div class="p-4 space-y-3">
+                <div class="text-center text-sm text-gray-500">
+                    Or enter barcode manually:
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="admin-manual-barcode" placeholder="Enter barcode number..."
+                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
+                        onkeypress="if(event.key==='Enter'){useAdminBarcode();event.preventDefault();}">
+                    <button onclick="useAdminBarcode()"
+                        class="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                        Use
+                    </button>
+                </div>
+                <div id="admin-barcode-result" class="text-center text-sm hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Line Animation Style -->
+    <style>
+        @keyframes adminScanLine {
+
+            0%,
+            100% {
+                top: 20%;
+            }
+
+            50% {
+                top: 80%;
+            }
+        }
+    </style>
+
+    <!-- QuaggaJS Barcode Scanner Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+    <!-- Admin Barcode Scanner Script -->
+    <script>
+        let adminScannerActive = false;
+
+        // Open Admin Barcode Scanner
+        window.openAdminBarcodeScanner = function () {
+            document.getElementById('admin-barcode-modal').classList.remove('hidden');
+            document.getElementById('admin-manual-barcode').value = '';
+            document.getElementById('admin-barcode-result').classList.add('hidden');
+            startAdminBarcodeScanner();
+        };
+
+        // Close Admin Barcode Scanner
+        window.closeAdminBarcodeScanner = function () {
+            stopAdminBarcodeScanner();
+            document.getElementById('admin-barcode-modal').classList.add('hidden');
+        };
+
+        // Start Admin Barcode Scanner
+        function startAdminBarcodeScanner() {
+            if (typeof Quagga === 'undefined') {
+                console.error('Quagga not loaded');
+                alert('Scanner library not loaded. Please refresh the page.');
+                return;
+            }
+
+            if (adminScannerActive) return;
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.getElementById('admin-barcode-scanner-view'),
+                    constraints: {
+                        facingMode: "environment",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                },
+                locate: true,
+                locator: {
+                    halfSample: true,
+                    patchSize: "medium"
+                }
+            }, function (err) {
+                if (err) {
+                    console.error('Quagga init error:', err);
+                    const resultDiv = document.getElementById('admin-barcode-result');
+                    resultDiv.innerHTML = '<div class="text-orange-600">📷 Camera not available. Use manual entry.</div>';
+                    resultDiv.classList.remove('hidden');
+                    return;
+                }
+                console.log('[Admin Scanner] Initialized');
+                Quagga.start();
+                adminScannerActive = true;
+            });
+
+            Quagga.onDetected(function (result) {
+                const code = result.codeResult.code;
+                console.log('[Admin Scanner] Detected:', code);
+
+                // Play beep
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = 1000;
+                    oscillator.type = 'sine';
+                    gainNode.gain.value = 0.3;
+                    oscillator.start();
+                    setTimeout(() => oscillator.stop(), 100);
+                } catch (e) { }
+
+                // Fill SKU field
+                document.getElementById('p-sku').value = code;
+
+                // Show result
+                const resultDiv = document.getElementById('admin-barcode-result');
+                resultDiv.innerHTML = '<div class="bg-green-50 text-green-700 p-2 rounded">✅ Barcode: ' + code + '</div>';
+                resultDiv.classList.remove('hidden');
+
+                // Close after short delay
+                setTimeout(() => {
+                    closeAdminBarcodeScanner();
+                }, 800);
+            });
+        }
+
+        // Stop Admin Barcode Scanner
+        function stopAdminBarcodeScanner() {
+            if (!adminScannerActive) return;
+            try {
+                Quagga.stop();
+            } catch (e) { }
+            adminScannerActive = false;
+        }
+
+        // Use manually entered barcode
+        window.useAdminBarcode = function () {
+            const barcode = document.getElementById('admin-manual-barcode').value.trim();
+            if (!barcode) {
+                alert('Please enter a barcode');
+                return;
+            }
+            document.getElementById('p-sku').value = barcode;
+            closeAdminBarcodeScanner();
+        };
+    </script>
 
 </html>

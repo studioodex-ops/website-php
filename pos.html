@@ -8,6 +8,15 @@
     <meta name="description" content="Point of Sale system for Buddika Stores.">
     <meta name="robots" content="noindex, nofollow">
 
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest-pos.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika POS">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -107,23 +116,36 @@
                 <div class="flex gap-4 mb-6">
                     <div class="flex-1 relative">
                         <input type="text" id="product-search" placeholder="Search products or scan barcode..."
-                            class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 pl-12 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none">
+                            class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 pl-12 pr-14 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none">
                         <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
+                        <!-- Barcode Scan Button -->
+                        <button onclick="openBarcodeScanner()"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                            title="Scan Barcode">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
                         <button onclick="filterByCategory('all')"
-                            class="category-btn bg-black text-white px-4 py-2 rounded-lg text-sm font-bold"
+                            class="category-btn whitespace-nowrap bg-black text-white px-4 py-2 rounded-lg text-sm font-bold flex-shrink-0"
                             data-cat="all">All</button>
-                        <button onclick="filterByCategory('grocery')"
-                            class="category-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200"
-                            data-cat="grocery">Grocery</button>
-                        <button onclick="filterByCategory('stationery')"
-                            class="category-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200"
-                            data-cat="stationery">Stationery</button>
+                        <button onclick="filterByCategory('Grocery')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
+                            data-cat="Grocery">Grocery</button>
+                        <button onclick="filterByCategory('Stationery')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
+                            data-cat="Stationery">Stationery</button>
+                        <button onclick="filterByCategory('Newspapers')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
+                            data-cat="Newspapers">Newspapers</button>
                     </div>
                 </div>
 
@@ -288,23 +310,108 @@
                 </div>
             </div>
 
-            <div class="p-4 border-t border-gray-100 flex gap-3 no-print">
-                <button onclick="printReceipt()"
-                    class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                        </path>
-                    </svg>
-                    Print Receipt
-                </button>
-                <button onclick="closeReceiptModal()"
-                    class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
-                    Done
-                </button>
+            <div class="p-4 border-t border-gray-100 no-print space-y-3">
+                <!-- WhatsApp Send Section -->
+                <div class="flex gap-2">
+                    <input type="tel" id="receipt-phone" placeholder="Customer phone (07XXXXXXXX)"
+                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    <button onclick="sendReceiptWhatsApp()"
+                        class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        WhatsApp
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="printReceipt()"
+                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                        Print Receipt
+                    </button>
+                    <button onclick="closeReceiptModal()"
+                        class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
+                        Done
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Barcode Scanner Modal -->
+    <div id="barcode-modal" class="fixed inset-0 bg-black/90 z-[350] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-black text-white">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                        </path>
+                    </svg>
+                    <h3 class="font-bold text-lg">Scan Barcode</h3>
+                </div>
+                <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scanner View -->
+            <div class="relative bg-black" style="height: 300px;">
+                <div id="barcode-scanner-view" class="w-full h-full"></div>
+                <!-- Scan Line Animation -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-64 h-48 border-2 border-green-400 rounded-lg relative">
+                        <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
+                            style="top: 50%; animation: scanLine 2s infinite;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Entry -->
+            <div class="p-4 space-y-3">
+                <div class="text-center text-sm text-gray-500">
+                    Or enter barcode manually:
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="manual-barcode-input" placeholder="Enter barcode number..."
+                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                    <button onclick="searchByBarcode()"
+                        class="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                        Search
+                    </button>
+                </div>
+                <div id="barcode-result" class="text-center text-sm hidden">
+                    <!-- Result will show here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Line Animation Style -->
+    <style>
+        @keyframes scanLine {
+
+            0%,
+            100% {
+                top: 20%;
+            }
+
+            50% {
+                top: 80%;
+            }
+        }
+    </style>
+
+    <!-- QuaggaJS Barcode Scanner Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <!-- Scripts -->
     <script type="module">
@@ -317,6 +424,7 @@
         let currentUser = null;
         let currentCategory = 'all';
         let discountMode = 'rs'; // rs or percent
+        let lastSaleData = null; // Store last sale for WhatsApp
 
         // DOM Elements
         const loginContainer = document.getElementById('login-container');
@@ -324,6 +432,186 @@
         const productsGrid = document.getElementById('products-grid');
         const cartItemsContainer = document.getElementById('cart-items');
         const searchInput = document.getElementById('product-search');
+
+        // Expose Firebase functions globally for offline sync manager
+        window.db = db;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.increment = increment;
+
+        // ==================== BARCODE SCANNER ====================
+        let scannerActive = false;
+
+        // Open Barcode Scanner Modal
+        window.openBarcodeScanner = () => {
+            document.getElementById('barcode-modal').classList.remove('hidden');
+            document.getElementById('manual-barcode-input').value = '';
+            document.getElementById('barcode-result').classList.add('hidden');
+            startBarcodeScanner();
+        };
+
+        // Close Barcode Scanner
+        window.closeBarcodeScanner = () => {
+            stopBarcodeScanner();
+            document.getElementById('barcode-modal').classList.add('hidden');
+        };
+
+        // Start Barcode Scanner with Quagga
+        function startBarcodeScanner() {
+            if (typeof Quagga === 'undefined') {
+                console.error('Quagga not loaded');
+                showToast('Scanner library not loaded', 'error');
+                return;
+            }
+
+            if (scannerActive) return;
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.getElementById('barcode-scanner-view'),
+                    constraints: {
+                        facingMode: "environment", // Use back camera
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader",        // EAN-13, EAN-8
+                        "ean_8_reader",
+                        "code_128_reader",   // Code 128
+                        "code_39_reader",    // Code 39
+                        "upc_reader",        // UPC-A, UPC-E
+                        "upc_e_reader"
+                    ]
+                },
+                locate: true,
+                locator: {
+                    halfSample: true,
+                    patchSize: "medium"
+                }
+            }, function (err) {
+                if (err) {
+                    console.error('Quagga init error:', err);
+                    showToast('Camera access denied or not available', 'error');
+                    return;
+                }
+                console.log('[Scanner] Initialized');
+                Quagga.start();
+                scannerActive = true;
+            });
+
+            // Barcode detected
+            Quagga.onDetected(function (result) {
+                const code = result.codeResult.code;
+                console.log('[Scanner] Detected:', code);
+
+                // Play beep sound
+                playBeep();
+
+                // Search product
+                handleBarcodeResult(code);
+
+                // Stop scanner
+                stopBarcodeScanner();
+            });
+        }
+
+        // Stop Barcode Scanner
+        function stopBarcodeScanner() {
+            if (!scannerActive) return;
+            try {
+                Quagga.stop();
+            } catch (e) {
+                console.warn('Quagga stop error:', e);
+            }
+            scannerActive = false;
+        }
+
+        // Handle barcode result - search product
+        function handleBarcodeResult(barcode) {
+            const resultDiv = document.getElementById('barcode-result');
+
+            // Search product by SKU/barcode
+            const product = allProducts.find(p =>
+                p.sku === barcode ||
+                p.barcode === barcode ||
+                (p.sku && p.sku.toLowerCase() === barcode.toLowerCase())
+            );
+
+            if (product) {
+                resultDiv.innerHTML = `
+                    <div class="bg-green-50 text-green-700 p-3 rounded-lg">
+                        <p class="font-bold">✅ Found: ${escapeHtml(product.name)}</p>
+                        <p class="text-xs">Rs. ${product.price} | Stock: ${product.stock}</p>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+
+                // Close modal and add to cart
+                setTimeout(() => {
+                    closeBarcodeScanner();
+                    addToCart(product.id);
+                }, 800);
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="bg-red-50 text-red-700 p-3 rounded-lg">
+                        <p class="font-bold">❌ Product not found</p>
+                        <p class="text-xs">Barcode: ${barcode}</p>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+                showToast('Product not found for barcode: ' + barcode, 'error');
+            }
+        }
+
+        // Manual barcode search
+        window.searchByBarcode = () => {
+            const barcode = document.getElementById('manual-barcode-input').value.trim();
+            if (!barcode) {
+                showToast('Please enter a barcode', 'error');
+                return;
+            }
+            handleBarcodeResult(barcode);
+        };
+
+        // Enter key on manual input
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('manual-barcode-input');
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        searchByBarcode();
+                    }
+                });
+            }
+        });
+
+        // Play beep sound on scan
+        function playBeep() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = 1000;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
+
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 100);
+            } catch (e) {
+                console.log('Beep not available');
+            }
+        }
 
         // Toggle Discount Type
         window.toggleDiscountType = () => {
@@ -340,6 +628,24 @@
                 btn.classList.add('bg-gray-200', 'text-gray-700');
             }
             updateTotals();
+        };
+
+        // Filter by Category
+        window.filterByCategory = (category) => {
+            currentCategory = category;
+
+            // Update UI
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.add('bg-black', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            renderProducts();
         };
 
         // Auth State - Redirect to admin if not logged in
@@ -363,21 +669,84 @@
             }
         };
 
-        // Load Products
+        // Load Products - Offline Aware
         async function loadProducts() {
             try {
-                const q = query(collection(db, 'products'), orderBy('name'));
-                const snapshot = await getDocs(q);
+                // Check if online
+                if (navigator.onLine) {
+                    // Online: Load from Firebase and cache to IndexedDB
+                    const q = query(collection(db, 'products'), orderBy('name'));
+                    const snapshot = await getDocs(q);
 
-                allProducts = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+                    allProducts = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
 
-                renderProducts();
+                    // Cache to IndexedDB for offline use
+                    if (typeof offlineDB !== 'undefined' && offlineDB.saveProducts) {
+                        try {
+                            await offlineDB.saveProducts(allProducts);
+                            console.log('[POS] Products cached to IndexedDB:', allProducts.length);
+                        } catch (cacheErr) {
+                            console.warn('[POS] Failed to cache products:', cacheErr);
+                        }
+                    }
+
+                    updateOnlineStatus(true);
+                    renderProducts();
+                } else {
+                    // Offline: Load from IndexedDB
+                    console.log('[POS] Offline - Loading from IndexedDB');
+
+                    if (typeof offlineDB !== 'undefined' && offlineDB.getProducts) {
+                        allProducts = await offlineDB.getProducts();
+                        console.log('[POS] Loaded from IndexedDB:', allProducts.length, 'products');
+
+                        if (allProducts.length > 0) {
+                            updateOnlineStatus(false);
+                            renderProducts();
+                            showToast('📵 Offline Mode - Using cached products', 'warning');
+                        } else {
+                            productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-orange-500"><p class="text-xl mb-2">📵 No Cached Data</p><p class="text-sm">Connect to internet to load products first time</p></div>';
+                        }
+                    } else {
+                        throw new Error('Offline database not available');
+                    }
+                }
             } catch (error) {
                 console.error('Error loading products:', error);
+
+                // Try offline fallback on any error
+                if (typeof offlineDB !== 'undefined' && offlineDB.getProducts) {
+                    try {
+                        allProducts = await offlineDB.getProducts();
+                        if (allProducts.length > 0) {
+                            updateOnlineStatus(false);
+                            renderProducts();
+                            showToast('📵 Using offline cached data', 'warning');
+                            return;
+                        }
+                    } catch (offlineErr) {
+                        console.error('Offline fallback failed:', offlineErr);
+                    }
+                }
+
                 productsGrid.innerHTML = '<div class="col-span-full text-center py-20 text-red-500">Failed to load products</div>';
+            }
+        }
+
+        // Update online/offline status indicator
+        function updateOnlineStatus(isOnline) {
+            const statusBadge = document.querySelector('header span.bg-green-100, header span.bg-red-100');
+            if (statusBadge) {
+                if (isOnline) {
+                    statusBadge.className = 'text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold';
+                    statusBadge.innerText = 'Online';
+                } else {
+                    statusBadge.className = 'text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold';
+                    statusBadge.innerText = 'Offline';
+                }
             }
         }
 
@@ -388,7 +757,8 @@
 
             // Filter by category
             if (currentCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === currentCategory);
+                const targetCat = currentCategory.trim().toLowerCase();
+                filtered = filtered.filter(p => p.category && p.category.trim().toLowerCase() === targetCat);
             }
 
             // Filter by search
@@ -408,6 +778,23 @@
                 const stockClass = (p.stock <= 0) ? 'opacity-50 pointer-events-none' : '';
                 const stockBadge = (p.stock <= 5 && p.stock > 0) ? '<span class="absolute top-2 right-2 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full">Low Stock</span>' : '';
                 const outOfStock = (p.stock <= 0) ? '<span class="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">Out</span>' : '';
+
+                // Expiry Date Badge
+                let expiryBadge = '';
+                if (p.expiryDate) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const expDate = new Date(p.expiryDate);
+                    const daysUntil = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+                    if (daysUntil <= 0) {
+                        expiryBadge = '<span class="absolute bottom-2 left-2 bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded font-bold animate-pulse">⚠️ EXPIRED</span>';
+                    } else if (daysUntil <= 7) {
+                        expiryBadge = `<span class="absolute bottom-2 left-2 bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">⏰ ${daysUntil}d left</span>`;
+                    } else if (daysUntil <= 30) {
+                        expiryBadge = `<span class="absolute bottom-2 left-2 bg-yellow-500 text-white text-[9px] px-1.5 py-0.5 rounded">Exp: ${daysUntil}d</span>`;
+                    }
+                }
 
                 // Fix: Remove 'Rs.' and non-numeric chars, but be careful with dots in 'Rs.'
                 let priceStr = String(p.price).replace(/Rs\.?\s*/i, ''); // Remove Rs. or Rs
@@ -437,6 +824,7 @@
                 return `
                     <div class="product-grid-item bg-white rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all relative ${stockClass}" onclick="addToCart('${p.id}')">
                         ${stockBadge}${outOfStock}
+                        ${expiryBadge}
                         <div class="h-20 bg-gray-50 rounded-lg mb-3 flex items-center justify-center">
                             ${p.image && p.image.startsWith('emoji:')
                         ? `<span class="text-3xl">${p.image.split(':')[1]}</span>`
@@ -469,6 +857,22 @@
             if (product.stock <= 0) {
                 showToast('Product is out of stock!', 'error');
                 return;
+            }
+
+            // Check for expired product
+            if (product.expiryDate) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const expDate = new Date(product.expiryDate);
+                const daysUntil = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+                if (daysUntil <= 0) {
+                    if (!confirm(`⚠️ WARNING: "${product.name}" is EXPIRED!\n\nDo you still want to add it to cart?`)) {
+                        return;
+                    }
+                } else if (daysUntil <= 7) {
+                    showToast(`⏰ Note: "${product.name}" expires in ${daysUntil} days`, 'warning');
+                }
             }
 
             const unit = product.unit || 'unit';
@@ -823,40 +1227,68 @@
                     createdAt: new Date()
                 };
 
-                // Save sale to Firestore
-                await setDoc(doc(db, 'sales', saleId), saleData);
+                // Check if online or offline
+                if (navigator.onLine) {
+                    // ONLINE: Save to Firebase
+                    await setDoc(doc(db, 'sales', saleId), saleData);
 
-                // Update product stock
-                // Update product stock & Log Movement
-                for (const item of cart) {
-                    const productRef = doc(db, 'products', item.id);
-                    await updateDoc(productRef, {
-                        stock: increment(-item.qty)
-                    });
-
-                    // Log Movement
-                    try {
-                        await addDoc(collection(db, 'stock_movements'), {
-                            type: 'sale',
-                            productId: item.id,
-                            productName: item.name,
-                            quantity: -item.qty,
-                            reason: `POS Sale #${saleId}`,
-                            performedBy: currentUser.displayName || currentUser.email,
-                            timestamp: new Date()
+                    // Update product stock & Log Movement
+                    for (const item of cart) {
+                        const productRef = doc(db, 'products', item.id);
+                        await updateDoc(productRef, {
+                            stock: increment(-item.qty)
                         });
-                    } catch (err) {
-                        console.error("Error logging movement:", err);
+
+                        // Log Movement
+                        try {
+                            await addDoc(collection(db, 'stock_movements'), {
+                                type: 'sale',
+                                productId: item.id,
+                                productName: item.name,
+                                quantity: -item.qty,
+                                reason: `POS Sale #${saleId}`,
+                                performedBy: currentUser.displayName || currentUser.email,
+                                timestamp: new Date()
+                            });
+                        } catch (err) {
+                            console.error("Error logging movement:", err);
+                        }
+                    }
+
+                    showToast('✅ Sale completed successfully!', 'success');
+
+                } else {
+                    // OFFLINE: Save to IndexedDB for later sync
+                    console.log('[POS] Offline - Saving sale locally');
+
+                    if (typeof offlineDB !== 'undefined' && offlineDB.saveSale) {
+                        await offlineDB.saveSale(saleData);
+
+                        // Add to sync queue
+                        await offlineDB.addToSyncQueue('sale', saleData);
+
+                        showToast('📵 Sale saved offline - Will sync when online', 'warning');
+                    } else {
+                        throw new Error('Offline database not available');
                     }
                 }
 
-                // Update local products
+                // Update local products (both online and offline)
                 cart.forEach(item => {
                     const product = allProducts.find(p => p.id === item.id);
                     if (product) {
                         product.stock = Math.max(0, (product.stock || 0) - item.qty);
                     }
                 });
+
+                // Update cached products in IndexedDB
+                if (typeof offlineDB !== 'undefined' && offlineDB.saveProducts) {
+                    try {
+                        await offlineDB.saveProducts(allProducts);
+                    } catch (e) {
+                        console.warn('Failed to update cached products:', e);
+                    }
+                }
 
                 // Generate and show receipt
                 generateReceipt(saleData);
@@ -868,16 +1300,72 @@
                 document.getElementById('received-amount').value = '';
                 renderProducts();
 
-                showToast('Sale completed successfully!', 'success');
-
             } catch (error) {
                 console.error('Error completing sale:', error);
+
+                // Try offline save as fallback
+                if (typeof offlineDB !== 'undefined' && offlineDB.saveSale) {
+                    try {
+                        const saleId = 'SALE-' + Date.now();
+                        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                        const discount = parseFloat(document.getElementById('discount-input').value) || 0;
+                        const total = Math.max(0, subtotal - discount);
+                        const received = parseFloat(document.getElementById('received-amount').value) || 0;
+
+                        const fallbackSale = {
+                            id: saleId,
+                            items: cart.map(item => ({
+                                productId: item.id,
+                                name: item.name,
+                                nameSi: item.nameSi || '',
+                                qty: item.qty,
+                                price: item.price,
+                                itemDiscount: item.itemDiscount || 0,
+                                cost: item.cost || 0,
+                                total: (item.price * item.qty) - (item.itemDiscount || 0)
+                            })),
+                            subtotal, discount, total, received,
+                            change: Math.max(0, received - total),
+                            paymentMethod: paymentMethod,
+                            cashierId: currentUser?.uid || 'offline',
+                            cashierName: currentUser?.displayName || currentUser?.email || 'Offline User',
+                            createdAt: new Date()
+                        };
+
+                        await offlineDB.saveSale(fallbackSale);
+                        await offlineDB.addToSyncQueue('sale', fallbackSale);
+
+                        // Update local products
+                        cart.forEach(item => {
+                            const product = allProducts.find(p => p.id === item.id);
+                            if (product) {
+                                product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                            }
+                        });
+
+                        generateReceipt(fallbackSale);
+                        cart = [];
+                        renderCart();
+                        document.getElementById('discount-input').value = 0;
+                        document.getElementById('received-amount').value = '';
+                        renderProducts();
+
+                        showToast('📵 Sale saved offline (connection failed)', 'warning');
+                        return;
+                    } catch (offlineErr) {
+                        console.error('Offline fallback failed:', offlineErr);
+                    }
+                }
+
                 showToast('Failed to complete sale: ' + error.message, 'error');
             }
         };
 
         // Generate Receipt
         function generateReceipt(sale) {
+            // Store for WhatsApp sending
+            lastSaleData = sale;
+
             const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
                 year: 'numeric', month: '2-digit', day: '2-digit',
                 hour: '2-digit', minute: '2-digit'
@@ -971,6 +1459,93 @@
             window.print();
         };
 
+        // Send Receipt via WhatsApp
+        window.sendReceiptWhatsApp = () => {
+            const phoneInput = document.getElementById('receipt-phone').value.trim();
+
+            if (!phoneInput) {
+                showToast('Please enter customer phone number', 'error');
+                return;
+            }
+
+            // Clean phone number - remove spaces, dashes, etc.
+            let phone = phoneInput.replace(/[^0-9]/g, '');
+
+            // Convert Sri Lankan formats to international
+            if (phone.startsWith('0')) {
+                phone = '94' + phone.substring(1);
+            } else if (!phone.startsWith('94')) {
+                phone = '94' + phone;
+            }
+
+            if (phone.length < 11) {
+                showToast('Invalid phone number format', 'error');
+                return;
+            }
+
+            // Get receipt data from the DOM or lastSaleData
+            let receiptText = '';
+
+            if (lastSaleData) {
+                const sale = lastSaleData;
+                const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                receiptText = `*🧾 BUDDIKA STORES - RECEIPT*
+━━━━━━━━━━━━━━━━
+📍 No 48, Kandy Road, Walapane
+📞 052-2279101 / 077-5192756
+
+*Receipt:* ${sale.id}
+*Date:* ${receiptDate}
+*Cashier:* ${sale.cashierName}
+━━━━━━━━━━━━━━━━
+
+*ITEMS:*
+`;
+                sale.items.forEach((item, i) => {
+                    receiptText += `${i + 1}. ${item.name}
+   ${item.qty} x Rs.${item.price.toFixed(2)} = Rs.${item.total.toFixed(2)}
+`;
+                    if (item.itemDiscount > 0) {
+                        receiptText += `   _Discount: -Rs.${item.itemDiscount.toFixed(2)}_
+`;
+                    }
+                });
+
+                receiptText += `
+━━━━━━━━━━━━━━━━
+*Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
+
+                if (sale.discount > 0) {
+                    receiptText += `
+*Discount:* -Rs.${sale.discount.toFixed(2)}`;
+                }
+
+                receiptText += `
+*TOTAL:* Rs.${sale.total.toFixed(2)}
+*Payment:* ${sale.paymentMethod === 'cash' ? 'Cash' : 'Card'}
+*Received:* Rs.${sale.received.toFixed(2)}
+*Change:* Rs.${sale.change.toFixed(2)}
+━━━━━━━━━━━━━━━━
+
+_Thank you for shopping with us! 🙏_
+_www.buddikastores.com_`;
+
+            } else {
+                showToast('No receipt data available', 'error');
+                return;
+            }
+
+            // Open WhatsApp with the receipt
+            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(receiptText)}`;
+            window.open(waUrl, '_blank');
+
+            showToast('Opening WhatsApp... 📱', 'success');
+        };
+
         // Close Receipt Modal
         window.closeReceiptModal = () => {
             document.getElementById('receipt-modal').classList.add('hidden');
@@ -992,6 +1567,31 @@
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 2000);
+        }
+    </script>
+
+    <!-- Offline Database Module -->
+    <script src="assets/js/offline-db.js"></script>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator"
+        class="hidden fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+        <span class="w-2 h-2 bg-white rounded-full"></span>
+        <span class="text-sm font-bold">Offline Mode</span>
+    </div>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch((err) => {
+                        console.log('SW registration failed:', err);
+                    });
+            });
         }
     </script>
 
