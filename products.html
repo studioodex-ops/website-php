@@ -5,13 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Primary SEO Meta Tags -->
-    <title>Shop Products | Buddika Stores - Grocery, Stationery & More</title>
-    <meta name="title" content="Shop Products | Buddika Stores - Grocery, Stationery & More">
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+    <title>Shop Products | Buddika Stores Walapane - Grocery & Stationery</title>
+    <meta name="title" content="Shop Products | Buddika Stores Walapane - Grocery & Stationery">
     <meta name="description"
-        content="Browse our wide range of products: grocery items, school stationery, newspapers, and daily essentials. Shop online and order via WhatsApp for delivery in Walapane.">
+        content="Browse our wide range of products: grocery items, school stationery, newspapers, and daily essentials. Fast delivery service in Walapane, Nildandahinna, and Harasbedda.">
     <meta name="keywords"
-        content="products, grocery, stationery, newspapers, Buddika Stores, Walapane, online shop, delivery">
+        content="products, grocery Walapane, stationery Walapane, Buddika Stores, Nildandahinna shops, online delivery Sri Lanka, Walapane bookshops">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://buddikastores.com/products.html">
 
@@ -120,49 +127,245 @@
         <section class="py-16 bg-white min-h-screen">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                <!-- Category Filter -->
-                <div class="flex justify-center mb-12 flex-wrap gap-4">
-                    <button
-                        class="filter-btn active px-6 py-2 rounded-full border border-black bg-black text-white text-sm font-bold uppercase transition-all"
-                        data-filter="all">All</button>
-                    <button
-                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
-                        data-filter="grocery">Grocery</button>
-                    <button
-                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
-                        data-filter="stationery">Stationery</button>
-                    <button
-                        class="filter-btn px-6 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-black hover:text-black text-sm font-bold uppercase transition-all"
-                        data-filter="news">Newspapers</button>
 
-                    <!-- Sorting -->
-                    <select id="sort-select"
-                        class="px-4 py-2 rounded-full border border-gray-200 text-gray-500 text-sm font-bold uppercase focus:border-black focus:ring-0 outline-none cursor-pointer">
-                        <option value="default">Sort By</option>
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="name">Name (A-Z)</option>
-                    </select>
-                </div>
+                <div class="flex flex-col items-center">
 
-                <!-- Product Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="product-grid">
-                    <!-- Products will be injected here via JS -->
-                </div>
+                    <!-- Horizontal Filter Bar -->
+                    <div class="flex flex-wrap justify-center items-center gap-4 mb-12 w-full max-w-4xl mx-auto">
+                        <!-- All -->
+                        <button onclick="filterByCategory('all')"
+                            class="filter-btn active px-6 py-2.5 rounded-full border border-gray-200 bg-black text-white hover:bg-gray-800 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                            data-filter="all">
+                            <span>All Categories</span>
+                        </button>
 
-                <!-- Load More Button -->
-                <div id="load-more-container" class="text-center mt-12 hidden">
-                    <button id="load-more-btn"
-                        class="px-8 py-3 bg-white border border-gray-300 text-black font-bold rounded-full hover:bg-black hover:text-white transition-all shadow-sm">
-                        Load More Products
-                    </button>
-                    <p class="text-xs text-gray-400 mt-2">Showing partial results for performance</p>
-                </div>
+                        <!-- Grocery -->
+                        <button onclick="filterByCategory('Grocery')"
+                            class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                            data-filter="Grocery">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <span>Grocery</span>
+                        </button>
 
-                <!-- Recommendations Section -->
-                <div id="recommendations-container" class="mt-12 hidden">
-                    <!-- Will be populated by recommender.js -->
-                </div>
+                        <!-- Stationery (With Mega Menu) -->
+                        <div class="relative group static-on-mobile">
+                            <button onclick="filterByCategory('Stationery')"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                data-filter="Stationery" id="btn-stationery">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                    </path>
+                                </svg>
+                                <span>Stationery</span>
+                                <!-- Dropdown Arrow -->
+                                <svg class="w-3 h-3 ml-1 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Mega Menu Dropdown -->
+                            <div
+                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[90vw] md:w-[600px] bg-white border border-gray-200 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 p-6 text-left top-full overflow-hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                    <!-- Col 1: Sathara Publications -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            Sathara Publications</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Preschool')"
+                                                    class="hover:text-black hover:underline block">Preschool</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 1')"
+                                                    class="hover:text-black hover:underline block">Grade 1</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 2')"
+                                                    class="hover:text-black hover:underline block">Grade 2</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 3')"
+                                                    class="hover:text-black hover:underline block">Grade 3</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 4')"
+                                                    class="hover:text-black hover:underline block">Grade 4</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 5')"
+                                                    class="hover:text-black hover:underline block">Grade 5</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 6')"
+                                                    class="hover:text-black hover:underline block">Grade 6</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 7')"
+                                                    class="hover:text-black hover:underline block">Grade 7</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 2: Sathara (Cont.) + Others -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider text-transparent select-none">
+                                            .</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 8')"
+                                                    class="hover:text-black hover:underline block">Grade 8</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 9')"
+                                                    class="hover:text-black hover:underline block">Grade 9</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 10')"
+                                                    class="hover:text-black hover:underline block">Grade 10</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 11 O Level')"
+                                                    class="hover:text-black hover:underline block">Grade 11 O Level</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 12 A Level')"
+                                                    class="hover:text-black hover:underline block">Grade 12 A Level</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Past Papers')"
+                                                    class="hover:text-black hover:underline block">Past Papers</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Story Books')"
+                                                    class="hover:text-black hover:underline block">Story Books</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Monthly Magazines')"
+                                                    class="hover:text-black hover:underline block">Monthly Magazines</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 3: Other + CR -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            Other / CR</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Educational Books')"
+                                                    class="hover:text-black hover:underline block">Educational Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Children\'s Books')"
+                                                    class="hover:text-black hover:underline block">Children's Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Sinhala Literature')"
+                                                    class="hover:text-black hover:underline block">Sinhala
+                                                    Literature</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Religious Books')"
+                                                    class="hover:text-black hover:underline block">Religious Books</a>
+                                            </li>
+                                        </ul>
+
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            CR Books & Tools</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('B5 Exercise Books')"
+                                                    class="hover:text-black hover:underline block">B5 Exercise Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('A5 Exercise Books')"
+                                                    class="hover:text-black hover:underline block">A5 Exercise Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Square Rule Books')"
+                                                    class="hover:text-black hover:underline block">Square Rule Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Notebooks')"
+                                                    class="hover:text-black hover:underline block">Notebooks</a></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Newspapers (With Dropdown) -->
+                        <div class="relative group static-on-mobile">
+                            <button onclick="filterByCategory('Newspapers')"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                data-filter="Newspapers" id="btn-newspapers">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                                    </path>
+                                </svg>
+                                <span>Newspapers</span>
+                                <!-- Dropdown Arrow -->
+                                <svg class="w-3 h-3 ml-1 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Simple Dropdown -->
+                            <div
+                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2 text-left top-full overflow-hidden">
+                                <ul class="text-sm text-gray-600">
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Daily Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Daily
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Sunday Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Sunday
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Women Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Women
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('English Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">English
+                                            Papers</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sort Dropdown -->
+                        <select id="sort-select"
+                            class="px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm font-bold focus:border-black focus:ring-0 outline-none cursor-pointer hover:bg-gray-50 shadow-sm ml-2">
+                            <option value="default">Sort By</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name">Name (A-Z)</option>
+                        </select>
+                    </div>
+
+
+                    <!-- Product Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="product-grid">
+                        <!-- Products will be injected here via JS -->
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div id="load-more-container" class="text-center mt-12 hidden">
+                        <button id="load-more-btn"
+                            class="px-8 py-3 bg-white border border-gray-300 text-black font-bold rounded-full hover:bg-black hover:text-white transition-all shadow-sm">
+                            Load More Products
+                        </button>
+                        <p class="text-xs text-gray-400 mt-2">Showing partial results for performance</p>
+                    </div> <!-- Recommendations Section -->
+                    <div id="recommendations-container" class="mt-12 hidden">
+                        <!-- Will be populated by recommender.js -->
+                    </div>
+                </div> <!-- Close Main Content -->
+            </div> <!-- Close Flex Container -->
             </div>
         </section>
     </main>
@@ -198,16 +401,81 @@
             // Handle URL Query Params
             const params = new URLSearchParams(window.location.search);
             const urlCategory = params.get('category');
-            let currentCategory = (urlCategory && ['grocery', 'stationery', 'news'].includes(urlCategory)) ? urlCategory : 'all';
+            // Allow any category from URL, default to 'all'
+            let currentCategory = urlCategory || 'all';
+            let currentSubCategory = null; // New State for Subcategory Filters
+
+            // Expose subcategory filter function to global window scope so HTML onclicks work
+            window.filterBySubCategory = (subCat) => {
+                console.log(`Filtering by subcategory: ${subCat}`);
+
+                // Set main category to stationery if not already
+                if (currentCategory !== 'Stationery') {
+                    // Update main buttons UI
+                    updateFilterButtons('Stationery');
+                    currentCategory = 'Stationery';
+                }
+
+                currentSubCategory = subCat;
+
+                // Optional: Update UI to show selected subcategory (maybe a breadcrumb or tag?)
+                // For now, just reload products
+                allProducts = [];
+                lastVisible = null;
+                noMoreProducts = false;
+                fetchProducts(false);
+            };
+
+            function updateFilterButtons(selectedCat) {
+                filterBtns.forEach(btn => {
+                    const iconBox = btn.querySelector('span:first-child'); // Note: The icons are svgs now in styles, but check HTML structure 
+                    // ... Actually logic is below in original file, let's reuse it or extract it.
+                    // For simplicity, let's trigger the click logic if needed, or manual class update.
+                    // Manual update:
+                    btn.classList.remove('bg-black', 'text-white', 'border-black');
+                    btn.classList.remove('active'); // Add active class tracking
+
+                    if (btn.dataset.filter === selectedCat) {
+                        btn.classList.add('bg-black', 'text-white', 'border-black');
+                        btn.classList.remove('text-gray-500', 'border-gray-200');
+                    } else {
+                        btn.classList.add('text-gray-500', 'border-gray-200');
+                    }
+                });
+            }
 
             // Update Active Button UI
             filterBtns.forEach(btn => {
+                const iconBox = btn.querySelector('span:first-child');
+                const textSpan = btn.querySelector('span:last-child');
+
+                // Remove existing high-contrast classes if present from previous logic
+                btn.classList.remove('bg-black', 'text-white', 'border-black');
+
                 if (btn.dataset.filter === currentCategory) {
-                    btn.classList.remove('text-gray-500', 'border-gray-200');
-                    btn.classList.add('bg-black', 'text-white', 'border-black');
+                    btn.classList.add('bg-gray-100', 'font-bold');
+                    // Update Icon
+                    if (iconBox) {
+                        iconBox.classList.remove('bg-gray-100', 'text-gray-600');
+                        iconBox.classList.add('bg-black', 'text-white');
+                    }
+                    // Update Text
+                    if (textSpan) {
+                        textSpan.classList.remove('text-gray-600');
+                        textSpan.classList.add('text-black');
+                    }
                 } else {
-                    btn.classList.remove('bg-black', 'text-white', 'border-black');
-                    btn.classList.add('text-gray-500', 'border-gray-200');
+                    btn.classList.remove('bg-gray-100', 'font-bold');
+                    // Reset Icon
+                    if (iconBox) {
+                        iconBox.classList.remove('bg-black', 'text-white');
+                        iconBox.classList.add('bg-gray-100', 'text-gray-600');
+                    }
+                    // Reset Text
+                    if (textSpan) {
+                        textSpan.classList.remove('text-black');
+                        textSpan.classList.add('text-gray-600');
+                    }
                 }
             });
 
@@ -252,11 +520,30 @@
                             q = query(productsRef, limit(PRODUCTS_PER_PAGE));
                         }
                     } else {
-                        // Filtered Query
+                        // Filtered Query (Robust Case Handling)
+                        // Create variants: e.g. "Stationery", "stationery", "STATIONERY"
+                        const searchCats = [
+                            currentCategory,
+                            currentCategory.toLowerCase(),
+                            currentCategory.toUpperCase(),
+                            currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()
+                        ];
+                        // Remove duplicates
+                        const uniqueCats = [...new Set(searchCats)];
+
+                        let constraints = [where("category", "in", uniqueCats)];
+
+                        // Add Subcategory Constraint if Active
+                        if (currentSubCategory) {
+                            constraints.push(where("subcategory", "==", currentSubCategory));
+                        }
+
+                        constraints.push(limit(PRODUCTS_PER_PAGE));
+
                         if (isLoadMore && lastVisible) {
-                            q = query(productsRef, where("category", "==", currentCategory), startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                            q = query(productsRef, ...constraints, startAfter(lastVisible));
                         } else {
-                            q = query(productsRef, where("category", "==", currentCategory), limit(PRODUCTS_PER_PAGE));
+                            q = query(productsRef, ...constraints);
                         }
                     }
 
@@ -437,6 +724,8 @@
                     btn.classList.add('bg-black', 'text-white', 'border-black');
 
                     currentCategory = btn.dataset.filter;
+                    currentSubCategory = null; // Reset subcat on main cat change
+
                     // Reset Logic
                     allProducts = [];
                     lastVisible = null;

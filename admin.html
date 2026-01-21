@@ -191,8 +191,13 @@
         <div class="font-medium" id="toast-message">Notification</div>
     </div>
 
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"
+        onclick="closeMobileSidebar()"></div>
+
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-black text-white flex flex-col hidden md:flex h-full">
+    <aside id="admin-sidebar"
+        class="w-64 bg-black text-white flex flex-col h-full fixed md:relative z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
         <div class="h-20 flex items-center justify-center border-b border-gray-800">
             <h1 class="text-xl font-bold font-heading uppercase tracking-widest">Admin Panel</h1>
         </div>
@@ -364,13 +369,40 @@
         <!-- Mobile Header -->
         <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 md:hidden z-10">
             <span class="font-bold font-heading text-lg">Admin Dashboard</span>
-            <button class="text-gray-500 hover:text-black">
+            <button onclick="toggleMobileSidebar()"
+                class="text-gray-500 hover:text-black p-2 rounded-lg hover:bg-gray-100">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
                     </path>
                 </svg>
             </button>
         </header>
+
+        <!-- Mobile Dropdown Menu (Alternative) -->
+        <div id="mobile-dropdown" class="md:hidden bg-white border-b border-gray-200 shadow-sm hidden">
+            <div class="flex flex-wrap gap-2 p-3">
+                <button onclick="switchTab('products'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-bold">📦
+                    Products</button>
+                <button onclick="switchTab('orders'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold">🛒
+                    Orders</button>
+                <button onclick="switchTab('reports'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold">📊
+                    Reports</button>
+                <button onclick="switchTab('inventory'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold">📋
+                    Inventory</button>
+                <button onclick="switchTab('finance'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg text-xs font-bold">💰
+                    Finance</button>
+                <button onclick="switchTab('suppliers'); closeMobileDropdown()"
+                    class="mobile-tab-btn bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold">🏭
+                    Suppliers</button>
+                <a href="pos.html"
+                    class="mobile-tab-btn bg-green-600 text-white px-3 py-2 rounded-lg text-xs font-bold">🛍️ POS</a>
+            </div>
+        </div>
 
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto p-4 md:p-8 relative">
@@ -428,6 +460,7 @@
                                     <th class="p-4">Discount</th>
                                     <th class="p-4">Total</th>
                                     <th class="p-4">Cashier</th>
+                                    <th class="p-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="report-table-body">
@@ -623,6 +656,10 @@
                     <button onclick="filterInventory('out')" id="inv-filter-out"
                         class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors">
                         🚫 Out of Stock
+                    </button>
+                    <button onclick="filterInventory('expiry')" id="inv-filter-expiry"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-colors">
+                        ⏰ Expiring Soon
                     </button>
                 </div>
 
@@ -2102,6 +2139,30 @@
             signOut(auth);
         }
 
+        // MOBILE SIDEBAR TOGGLE
+        window.toggleMobileSidebar = () => {
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('mobile-sidebar-overlay');
+            const dropdown = document.getElementById('mobile-dropdown');
+
+            // Toggle dropdown menu (simpler approach for mobile)
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+            }
+        };
+
+        window.closeMobileSidebar = () => {
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('mobile-sidebar-overlay');
+            if (sidebar) sidebar.classList.add('-translate-x-full');
+            if (overlay) overlay.classList.add('hidden');
+        };
+
+        window.closeMobileDropdown = () => {
+            const dropdown = document.getElementById('mobile-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        };
+
         // TAB LOGIC
         window.switchTab = (tab) => {
             const pView = document.getElementById('view-products');
@@ -3452,37 +3513,51 @@ Buddika Stores
 
                 const rows = snapshot.docs.map(doc => {
                     const sale = doc.data();
-                    totalIncome += sale.total;
+                    const saleTotal = sale.total || 0;
+                    totalIncome += saleTotal;
 
-                    // Iterate Items for Profit & Top Selling
-                    if (sale.items) {
-                        let saleCost = 0;
+                    // Calculate total discount (cart discount + item discounts)
+                    let totalDiscount = sale.discount || 0;
+                    let saleCost = 0;
+
+                    // Iterate Items for Profit, Top Selling & Item Discounts
+                    if (sale.items && Array.isArray(sale.items)) {
                         sale.items.forEach(i => {
                             // Top Selling
                             if (!itemCounts[i.name]) itemCounts[i.name] = 0;
-                            itemCounts[i.name] += i.qty;
+                            itemCounts[i.name] += i.qty || 0;
 
-                            // Profit
-                            const iCost = (i.cost || 0) * i.qty;
+                            // Add item discount to total discount
+                            totalDiscount += i.itemDiscount || 0;
+
+                            // Profit - calculate cost
+                            const iCost = (i.cost || 0) * (i.qty || 0);
                             saleCost += iCost;
                         });
 
-                        // Profit = (Total - Discount) - Cost
-                        // Note: sale.total is already (Subtotal - Discount)
-                        // But need to be careful about item discounts which are deducted from itemTotal.
-                        // Since sale.total is final amount received, Profit = FinalAmount - TotalCost
-                        const saleProfit = sale.total - saleCost;
-                        totalProfit += saleProfit;
+                        // Profit = FinalAmount - TotalCost
+                        const saleProfit = saleTotal - saleCost;
+                        if (!isNaN(saleProfit)) {
+                            totalProfit += saleProfit;
+                        }
                     }
 
                     const date = sale.createdAt ? new Date(sale.createdAt.seconds * 1000).toLocaleTimeString() : 'N/A';
+                    const saleId = doc.id;
                     return `
                         <tr class="hover:bg-gray-50 border-b border-gray-50">
                             <td class="p-4 text-sm font-mono text-gray-500">${date}</td>
                             <td class="p-4 text-sm">${sale.items ? sale.items.length : 0} items</td>
-                            <td class="p-4 text-sm text-red-500">${sale.discount > 0 ? '-Rs. ' + sale.discount.toFixed(2) : '-'}</td>
-                            <td class="p-4 font-bold text-gray-900">Rs. ${sale.total.toFixed(2)}</td>
+                            <td class="p-4 text-sm text-red-500 font-bold">${totalDiscount > 0 ? '-Rs. ' + totalDiscount.toFixed(2) : '-'}</td>
+                            <td class="p-4 font-bold text-gray-900">Rs. ${saleTotal.toFixed(2)}</td>
                             <td class="p-4 text-xs text-gray-500">${escapeHtml(sale.cashierName || 'Unknown')}</td>
+                            <td class="p-4">
+                                <button onclick="deleteSale('${saleId}')" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="Delete Sale">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </td>
                         </tr>
                     `;
                 }).join('');
@@ -3490,10 +3565,15 @@ Buddika Stores
                 const avg = count > 0 ? (totalIncome / count) : 0;
 
                 tbody.innerHTML = rows;
-                document.getElementById('report-total-income').innerText = `Rs. ${totalIncome.toFixed(2)}`;
-                document.getElementById('report-total-profit').innerText = `Rs. ${totalProfit.toFixed(2)}`;
+                // Handle NaN values for display
+                const displayIncome = isNaN(totalIncome) ? 0 : totalIncome;
+                const displayProfit = isNaN(totalProfit) ? 0 : totalProfit;
+                const displayAvg = isNaN(avg) ? 0 : avg;
+
+                document.getElementById('report-total-income').innerText = `Rs. ${displayIncome.toFixed(2)}`;
+                document.getElementById('report-total-profit').innerText = `Rs. ${displayProfit.toFixed(2)}`;
                 document.getElementById('report-count').innerText = count;
-                document.getElementById('report-avg').innerText = `Rs. ${avg.toFixed(2)}`;
+                document.getElementById('report-avg').innerText = `Rs. ${displayAvg.toFixed(2)}`;
 
                 // Render Top Selling
                 const sortedItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -3506,7 +3586,23 @@ Buddika Stores
 
             } catch (e) {
                 console.error(e);
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-red-500">Error: ${e.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">Error: ${e.message}</td></tr>`;
+            }
+        };
+
+        // Delete Sale from Firebase
+        window.deleteSale = async (saleId) => {
+            if (!confirm('Are you sure you want to delete this sale? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, 'sales', saleId));
+                showToast('Sale deleted successfully', 'success');
+                fetchReports(); // Refresh the reports
+            } catch (e) {
+                console.error('Error deleting sale:', e);
+                showToast('Error deleting sale: ' + e.message, 'error');
             }
         };
 
@@ -3601,6 +3697,146 @@ Buddika Stores
                 document.getElementById('inv-total-products').innerText = snapshot.size;
                 document.getElementById('inv-low-stock').innerText = lowStockCount;
                 document.getElementById('inv-out-stock').innerText = outStockCount;
+
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-red-500">Error: ${e.message}</td></tr>`;
+            }
+        };
+
+        // Filter Inventory by type (all, low, out, expiry)
+        let allInventoryData = []; // Store all products for filtering
+
+        window.filterInventory = async (filterType) => {
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400">Loading...</td></tr>';
+
+            // Update button styles
+            const buttons = ['all', 'low', 'out', 'expiry'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`inv-filter-${btn}`);
+                if (el) {
+                    if (btn === filterType) {
+                        el.classList.remove('bg-gray-100', 'text-gray-600');
+                        el.classList.add('bg-black', 'text-white');
+                    } else {
+                        el.classList.remove('bg-black', 'text-white');
+                        el.classList.add('bg-gray-100', 'text-gray-600');
+                    }
+                }
+            });
+
+            try {
+                const q = query(collection(db, 'products'), orderBy('name'));
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    list.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-gray-400">No products found</td></tr>';
+                    return;
+                }
+
+                const today = new Date();
+                const thirtyDaysLater = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+                let filteredDocs = snapshot.docs;
+
+                // Apply filters
+                if (filterType === 'low') {
+                    filteredDocs = snapshot.docs.filter(doc => {
+                        const stock = doc.data().stock || 0;
+                        return stock > 0 && stock <= 10;
+                    });
+                } else if (filterType === 'out') {
+                    filteredDocs = snapshot.docs.filter(doc => {
+                        const stock = doc.data().stock || 0;
+                        return stock <= 0;
+                    });
+                } else if (filterType === 'expiry') {
+                    filteredDocs = snapshot.docs.filter(doc => {
+                        const p = doc.data();
+                        if (!p.expiryDate) return false;
+                        const expiry = new Date(p.expiryDate);
+                        return expiry <= thirtyDaysLater;
+                    });
+                }
+
+                if (filteredDocs.length === 0) {
+                    const messages = {
+                        'all': 'No products found',
+                        'low': '🎉 Great! No low stock items',
+                        'out': '🎉 Great! No out of stock items',
+                        'expiry': '🎉 Great! No items expiring soon'
+                    };
+                    list.innerHTML = `<tr><td colspan="5" class="p-12 text-center text-gray-400">${messages[filterType]}</td></tr>`;
+                    return;
+                }
+
+                let lowStockCount = 0;
+                let outStockCount = 0;
+
+                const rows = filteredDocs.map(doc => {
+                    const p = doc.data();
+                    const stock = p.stock || 0;
+                    let stockClass = 'text-green-600';
+                    let stockBadge = '';
+                    let expiryBadge = '';
+
+                    if (stock <= 0) {
+                        stockClass = 'text-red-600 font-bold';
+                        stockBadge = '<span class="ml-2 px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-full">OUT OF STOCK</span>';
+                        outStockCount++;
+                    } else if (stock <= 10) {
+                        stockClass = 'text-orange-500 font-bold';
+                        stockBadge = '<span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-600 text-[10px] font-bold rounded-full">LOW</span>';
+                        lowStockCount++;
+                    }
+
+                    // Check expiry
+                    if (p.expiryDate) {
+                        const expiry = new Date(p.expiryDate);
+                        if (expiry <= today) {
+                            expiryBadge = '<span class="ml-2 px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-full">EXPIRED</span>';
+                        } else if (expiry <= thirtyDaysLater) {
+                            const daysLeft = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+                            expiryBadge = `<span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-[10px] font-bold rounded-full">${daysLeft} days</span>`;
+                        }
+                    }
+
+                    return `
+                        <tr class="hover:bg-gray-50 border-b border-gray-50">
+                            <td class="p-4">
+                                <div class="font-bold text-gray-900">${escapeHtml(p.name)}</div>
+                                <div class="text-xs text-gray-400">${escapeHtml(p.category)}</div>
+                            </td>
+                            <td class="p-4">
+                                <span class="${stockClass}">${stock}</span>
+                                <span class="text-xs text-gray-400 ml-1">${p.unit || 'unit'}</span>
+                                ${stockBadge}${expiryBadge}
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="adjustStock('${doc.id}', -1)" class="w-8 h-8 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-bold">-</button>
+                                    <input type="number" id="stock-adj-${doc.id}" value="1" min="1" class="w-16 text-center bg-gray-50 border rounded-lg py-1 text-sm">
+                                    <button onclick="adjustStock('${doc.id}', 1)" class="w-8 h-8 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-bold">+</button>
+                                </div>
+                            </td>
+                            <td class="p-4">
+                                <button onclick="quickRestock('${doc.id}')" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-100">
+                                    Quick Restock
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                list.innerHTML = rows;
+
+                // Update Stats (only when showing all)
+                if (filterType === 'all') {
+                    document.getElementById('inv-total-products').innerText = snapshot.size;
+                    document.getElementById('inv-low-stock').innerText = snapshot.docs.filter(d => { const s = d.data().stock || 0; return s > 0 && s <= 10; }).length;
+                    document.getElementById('inv-out-stock').innerText = snapshot.docs.filter(d => (d.data().stock || 0) <= 0).length;
+                }
 
             } catch (e) {
                 console.error(e);

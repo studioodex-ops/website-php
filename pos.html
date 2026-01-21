@@ -84,33 +84,47 @@
     <div id="pos-container" class="hidden h-screen flex flex-col">
 
         <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
+        <header class="bg-white border-b border-gray-200 px-3 md:px-6 py-2 md:py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 md:gap-4">
+                <a href="index.html"
+                    class="text-lg md:text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
                     <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                         <span class="text-white text-lg">B</span>
                     </div>
-                    <span>POS System</span>
+                    <span class="hidden md:inline">POS System</span>
+                    <span class="md:hidden">POS</span>
                 </a>
-                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Online</span>
+                <span
+                    class="text-[10px] md:text-xs bg-green-100 text-green-700 px-2 md:px-3 py-1 rounded-full font-bold">Online</span>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="text-right">
+            <div class="flex items-center gap-2 md:gap-6">
+                <div class="text-right hidden md:block">
                     <p class="text-xs text-gray-500">Logged in as</p>
                     <p id="cashier-name" class="font-bold text-sm">Cashier</p>
                 </div>
                 <button onclick="handleLogout()"
-                    class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors">
+                    class="bg-red-50 text-red-600 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold hover:bg-red-100 transition-colors">
                     Logout
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <div class="flex-1 flex overflow-hidden">
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+            <!-- Mobile Cart Toggle Button -->
+            <button id="mobile-cart-toggle" onclick="toggleMobileCart()"
+                class="md:hidden fixed bottom-4 right-4 z-40 bg-black text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center gap-0.5">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
+                </svg>
+                <span id="mobile-cart-count" class="text-xs font-bold">0</span>
+            </button>
 
             <!-- Left: Products Section -->
-            <div class="flex-1 flex flex-col p-6 overflow-hidden">
+            <div class="flex-1 flex flex-col p-3 md:p-6 overflow-hidden">
 
                 <!-- Search & Filter -->
                 <div class="flex gap-4 mb-6">
@@ -151,7 +165,7 @@
 
                 <!-- Products Grid -->
                 <div id="products-grid"
-                    class="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pr-2">
+                    class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4 pr-2 pb-20 md:pb-2">
                     <!-- Products will be loaded here -->
                     <div class="col-span-full text-center py-20 text-gray-400">
                         <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor"
@@ -164,15 +178,30 @@
                 </div>
             </div>
 
-            <!-- Right: Cart Section -->
-            <div class="w-96 bg-white border-l border-gray-200 flex flex-col">
+            <!-- Mobile Cart Overlay -->
+            <div id="mobile-cart-overlay" class="md:hidden fixed inset-0 bg-black/50 z-40 hidden"
+                onclick="closeMobileCart()"></div>
+
+            <!-- Right: Cart Section - Slides up on mobile -->
+            <div id="cart-panel"
+                class="w-full md:w-96 bg-white border-t md:border-t-0 md:border-l border-gray-200 flex flex-col fixed md:relative bottom-0 left-0 right-0 z-50 transform translate-y-full md:translate-y-0 transition-transform duration-300 ease-in-out max-h-[80vh] md:max-h-none rounded-t-3xl md:rounded-none shadow-2xl md:shadow-none">
 
                 <!-- Cart Header -->
                 <div class="p-4 border-b border-gray-100">
+                    <!-- Mobile Drag Handle -->
+                    <div class="md:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3"></div>
                     <div class="flex items-center justify-between">
                         <h2 class="font-bold text-lg font-heading">Current Sale</h2>
-                        <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear
-                            All</button>
+                        <div class="flex items-center gap-3">
+                            <button onclick="clearCart()"
+                                class="text-xs text-red-500 hover:text-red-700 font-bold">Clear All</button>
+                            <button onclick="closeMobileCart()" class="md:hidden text-gray-400 hover:text-black">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -248,41 +277,51 @@
                             Card
                         </button>
                     </div>
+                    <!-- Payment Validation Status -->
+                    <div id="payment-status"
+                        class="hidden bg-red-500 text-white py-3 rounded-xl font-bold text-center text-sm mt-2">
+                        Received amount is less than total!
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Quantity Input Modal -->
-    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-bold" id="qty-modal-title">Add Product</h3>
-                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-2xl w-full max-w-xs sm:max-w-sm shadow-2xl">
+            <div class="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-bold text-sm sm:text-base" id="qty-modal-title">Add Product</h3>
+                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black p-1">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
             </div>
-            <div class="p-6">
-                <p class="text-sm text-gray-500 mb-4" id="qty-modal-desc">Enter quantity</p>
-                <div class="flex items-center gap-3 mb-6">
-                    <button onclick="adjustQtyInput(-1)"
-                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">-</button>
-                    <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
-                        class="flex-1 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-3 focus:ring-2 focus:ring-black outline-none">
-                    <button onclick="adjustQtyInput(1)"
-                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">+</button>
-                    <span id="qty-unit-label" class="text-lg font-bold text-gray-500 w-12">unit</span>
+            <div class="p-4 sm:p-6">
+                <p class="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4" id="qty-modal-desc">Enter quantity</p>
+                <div class="flex flex-col gap-3 mb-4 sm:mb-6">
+                    <div class="flex items-center justify-center gap-2 sm:gap-3">
+                        <button onclick="adjustQtyInput(-1)"
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-lg sm:text-xl hover:bg-gray-200 transition-colors flex-shrink-0">-</button>
+                        <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
+                            class="w-20 sm:w-24 text-center text-xl sm:text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-2 sm:py-3 focus:ring-2 focus:ring-black outline-none">
+                        <button onclick="adjustQtyInput(1)"
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-lg sm:text-xl hover:bg-gray-200 transition-colors flex-shrink-0">+</button>
+                    </div>
+                    <div class="text-center">
+                        <span id="qty-unit-label"
+                            class="text-sm sm:text-lg font-bold text-gray-500 bg-gray-100 px-4 py-1 rounded-full">unit</span>
+                    </div>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex gap-2 sm:gap-3">
                     <button onclick="closeQtyModal()"
-                        class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+                        class="flex-1 bg-gray-100 text-gray-700 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-200 transition-colors">
                         Cancel
                     </button>
                     <button onclick="confirmAddToCart()"
-                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors">
+                        class="flex-1 bg-black text-white py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-800 transition-colors">
                         Add to Cart
                     </button>
                 </div>
@@ -344,53 +383,64 @@
     </div>
 
     <!-- Barcode Scanner Modal -->
-    <div id="barcode-modal" class="fixed inset-0 bg-black/90 z-[350] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-black text-white">
-                <div class="flex items-center gap-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
-                        </path>
-                    </svg>
-                    <h3 class="font-bold text-lg">Scan Barcode</h3>
-                </div>
-                <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
+    <div id="barcode-modal" class="fixed inset-0 bg-black z-[350] hidden flex flex-col">
+        <div class="bg-black text-white p-3 sm:p-4 flex items-center justify-between safe-area-top">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                    </path>
+                </svg>
+                <h3 class="font-bold text-base sm:text-lg">📷 Scan Barcode</h3>
             </div>
+            <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
 
-            <!-- Scanner View -->
-            <div class="relative bg-black" style="height: 300px;">
-                <div id="barcode-scanner-view" class="w-full h-full"></div>
-                <!-- Scan Line Animation -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-64 h-48 border-2 border-green-400 rounded-lg relative">
-                        <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
-                            style="top: 50%; animation: scanLine 2s infinite;"></div>
+        <!-- Scanner View - Full Screen on Mobile -->
+        <div class="flex-1 relative bg-black">
+            <div id="barcode-scanner-view" class="w-full h-full"></div>
+            <!-- Scan Line Animation -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-64 sm:w-72 h-40 sm:h-48 border-2 border-green-400 rounded-lg relative">
+                    <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
+                        style="top: 50%; animation: scanLine 2s infinite;"></div>
+                    <!-- Corner markers -->
+                    <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-green-400 rounded-tl"></div>
+                    <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-green-400 rounded-tr"></div>
+                    <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-green-400 rounded-bl">
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-green-400 rounded-br">
                     </div>
                 </div>
             </div>
+            <!-- Tip text -->
+            <div class="absolute bottom-4 left-0 right-0 text-center">
+                <span class="bg-black/70 text-white text-xs sm:text-sm px-4 py-2 rounded-full">
+                    📦 Point camera at barcode
+                </span>
+            </div>
+        </div>
 
-            <!-- Manual Entry -->
-            <div class="p-4 space-y-3">
-                <div class="text-center text-sm text-gray-500">
-                    Or enter barcode manually:
-                </div>
-                <div class="flex gap-2">
-                    <input type="text" id="manual-barcode-input" placeholder="Enter barcode number..."
-                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
-                    <button onclick="searchByBarcode()"
-                        class="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
-                        Search
-                    </button>
-                </div>
-                <div id="barcode-result" class="text-center text-sm hidden">
-                    <!-- Result will show here -->
-                </div>
+        <!-- Manual Entry - Compact on mobile -->
+        <div class="bg-white p-3 sm:p-4 safe-area-bottom">
+            <div class="text-center text-xs sm:text-sm text-gray-500 mb-2">
+                Or enter barcode manually:
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="manual-barcode-input" placeholder="Enter barcode..."
+                    class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                <button onclick="searchByBarcode()"
+                    class="bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors">
+                    Search
+                </button>
+            </div>
+            <div id="barcode-result" class="text-center text-sm mt-2 hidden">
+                <!-- Result will show here -->
             </div>
         </div>
     </div>
@@ -459,8 +509,8 @@
             document.getElementById('barcode-modal').classList.add('hidden');
         };
 
-        // Start Barcode Scanner with Quagga
-        function startBarcodeScanner() {
+        // Start Barcode Scanner with Quagga - iOS Compatible
+        async function startBarcodeScanner() {
             if (typeof Quagga === 'undefined') {
                 console.error('Quagga not loaded');
                 showToast('Scanner library not loaded', 'error');
@@ -469,28 +519,89 @@
 
             if (scannerActive) return;
 
+            // Check HTTPS requirement (iOS requires HTTPS for camera)
+            const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (!isSecure) {
+                const resultDiv = document.getElementById('barcode-result');
+                resultDiv.innerHTML = `
+                    <div class="bg-orange-50 text-orange-700 p-3 rounded-lg">
+                        <p class="font-bold">⚠️ HTTPS Required</p>
+                        <p class="text-xs mt-1">iOS requires HTTPS for camera access. Use manual barcode entry below, or access via HTTPS.</p>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+                console.warn('[Scanner] HTTPS required for camera on iOS');
+            }
+
+            // First, explicitly request camera permission (better iOS support)
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: "environment" },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                // Stop the temporary stream - Quagga will create its own
+                stream.getTracks().forEach(track => track.stop());
+                console.log('[Scanner] Camera permission granted');
+            } catch (permErr) {
+                console.error('[Scanner] Camera permission error:', permErr);
+                const resultDiv = document.getElementById('barcode-result');
+
+                let errorMsg = 'Camera access denied';
+                if (permErr.name === 'NotAllowedError') {
+                    errorMsg = '📵 Camera permission denied. Please allow camera access in your browser/device settings.';
+                } else if (permErr.name === 'NotFoundError') {
+                    errorMsg = '📷 No camera found on this device.';
+                } else if (permErr.name === 'NotReadableError') {
+                    errorMsg = '📷 Camera is in use by another app.';
+                } else if (permErr.name === 'OverconstrainedError') {
+                    errorMsg = '📷 Camera does not meet requirements.';
+                } else if (permErr.name === 'SecurityError') {
+                    errorMsg = '🔒 HTTPS required for camera access on iOS.';
+                }
+
+                resultDiv.innerHTML = `
+                    <div class="bg-red-50 text-red-700 p-3 rounded-lg">
+                        <p class="font-bold">❌ Camera Error</p>
+                        <p class="text-xs mt-1">${errorMsg}</p>
+                        <p class="text-xs mt-2 text-gray-500">Tip: Enter barcode manually below ⬇️</p>
+                    </div>
+                `;
+                resultDiv.classList.remove('hidden');
+                showToast(errorMsg, 'error');
+                return;
+            }
+
+            // Initialize Quagga with iOS-optimized settings
             Quagga.init({
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
                     target: document.getElementById('barcode-scanner-view'),
                     constraints: {
-                        facingMode: "environment", // Use back camera
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
+                        facingMode: { ideal: "environment" }, // Back camera
+                        width: { min: 640, ideal: 1280, max: 1920 },
+                        height: { min: 480, ideal: 720, max: 1080 },
+                        aspectRatio: { ideal: 1.777778 } // 16:9
                     }
                 },
                 decoder: {
                     readers: [
-                        "ean_reader",        // EAN-13, EAN-8
-                        "ean_8_reader",
+                        "ean_reader",        // EAN-13 (most products)
+                        "ean_8_reader",      // EAN-8
                         "code_128_reader",   // Code 128
                         "code_39_reader",    // Code 39
-                        "upc_reader",        // UPC-A, UPC-E
-                        "upc_e_reader"
-                    ]
+                        "upc_reader",        // UPC-A
+                        "upc_e_reader",      // UPC-E
+                        "i2of5_reader",      // Interleaved 2 of 5 (packaging)
+                        "codabar_reader"     // Codabar
+                    ],
+                    multiple: false
                 },
                 locate: true,
+                frequency: 10, // Detection attempts per second
                 locator: {
                     halfSample: true,
                     patchSize: "medium"
@@ -498,10 +609,10 @@
             }, function (err) {
                 if (err) {
                     console.error('Quagga init error:', err);
-                    showToast('Camera access denied or not available', 'error');
+                    showToast('Failed to start camera. Try manual entry.', 'error');
                     return;
                 }
-                console.log('[Scanner] Initialized');
+                console.log('[Scanner] Initialized successfully');
                 Quagga.start();
                 scannerActive = true;
             });
@@ -511,8 +622,11 @@
                 const code = result.codeResult.code;
                 console.log('[Scanner] Detected:', code);
 
-                // Play beep sound
+                // Play beep sound + vibration
                 playBeep();
+                if (navigator.vibrate) {
+                    navigator.vibrate(100); // Haptic feedback
+                }
 
                 // Search product
                 handleBarcodeResult(code);
@@ -533,22 +647,55 @@
             scannerActive = false;
         }
 
-        // Handle barcode result - search product
+        // Handle barcode result - search product (Enhanced for external barcodes)
         function handleBarcodeResult(barcode) {
             const resultDiv = document.getElementById('barcode-result');
+            const searchBarcode = barcode.trim();
 
-            // Search product by SKU/barcode
-            const product = allProducts.find(p =>
-                p.sku === barcode ||
-                p.barcode === barcode ||
-                (p.sku && p.sku.toLowerCase() === barcode.toLowerCase())
+            // Try multiple matching strategies for external barcodes
+            let product = null;
+
+            // Strategy 1: Exact match on sku or barcode field
+            product = allProducts.find(p =>
+                p.sku === searchBarcode ||
+                p.barcode === searchBarcode
             );
+
+            // Strategy 2: Case-insensitive match
+            if (!product) {
+                const lowerBarcode = searchBarcode.toLowerCase();
+                product = allProducts.find(p =>
+                    (p.sku && p.sku.toLowerCase() === lowerBarcode) ||
+                    (p.barcode && p.barcode.toLowerCase() === lowerBarcode)
+                );
+            }
+
+            // Strategy 3: Try with/without leading zeros (EAN-13 barcode issue)
+            if (!product) {
+                const withoutLeadingZero = searchBarcode.replace(/^0+/, '');
+                const withLeadingZero = '0' + searchBarcode;
+                product = allProducts.find(p =>
+                    p.sku === withoutLeadingZero ||
+                    p.barcode === withoutLeadingZero ||
+                    p.sku === withLeadingZero ||
+                    p.barcode === withLeadingZero
+                );
+            }
+
+            // Strategy 4: Check if barcode contains or is contained by product barcode
+            if (!product && searchBarcode.length >= 6) {
+                product = allProducts.find(p =>
+                    (p.sku && (p.sku.includes(searchBarcode) || searchBarcode.includes(p.sku))) ||
+                    (p.barcode && (p.barcode.includes(searchBarcode) || searchBarcode.includes(p.barcode)))
+                );
+            }
 
             if (product) {
                 resultDiv.innerHTML = `
                     <div class="bg-green-50 text-green-700 p-3 rounded-lg">
                         <p class="font-bold">✅ Found: ${escapeHtml(product.name)}</p>
                         <p class="text-xs">Rs. ${product.price} | Stock: ${product.stock}</p>
+                        <p class="text-[10px] text-gray-400 mt-1">Barcode: ${searchBarcode}</p>
                     </div>
                 `;
                 resultDiv.classList.remove('hidden');
@@ -562,11 +709,12 @@
                 resultDiv.innerHTML = `
                     <div class="bg-red-50 text-red-700 p-3 rounded-lg">
                         <p class="font-bold">❌ Product not found</p>
-                        <p class="text-xs">Barcode: ${barcode}</p>
+                        <p class="text-xs">Barcode: ${searchBarcode}</p>
+                        <p class="text-[10px] text-gray-400 mt-1">💡 Add this barcode to a product in Admin Panel</p>
                     </div>
                 `;
                 resultDiv.classList.remove('hidden');
-                showToast('Product not found for barcode: ' + barcode, 'error');
+                showToast('Product not found: ' + searchBarcode, 'error');
             }
         }
 
@@ -629,6 +777,40 @@
             }
             updateTotals();
         };
+
+        // MOBILE CART TOGGLE
+        window.toggleMobileCart = () => {
+            const cart = document.getElementById('cart-panel');
+            const overlay = document.getElementById('mobile-cart-overlay');
+
+            if (cart.classList.contains('translate-y-full')) {
+                // Open cart
+                cart.classList.remove('translate-y-full');
+                cart.classList.add('translate-y-0');
+                overlay.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                // Close cart
+                closeMobileCart();
+            }
+        };
+
+        window.closeMobileCart = () => {
+            const cart = document.getElementById('cart-panel');
+            const overlay = document.getElementById('mobile-cart-overlay');
+
+            cart.classList.remove('translate-y-0');
+            cart.classList.add('translate-y-full');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        function updateMobileCartCount() {
+            const countEl = document.getElementById('mobile-cart-count');
+            if (countEl) {
+                countEl.innerText = cart.length;
+            }
+        }
 
         // Filter by Category
         window.filterByCategory = (category) => {
@@ -1057,6 +1239,7 @@
             }).join('');
 
             updateTotals();
+            updateMobileCartCount();
         }
 
         // Update Cart Quantity
@@ -1159,6 +1342,21 @@
             const change = Math.max(0, received - total);
 
             document.getElementById('change-amount').innerText = `Rs. ${change.toFixed(2)}`;
+
+            // Show/hide payment validation - compare as cents (integers) to avoid floating point issues
+            const paymentStatus = document.getElementById('payment-status');
+            if (paymentStatus) {
+                // Convert to cents (integers) for accurate comparison
+                const receivedCents = Math.round(received * 100);
+                const totalCents = Math.round(total * 100);
+                const isShort = receivedCents < totalCents && received > 0 && cart.length > 0;
+
+                if (isShort) {
+                    paymentStatus.classList.remove('hidden');
+                } else {
+                    paymentStatus.classList.add('hidden');
+                }
+            }
         };
 
         // Filter by Category
@@ -1441,6 +1639,18 @@
                         <span>Payment / ගෙවීම</span>
                         <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
                     </div>
+                    ${(() => {
+                    const itemDiscounts = sale.items.reduce((sum, item) => sum + (item.itemDiscount || 0), 0);
+                    const totalSavings = itemDiscounts + (sale.discount || 0);
+                    if (totalSavings > 0) {
+                        return `
+                    <div class="total-row" style="background: #e8f5e9; padding: 8px; margin-top: 10px; border-radius: 6px; border: 1px dashed #4caf50;">
+                        <span style="color: #2e7d32; font-weight: bold;">🎉 ඔබට ඉතිරි වූ මුදල / You Saved</span>
+                        <span style="color: #2e7d32; font-weight: bold; font-size: 14px;">Rs. ${totalSavings.toFixed(2)}</span>
+                    </div>`;
+                    }
+                    return '';
+                })()}
                 </div>
                 
                 <div class="receipt-footer">
@@ -1493,46 +1703,72 @@
                     hour: '2-digit', minute: '2-digit'
                 });
 
-                receiptText = `*🧾 BUDDIKA STORES - RECEIPT*
+                receiptText = `*🧾 බුද්ධික ස්ටෝර්ස්*
+*BUDDIKA STORES*
 ━━━━━━━━━━━━━━━━
-📍 No 48, Kandy Road, Walapane
+📍 අංක 48, මහනුවර පාර, වලපනේ
+     No 48, Kandy Road, Walapane
 📞 052-2279101 / 077-5192756
 
-*Receipt:* ${sale.id}
-*Date:* ${receiptDate}
-*Cashier:* ${sale.cashierName}
+*රිසිට්පත / Receipt:* ${sale.id}
+*දිනය / Date:* ${receiptDate}
+*කැෂියර් / Cashier:* ${sale.cashierName}
 ━━━━━━━━━━━━━━━━
 
-*ITEMS:*
+*අයිතම / ITEMS:*
 `;
                 sale.items.forEach((item, i) => {
-                    receiptText += `${i + 1}. ${item.name}
-   ${item.qty} x Rs.${item.price.toFixed(2)} = Rs.${item.total.toFixed(2)}
+                    // Add Sinhala name if available
+                    if (item.nameSi) {
+                        receiptText += `${i + 1}. *${item.nameSi}*
+     ${item.name}
+`;
+                    } else {
+                        receiptText += `${i + 1}. ${item.name}
+`;
+                    }
+                    receiptText += `     ${item.qty} x Rs.${item.price.toFixed(2)} = *Rs.${item.total.toFixed(2)}*
 `;
                     if (item.itemDiscount > 0) {
-                        receiptText += `   _Discount: -Rs.${item.itemDiscount.toFixed(2)}_
+                        receiptText += `     🏷️ _වට්ටම / Disc: -Rs.${item.itemDiscount.toFixed(2)}_
 `;
                     }
                 });
 
                 receiptText += `
 ━━━━━━━━━━━━━━━━
-*Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
+*උප එකතුව / Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
 
                 if (sale.discount > 0) {
                     receiptText += `
-*Discount:* -Rs.${sale.discount.toFixed(2)}`;
+*වට්ටම / Discount:* -Rs.${sale.discount.toFixed(2)}`;
                 }
 
                 receiptText += `
-*TOTAL:* Rs.${sale.total.toFixed(2)}
-*Payment:* ${sale.paymentMethod === 'cash' ? 'Cash' : 'Card'}
-*Received:* Rs.${sale.received.toFixed(2)}
-*Change:* Rs.${sale.change.toFixed(2)}
+*එකතුව / TOTAL:* Rs.${sale.total.toFixed(2)}
+━━━━━━━━━━━━━━━━
+*ගෙවීම / Payment:* ${sale.paymentMethod === 'cash' ? 'මුදල් / Cash' : 'කාඩ් / Card'}
+*ලැබුණු / Received:* Rs.${sale.received.toFixed(2)}
+*ඉතිරි / Change:* Rs.${sale.change.toFixed(2)}`;
+
+                // Calculate total savings (item discounts + cart discount)
+                const itemDiscounts = sale.items.reduce((sum, item) => sum + (item.itemDiscount || 0), 0);
+                const totalSavings = itemDiscounts + (sale.discount || 0);
+
+                if (totalSavings > 0) {
+                    receiptText += `
+
+🎉 *ඔබට ඉතිරි වූ මුදල / YOU SAVED:*
+    *Rs.${totalSavings.toFixed(2)}* 🎉`;
+                }
+
+                receiptText += `
 ━━━━━━━━━━━━━━━━
 
-_Thank you for shopping with us! 🙏_
-_www.buddikastores.com_`;
+🙏 _ස්තූතියි! නැවත එන්න._
+_Thank you! Please come again._
+
+🌐 www.buddikastores.com`;
 
             } else {
                 showToast('No receipt data available', 'error');

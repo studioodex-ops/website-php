@@ -163,7 +163,8 @@ async function saveAbandonedCart() {
 
         // Calculate cart total
         const cartTotal = cart.reduce((sum, item) => {
-            const price = parseFloat(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+            let cleanPrice = String(item.price).replace(/^Rs\.?\s*/i, '').replace(/[^0-9.]/g, '');
+            const price = parseFloat(cleanPrice) || 0;
             return sum + (price * item.qty);
         }, 0);
 
@@ -313,14 +314,25 @@ function renderCart() {
     if (cart.length === 0) {
         container.innerHTML = '<p class="text-center text-gray-400 py-8">Your cart is empty.</p>';
         totalEl.innerText = 'Rs. 0.00';
+        // Reset totals
+        document.getElementById('cart-item-total').innerText = 'Rs. 0.00';
         return;
     }
 
     let total = 0;
     container.innerHTML = cart.map((item, index) => {
-        const priceVal = parseFloat(item.price.replace(/[^0-9.]/g, ''));
-        const itemTotal = priceVal * item.qty;
+        // Robust Parsing: Remove Rs. prefix then parse
+        let cleanPrice = String(item.price).replace(/^Rs\.?\s*/i, '').replace(/[^0-9.]/g, '');
+        let priceVal = parseFloat(cleanPrice);
+
+        if (isNaN(priceVal)) priceVal = 0;
+
+        const qtyVal = parseFloat(item.qty) || 0;
+        const itemTotal = priceVal * qtyVal;
         total += itemTotal;
+
+        // Formatted for display
+        const displayItemTotal = itemTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         return `
             <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg animate-fade-in-up">
@@ -329,7 +341,7 @@ function renderCart() {
                     <p class="text-xs text-gray-500">${escapeHtml(item.qty)} ${escapeHtml(item.unit || 'unit')} x ${escapeHtml(item.price)}</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="font-bold text-sm">Rs. ${itemTotal.toLocaleString()}</span>
+                    <span class="font-bold text-sm">Rs. ${displayItemTotal}</span>
                     <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 p-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
@@ -340,8 +352,8 @@ function renderCart() {
 
 
 
-    // Update Totals
-    document.getElementById('cart-item-total').innerText = `Rs. ${total.toLocaleString()}.00`;
+    // Update Totals (Fixing double .00 bug)
+    document.getElementById('cart-item-total').innerText = `Rs. ${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     // Check current shipping method to recalc total
     const shippingMethodElement = document.querySelector('input[name="shipping"]:checked');
@@ -373,7 +385,7 @@ function updateGrandTotal(itemTotal, shippingMethod) {
         if (shipping > 0) {
             grandTotal += shipping;
             shippingRow.classList.remove('hidden');
-            shippingEl.innerText = `Rs. ${shipping.toLocaleString()}.00`;
+            shippingEl.innerText = `Rs. ${shipping.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         } else {
             shippingRow.classList.add('hidden'); // Hide if no area selected
         }
@@ -381,7 +393,7 @@ function updateGrandTotal(itemTotal, shippingMethod) {
         shippingRow.classList.add('hidden');
     }
 
-    totalEl.innerText = `Rs. ${grandTotal.toLocaleString()}.00`;
+    totalEl.innerText = `Rs. ${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 
@@ -464,8 +476,10 @@ function checkout() {
     let total = 0;
     const orderItems = [];
     cart.forEach(item => {
-        const itemTotal = parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.qty;
-        message += `- ${item.name} (${item.qty} ${item.unit || 'unit'}): Rs. ${itemTotal}\n`;
+        let cleanPrice = String(item.price).replace(/^Rs\.?\s*/i, '').replace(/[^0-9.]/g, '');
+        const itemTotal = parseFloat(cleanPrice) * item.qty;
+
+        message += `- ${item.name} (${item.qty} ${item.unit || 'unit'}): Rs. ${itemTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n`;
         total += itemTotal;
         orderItems.push({ ...item, itemTotal });
     });

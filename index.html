@@ -5,13 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
     <!-- Primary SEO Meta Tags -->
-    <title>Buddika Stores | Quality Retail & Grocery in Walapane, Sri Lanka</title>
-    <meta name="title" content="Buddika Stores | Quality Retail & Grocery in Walapane, Sri Lanka">
+    <title>Buddika Stores | Best Grocery & Stationery in Walapane, Sri Lanka</title>
+    <meta name="title" content="Buddika Stores | Best Grocery & Stationery in Walapane, Sri Lanka">
     <meta name="description"
-        content="Buddika Stores - Your trusted local shop for retail, grocery, newspapers, and school stationery in Walapane, Sri Lanka. Order via WhatsApp for delivery!">
+        content="Buddika Stores - Your leading local shop for retail, grocery, newspapers, and school stationery in Walapane, Nildandahinna, and Harasbedda. Order online or via WhatsApp!">
     <meta name="keywords"
-        content="Buddika Stores, Walapane, grocery, retail, stationery, newspapers, Sri Lanka, online shop, delivery">
+        content="Buddika Stores, Walapane shops, grocery delivery Walapane, stationery Walapane, Nildandahinna shops, Harasbedda, Sri Lanka online shop">
     <meta name="author" content="Buddika Stores">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://buddikastores.com/">
@@ -579,6 +588,25 @@
     <script type="module" src="assets/js/bundles.js?v=1.0"></script>
     <script type="module" src="assets/js/countdown.js?v=1.1"></script>
     <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+    <!-- Offline Database Module -->
+    <script src="assets/js/offline-db.js"></script>
 
+    <!-- Offline Indicator -->
+    <div id="offline-indicator"
+        class="hidden fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+        <span class="w-2 h-2 bg-white rounded-full"></span>
+        <span class="text-sm font-bold">Offline Mode</span>
+    </div>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
 
 </html>

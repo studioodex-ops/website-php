@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Environment variables (sensitive!)
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+
+# Firebase service account key (keep this secret!)
+serviceAccountKey.json
+*-firebase-adminsdk-*.json

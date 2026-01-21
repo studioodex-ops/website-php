@@ -1,0 +1,16 @@
+Product Name,Category,Current Stock,Minimum Stock,Unit,Cost Price (Rs),Selling Price (Rs),Status,Need to Order,Supplier
+Sugar 1kg,Grocery,25,20,kg,180,220,OK,0,Colombo Stores
+Rice 5kg,Grocery,8,15,bag,850,950,LOW STOCK,7,Colombo Stores
+Wheat Flour 1kg,Grocery,0,10,kg,95,120,OUT OF STOCK,10,Colombo Stores
+Milk Powder 400g,Grocery,12,10,pack,480,550,OK,0,Nestle Lanka
+Cooking Oil 1L,Grocery,5,10,bottle,550,650,LOW STOCK,5,Colombo Stores
+Salt 1kg,Grocery,50,20,kg,45,65,OK,0,Colombo Stores
+A4 Paper Ream,Stationery,3,10,ream,750,950,LOW STOCK,7,Paper World
+Blue Pen,Stationery,100,50,unit,15,25,OK,0,Stationery Lanka
+Note Book,Stationery,45,30,unit,65,95,OK,0,Stationery Lanka
+Pencil Box,Stationery,0,20,unit,120,180,OUT OF STOCK,20,Stationery Lanka
+Daily Mirror,Newspapers,10,10,copy,50,50,OK,0,News Agents
+Sunday Times,Newspapers,15,10,copy,120,120,OK,0,News Agents
+Eraser,Stationery,80,30,unit,10,20,OK,0,Stationery Lanka
+Ruler 30cm,Stationery,25,15,unit,35,55,OK,0,Stationery Lanka
+Glue Stick,Stationery,18,20,unit,85,120,LOW STOCK,2,Stationery Lanka

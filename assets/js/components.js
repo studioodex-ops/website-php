@@ -199,6 +199,7 @@ function loadFooter() {
                             <li><a href="about.html" class="text-sm text-gray-300 hover:text-white transition-colors">About Us</a></li>
                             <li><a href="products.html" class="text-sm text-gray-300 hover:text-white transition-colors">Products</a></li>
                             <li><a href="contact.html" class="text-sm text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                            <li><a href="admin.html" class="text-sm text-gray-500 hover:text-red-400 transition-colors font-bold mt-2 block">Admin Panel</a></li>
                         </ul>
                     </div>
                     <div>

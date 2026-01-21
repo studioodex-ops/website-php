@@ -30,6 +30,7 @@ const products = [
         id: "s1",
         name: "Atlas CR Book (80 Pgs)",
         category: "stationery",
+        subcategory: "CR Books",
         price: "Rs. 115.00",
         image: "assets/img/cr_book.jpg",
         desc: "Single Rule/Square Rule."
@@ -38,6 +39,7 @@ const products = [
         id: "s2",
         name: "Atlas CR Book (120 Pgs)",
         category: "stationery",
+        subcategory: "CR Books",
         price: "Rs. 160.00",
         image: "assets/img/cr_book.jpg",
         desc: "Single Rule/Square Rule."
@@ -46,6 +48,7 @@ const products = [
         id: "s3",
         name: "Atlas CR Book (200 Pgs)",
         category: "stationery",
+        subcategory: "CR Books",
         price: "Rs. 240.00",
         image: "assets/img/cr_book.jpg",
         desc: "Single Rule."
@@ -56,6 +59,7 @@ const products = [
         id: "s4",
         name: "Akura Grade 1 Books",
         category: "stationery",
+        subcategory: "Grade 1",
         price: "Rs. 180.00",
         image: "emoji:📚",
         desc: "Buddhism/Tamil/Maths (Per Book)"
@@ -64,6 +68,7 @@ const products = [
         id: "s5",
         name: "Akura Grade 2 Books",
         category: "stationery",
+        subcategory: "Grade 2",
         price: "Rs. 200.00",
         image: "emoji:📚",
         desc: "Maths/Sinhala/Env (Per Book)"
@@ -72,6 +77,7 @@ const products = [
         id: "s6",
         name: "Akura Grade 6 Books",
         category: "stationery",
+        subcategory: "Grade 6",
         price: "Rs. 250.00",
         image: "emoji:📚",
         desc: "Science/Maths/Geography (Per Book)"
@@ -80,6 +86,7 @@ const products = [
         id: "s7",
         name: "Akura Grade 8 Books",
         category: "stationery",
+        subcategory: "Grade 8",
         price: "Rs. 300.00",
         image: "emoji:📚",
         desc: "Science/Maths (Per Book)"
@@ -146,10 +153,40 @@ const products = [
     // News
     {
         id: "n1",
-        name: "Sunday Times",
-        category: "news",
-        price: "Rs. 100.00",
+        name: "Adha (Daily)",
+        category: "newspapers", // Note: Ensure this matches your "filter-btn" data-filter value. The HTML used "Newspapers" (Capitalized). JS usually normalizes, but let's be safe.
+        // Actually, the HTML data-filter="Newspapers". The DB check: const searchCats = [currentCategory, currentCategory.toLowerCase()...]. 
+        // So "newspapers" (lowercase) in DB is fine.
+        subcategory: "Daily Papers",
+        price: "Rs. 50.00",
         image: "emoji:📰",
-        desc: "Latest edition."
+        desc: "Daily News Paper."
+    },
+    {
+        id: "n2",
+        name: "Sunday Lankadeepa",
+        category: "newspapers",
+        subcategory: "Sunday Papers",
+        price: "Rs. 150.00",
+        image: "emoji:📰",
+        desc: "Sunday Edition."
+    },
+    {
+        id: "n3",
+        name: "Sirikatha",
+        category: "newspapers",
+        subcategory: "Women Papers",
+        price: "Rs. 80.00",
+        image: "emoji:👩",
+        desc: "Weekly Women's Paper."
+    },
+    {
+        id: "n4",
+        name: "Sunday Observer",
+        category: "newspapers",
+        subcategory: "English Papers",
+        price: "Rs. 150.00",
+        image: "emoji:📰",
+        desc: "English Sunday Paper."
     }
 ];
