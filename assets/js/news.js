@@ -4,6 +4,30 @@ import { escapeHtml, escapeJs } from './utils.js';
 // Global store to avoid inline quoting issues
 window.newsDataStore = {};
 
+const MOCK_NEWS = [
+    {
+        id: "mock1",
+        title: "New Stock: Exercise Books Arrived",
+        date: "Today",
+        content: "New Atlas and CR books are now available in store. Special discounts for bulk purchases.",
+        image: "assets/img/news1.jpg"
+    },
+    {
+        id: "mock2",
+        title: "Delivery Areas Expanded",
+        date: "Yesterday",
+        content: "We now deliver to Harasbedda and Nildandahinna areas. Order via WhatsApp for instant delivery.",
+        image: "assets/img/news2.jpg"
+    },
+    {
+        id: "mock3",
+        title: "Community Charity Event",
+        date: "Last Week",
+        content: "Buddika Stores was proud to sponsor the local school sports meet. See photos from the event.",
+        image: "assets/img/news3.jpg"
+    }
+];
+
 async function fetchNews() {
     const list = document.getElementById('news-grid');
     if (!list) return;
@@ -12,8 +36,26 @@ async function fetchNews() {
         const q = query(collection(db, "news"), orderBy('createdAt', 'desc'), limit(3));
         const snapshot = await getDocs(q);
 
-        if (snapshot.empty) {
-            list.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-400 text-sm">No latest news at the moment.</p></div>';
+        // USE MOCK IF EMPTY
+        if (snapshot.empty || true) {
+            list.innerHTML = MOCK_NEWS.map((p, index) => {
+                const delay = (index + 1) * 100;
+                // Store Globally
+                window.newsDataStore[p.id] = p;
+
+                return `
+                    <article class="group cursor-pointer fade-in-up" style="animation-delay: ${delay}ms" onclick="showNewsDetail('${escapeJs(p.id)}')">
+                        <div class="h-64 bg-gray-200 rounded-2xl mb-6 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gray-800/10 group-hover:bg-gray-800/0 transition-colors"></div>
+                            <img src="${p.image}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">${escapeHtml(p.date)}</span>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-gray-600 transition-colors font-heading text-white">${escapeHtml(p.title)}</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2">${escapeHtml(p.content)}</p>
+                        <span class="text-xs font-bold underline">Read Article</span>
+                    </article>
+                `;
+            }).join('');
             return;
         }
 

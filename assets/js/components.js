@@ -2,9 +2,15 @@ import { auth, onAuthStateChanged, signOut } from './firebase-config.js';
 import { escapeHtml } from './utils.js';
 
 // Init Logic
-const init = () => {
-    loadHeader();
+const init = async () => {
+    await loadHeader();
     loadFooter();
+    // Initialize Theme Switcher after Header Load
+    if (window.initTheme) window.initTheme(); // Assuming we export this, or just re-run the script logic?
+    // Actually theme-switch.js runs on DOMContentLoaded. If header loads AFTER, the button isn't there.
+    // We need to re-bind the listener.
+    const evt = new Event('header-loaded');
+    document.dispatchEvent(evt);
 };
 
 if (document.readyState === 'loading') {
@@ -19,62 +25,71 @@ async function loadHeader() {
 
     // Base Header HTML
     let headerHTML = `
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-[100] transition-shadow duration-300" id="navbar">
+    <nav class="glass-nav sticky top-0 z-[100] transition-all duration-300" id="navbar">
         <div class="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
             <a href="index.html" class="text-2xl font-bold font-heading tracking-tighter flex items-center gap-2 group">
-                <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
-                    <span class="text-white text-lg">B</span>
+                <div class="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-md">
+                    <span class="text-white dark:text-black text-lg">B</span>
                 </div>
-                <span>Buddika Stores</span>
+                <span class="text-primary">Buddika Stores</span>
             </a>
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Home</a>
-                <a href="products.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Shop</a>
-                <a href="about.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">About</a>
-                <a href="contact.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Contact</a>
+                <a href="index.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Home</a>
+                <a href="products.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Shop</a>
+                <a href="about.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">About</a>
+                <a href="contact.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Contact</a>
             </div>
 
             <!-- Icons -->
-            <div class="flex items-center space-x-6">
-                 <!-- Search Bar -->
-                <div class="relative hidden lg:block group">
+            <div class="flex items-center space-x-4">
+                <!-- Search Bar -->
+                <div class="relative hidden lg:block group mr-2">
                     <input type="text" 
                         onkeypress="handleSearch(event)"
                         placeholder="Search items..." 
-                        class="bg-gray-50 border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-black/5 w-48 transition-all group-hover:w-64">
+                        class="bg-gray-100 dark:bg-white/10 border border-transparent dark:border-white/10 rounded-full py-2 px-4 pl-10 text-sm text-primary placeholder-gray-500 focus:ring-2 focus:ring-black/5 dark:focus:ring-white/20 w-48 transition-all group-hover:w-64">
                     <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
 
                 <!-- Cart -->
                 <button onclick="openCart()" class="relative group">
-                   <div class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                        <svg class="w-6 h-6 text-gray-700 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                   <div class="icon-glass-btn group-hover:bg-primary group-hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                    </div>
-                   <span id="cart-count" class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                   <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow-sm border-2 border-white dark:border-black">0</span>
                 </button>
 
                 <!-- Auth Section (Dynamic) -->
                 <div id="auth-section" class="relative">
                     <!-- Default: Login Button -->
-                    <a href="login.html" class="hidden md:flex items-center space-x-2 bg-black text-white px-5 py-2 rounded-full hover:bg-gray-800 transition-transform active:scale-95 shadow-lg shadow-gray-200">
+                    <a href="login.html" class="hidden md:flex items-center space-x-2 bg-white text-black px-5 py-2 rounded-full hover:bg-gray-200 transition-transform active:scale-95 shadow-lg shadow-white/10">
                         <span class="text-xs font-bold uppercase tracking-wider">Log In</span>
                     </a>
                 </div>
             
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="icon-glass-btn group" aria-label="Toggle Theme">
+                    <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                </button>
+
                 <!-- Mobile Menu Button -->
-                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                <button onclick="toggleMobileMenu()" class="md:hidden icon-glass-btn text-primary">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-20 shadow-xl">
-            <a href="index.html" class="block py-4 px-6 text-sm font-bold text-black border-b border-gray-50 hover:bg-gray-50">HOME</a>
-            <a href="products.html" class="block py-4 px-6 text-sm font-bold text-black border-b border-gray-50 hover:bg-gray-50">PRODUCTS</a>
-            <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-black hover:bg-gray-50">CONTACT</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0d0221]/95 backdrop-blur-xl border-t border-white/10 absolute w-full left-0 top-20 shadow-xl">
+            <a href="index.html" class="block py-4 px-6 text-sm font-bold text-white border-b border-white/5 hover:bg-white/5">HOME</a>
+            <a href="products.html" class="block py-4 px-6 text-sm font-bold text-white border-b border-white/5 hover:bg-white/5">PRODUCTS</a>
+            <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-white hover:bg-white/5">CONTACT</a>
         </div>
     </nav>
     `;
@@ -82,21 +97,21 @@ async function loadHeader() {
     // Append to container
     headerContainer.innerHTML = headerHTML + `
     <!-- Mobile Bottom Nav -->
-    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
-        <a href="index.html" class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-[#0d0221]/90 backdrop-blur-lg border-t border-white/10 flex justify-around items-center shadow-[0_-5px_15px_rgba(0,0,0,0.2)]">
+        <a href="index.html" class="flex flex-col items-center justify-center text-gray-400 hover:text-white w-full h-full">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span class="text-[10px] font-bold uppercase tracking-wide">Home</span>
         </a>
-        <a href="products.html" class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+        <a href="products.html" class="flex flex-col items-center justify-center text-gray-400 hover:text-white w-full h-full">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             <span class="text-[10px] font-bold uppercase tracking-wide">Shop</span>
         </a>
-        <button onclick="openCart()" class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full relative">
+        <button onclick="openCart()" class="flex flex-col items-center justify-center text-gray-400 hover:text-white w-full h-full relative">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
             <span class="text-[10px] font-bold uppercase tracking-wide">Cart</span>
-            <span id="mobile-cart-count" class="absolute top-2 right-6 bg-red-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+            <span id="mobile-cart-count" class="absolute top-2 right-6 bg-purple-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden shadow-sm">0</span>
         </button>
-        <a href="login.html" class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+        <a href="login.html" class="flex flex-col items-center justify-center text-gray-400 hover:text-white w-full h-full">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span class="text-[10px] font-bold uppercase tracking-wide">Profile</span>
         </a>
@@ -183,7 +198,7 @@ async function loadHeader() {
 
 function loadFooter() {
     const footerHTML = `
-        <footer class="bg-black text-white pt-16 pb-8">
+        <footer class="text-white pt-16 pb-8">
             <div class="container mx-auto px-4 md:px-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div class="col-span-1 md:col-span-2">
@@ -199,7 +214,7 @@ function loadFooter() {
                             <li><a href="about.html" class="text-sm text-gray-300 hover:text-white transition-colors">About Us</a></li>
                             <li><a href="products.html" class="text-sm text-gray-300 hover:text-white transition-colors">Products</a></li>
                             <li><a href="contact.html" class="text-sm text-gray-300 hover:text-white transition-colors">Contact</a></li>
-                            <li><a href="admin.html" class="text-sm text-gray-500 hover:text-red-400 transition-colors font-bold mt-2 block">Admin Panel</a></li>
+                            <!-- Link Removed -->
                         </ul>
                     </div>
                     <div>
@@ -215,7 +230,7 @@ function loadFooter() {
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center bg-black">
+                <div class="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p class="text-xs text-gray-600">&copy; ${new Date().getFullYear()} Buddika Stores. All rights reserved.</p>
                 </div>
             </div>

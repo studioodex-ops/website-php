@@ -9,7 +9,7 @@
     <meta name="robots" content="noindex, nofollow">
 
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest-pos.json">
     <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -40,7 +40,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin-style.css">
     <link rel="stylesheet" href="assets/css/receipt.css">
 
     <!-- Sinhala Font -->
@@ -139,13 +139,28 @@
                             data-cat="all">All</button>
                         <button onclick="filterByCategory('Grocery')"
                             class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Grocery">Grocery</button>
-                        <button onclick="filterByCategory('Stationery')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Stationery">Stationery</button>
-                        <button onclick="filterByCategory('Newspapers')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Newspapers">Newspapers</button>
+                            data-cat="Grocery">🛒 Grocery</button>
+                        <button onclick="toggleCategoryDropdown('Stationery')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
+                            data-cat="Stationery">✏️ Stationery <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg></button>
+                        <button onclick="toggleCategoryDropdown('Newspapers')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
+                            data-cat="Newspapers">📰 Newspapers <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Subcategory Chips Row -->
+                <div id="subcategory-row" class="hidden mb-4 -mt-2">
+                    <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="subcategory-chips">
+                        <!-- Chips will be dynamically inserted here -->
                     </div>
                 </div>
 
@@ -310,20 +325,41 @@
                 </div>
             </div>
 
-            <div class="p-4 border-t border-gray-100 flex gap-3 no-print">
-                <button onclick="printReceipt()"
-                    class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                        </path>
-                    </svg>
-                    Print Receipt
-                </button>
-                <button onclick="closeReceiptModal()"
-                    class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
-                    Done
-                </button>
+            <!-- WhatsApp Send Section -->
+            <div class="p-4 border-t border-gray-100 no-print space-y-3">
+                <div class="flex gap-2">
+                    <div class="flex-1 relative">
+                        <input type="tel" id="receipt-phone" placeholder="Customer phone (07XXXXXXXX)"
+                            list="customer-suggestions"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                        <datalist id="customer-suggestions">
+                            <!-- Customer suggestions will be populated here -->
+                        </datalist>
+                    </div>
+                    <button onclick="sendReceiptWhatsApp()"
+                        class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        WhatsApp
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="printReceipt()"
+                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                        Print Receipt
+                    </button>
+                    <button onclick="closeReceiptModal()"
+                        class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
+                        Done
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -395,6 +431,9 @@
         }
     </style>
 
+    <!-- html2canvas for receipt image capture -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <!-- QuaggaJS Barcode Scanner Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
@@ -408,7 +447,22 @@
         let cart = [];
         let currentUser = null;
         let currentCategory = 'all';
+        let currentSubcategory = null; // NEW: Track selected subcategory
         let discountMode = 'rs'; // rs or percent
+        let lastSaleData = null; // Store last sale for WhatsApp
+        let allCustomers = []; // NEW: For auto-suggest
+
+        // Subcategory Definitions (Matching Website Structure)
+        const subcategories = {
+            'Stationery': {
+                'Sathara Publications': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Past Papers', 'Story Books', 'Monthly Magazines'],
+                'CR Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule Books', 'Notebooks'],
+                'Other': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
+            },
+            'Newspapers': {
+                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers']
+            }
+        };
 
         // DOM Elements
         const loginContainer = document.getElementById('login-container');
@@ -614,9 +668,13 @@
             updateTotals();
         };
 
-        // Filter by Category
+        // Filter by Category (Clear subcategory when category changes)
         window.filterByCategory = (category) => {
             currentCategory = category;
+            currentSubcategory = null; // Reset subcategory
+
+            // Hide subcategory row
+            document.getElementById('subcategory-row').classList.add('hidden');
 
             // Update UI
             document.querySelectorAll('.category-btn').forEach(btn => {
@@ -632,14 +690,118 @@
             renderProducts();
         };
 
+        // Toggle Category Dropdown (Show Subcategory Chips)
+        window.toggleCategoryDropdown = (category) => {
+            currentCategory = category;
+            currentSubcategory = null;
+
+            // Update category button styling
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.add('bg-black', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            // Get subcategories for this category
+            const catData = subcategories[category];
+            if (!catData) {
+                document.getElementById('subcategory-row').classList.add('hidden');
+                renderProducts();
+                return;
+            }
+
+            // Build subcategory chips
+            const chipsContainer = document.getElementById('subcategory-chips');
+            let chipsHtml = `<button onclick="clearSubcategory()" 
+                class="subcategory-chip whitespace-nowrap bg-black text-white px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0">
+                All ${category}
+            </button>`;
+
+            // Add grouped subcategories
+            for (const [group, items] of Object.entries(catData)) {
+                items.forEach(subcat => {
+                    chipsHtml += `<button onclick="filterBySubcategory('${subcat}')" 
+                        class="subcategory-chip whitespace-nowrap bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-gray-200 flex-shrink-0"
+                        data-subcat="${subcat}">
+                        ${subcat}
+                    </button>`;
+                });
+            }
+
+            chipsContainer.innerHTML = chipsHtml;
+            document.getElementById('subcategory-row').classList.remove('hidden');
+
+            renderProducts();
+        };
+
+        // Filter by Subcategory
+        window.filterBySubcategory = (subcategory) => {
+            currentSubcategory = subcategory;
+
+            // Update subcategory chip styling
+            document.querySelectorAll('.subcategory-chip').forEach(chip => {
+                if (chip.dataset.subcat === subcategory) {
+                    chip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    chip.classList.add('bg-black', 'text-white');
+                } else {
+                    chip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    chip.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            // First chip is "All [Category]"
+            const firstChip = document.querySelector('.subcategory-chip');
+            if (firstChip && !subcategory) {
+                firstChip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.add('bg-black', 'text-white');
+            } else if (firstChip) {
+                firstChip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.remove('bg-black', 'text-white');
+            }
+
+            renderProducts();
+        };
+
+        // Clear Subcategory (Show all in category)
+        window.clearSubcategory = () => {
+            currentSubcategory = null;
+
+            // Reset all chips
+            document.querySelectorAll('.subcategory-chip').forEach(chip => {
+                chip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                chip.classList.remove('bg-black', 'text-white');
+            });
+
+            // Highlight first chip
+            const firstChip = document.querySelector('.subcategory-chip');
+            if (firstChip) {
+                firstChip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.add('bg-black', 'text-white');
+            }
+
+            renderProducts();
+        };
+
         // Auth State - Redirect to admin if not logged in
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            // DESKTOP BYPASS
+            const isDesktop = true;
+
+            if (user || isDesktop) {
+                if (!user) {
+                    // Mock User for Offline Mode
+                    user = { displayName: 'Local Cashier', email: 'offline@pos', uid: 'local_admin' };
+                }
                 currentUser = user;
                 loginContainer.classList.add('hidden');
                 posContainer.classList.remove('hidden');
-                document.getElementById('cashier-name').innerText = user.displayName || user.email;
+                document.getElementById('cashier-name').innerText = user.displayName || user.email || 'Cashier';
                 loadProducts();
+                loadCustomers(); // Load customer autocomplete suggestions
             } else {
                 // Not logged in - redirect to admin panel for login
                 window.location.href = 'admin.html';
@@ -720,6 +882,34 @@
             }
         }
 
+        // Load Customers for Auto-Suggest
+        async function loadCustomers() {
+            try {
+                if (!navigator.onLine) {
+                    console.log('[POS] Offline - Skipping customer load');
+                    return;
+                }
+
+                const snapshot = await getDocs(collection(db, 'customers'));
+                allCustomers = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Populate datalist with customer phone numbers
+                const datalist = document.getElementById('customer-suggestions');
+                if (datalist) {
+                    datalist.innerHTML = allCustomers.map(c =>
+                        `<option value="${c.phone}">${c.phone} (${c.totalPurchases || 0} purchases)</option>`
+                    ).join('');
+                }
+
+                console.log('[POS] Loaded', allCustomers.length, 'customers for auto-suggest');
+            } catch (error) {
+                console.warn('Error loading customers:', error);
+            }
+        }
+
         // Update online/offline status indicator
         function updateOnlineStatus(isOnline) {
             const statusBadge = document.querySelector('header span.bg-green-100, header span.bg-red-100');
@@ -745,11 +935,20 @@
                 filtered = filtered.filter(p => p.category && p.category.trim().toLowerCase() === targetCat);
             }
 
+            // Filter by subcategory (NEW)
+            if (currentSubcategory) {
+                const targetSubcat = currentSubcategory.trim().toLowerCase();
+                filtered = filtered.filter(p =>
+                    p.subcategory && p.subcategory.trim().toLowerCase() === targetSubcat
+                );
+            }
+
             // Filter by search
             if (searchTerm) {
                 filtered = filtered.filter(p =>
                     p.name.toLowerCase().includes(searchTerm) ||
-                    (p.sku && p.sku.toLowerCase().includes(searchTerm))
+                    (p.sku && p.sku.toLowerCase().includes(searchTerm)) ||
+                    (p.subcategory && p.subcategory.toLowerCase().includes(searchTerm))
                 );
             }
 
@@ -1203,9 +1402,14 @@
                     subtotal: subtotal,
                     discount: discount,
                     total: total,
+                    // Calculate profit (total - sum of item costs)
+                    totalCost: cart.reduce((sum, item) => sum + ((item.cost || 0) * item.qty), 0),
+                    profit: total - cart.reduce((sum, item) => sum + ((item.cost || 0) * item.qty), 0),
                     received: paymentMethod === 'cash' ? received : total,
                     change: paymentMethod === 'cash' ? Math.max(0, received - total) : 0,
                     paymentMethod: paymentMethod,
+                    // Customer phone (will be set when WhatsApp button is clicked)
+                    customerPhone: null,
                     cashierId: currentUser.uid,
                     cashierName: currentUser.displayName || currentUser.email,
                     createdAt: new Date()
@@ -1347,6 +1551,9 @@
 
         // Generate Receipt
         function generateReceipt(sale) {
+            // Store for WhatsApp sending
+            lastSaleData = sale;
+
             const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
                 year: 'numeric', month: '2-digit', day: '2-digit',
                 hour: '2-digit', minute: '2-digit'
@@ -1438,6 +1645,326 @@
         // Print Receipt
         window.printReceipt = () => {
             window.print();
+        };
+
+        // Send Receipt via WhatsApp - Beautiful Image Version
+        window.sendReceiptWhatsApp = async () => {
+            const phoneInput = document.getElementById('receipt-phone').value.trim();
+
+            if (!phoneInput) {
+                showToast('Please enter customer phone number', 'error');
+                return;
+            }
+
+            // Clean phone number - remove spaces, dashes, etc.
+            let phone = phoneInput.replace(/[^0-9]/g, '');
+
+            // Convert Sri Lankan formats to international
+            if (phone.startsWith('0')) {
+                phone = '94' + phone.substring(1);
+            } else if (!phone.startsWith('94')) {
+                phone = '94' + phone;
+            }
+
+            if (phone.length < 11) {
+                showToast('Invalid phone number format', 'error');
+                return;
+            }
+
+            if (!lastSaleData) {
+                showToast('No receipt data available', 'error');
+                return;
+            }
+
+            // Save customer phone to the sale in Firebase
+            try {
+                const sale = lastSaleData;
+
+                // Update the sale document with customer phone
+                if (navigator.onLine && sale.id) {
+                    await updateDoc(doc(db, 'sales', sale.id), {
+                        customerPhone: phoneInput
+                    });
+
+                    // Update or create customer record
+                    const customerRef = doc(db, 'customers', phoneInput);
+                    const customerDoc = await getDocs(query(collection(db, 'customers')));
+                    const existingCustomer = customerDoc.docs.find(d => d.id === phoneInput);
+
+                    if (existingCustomer) {
+                        // Update existing customer
+                        await updateDoc(customerRef, {
+                            totalPurchases: increment(1),
+                            totalSpent: increment(sale.total),
+                            lastVisit: new Date()
+                        });
+                    } else {
+                        // Create new customer
+                        await setDoc(customerRef, {
+                            phone: phoneInput,
+                            totalPurchases: 1,
+                            totalSpent: sale.total,
+                            lastVisit: new Date(),
+                            createdAt: new Date()
+                        });
+                    }
+
+                    // Refresh customer suggestions
+                    loadCustomers();
+                    console.log('[POS] Customer saved:', phoneInput);
+                }
+            } catch (err) {
+                console.warn('Failed to save customer data:', err);
+            }
+
+            showToast('🎨 Generating beautiful receipt...', 'info');
+
+            try {
+                // Generate a beautiful receipt HTML for WhatsApp
+                const sale = lastSaleData;
+                const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                // Calculate total savings
+                let totalSavings = sale.discount || 0;
+                sale.items.forEach(item => {
+                    if (item.itemDiscount > 0) {
+                        totalSavings += item.itemDiscount;
+                    }
+                });
+
+                // Create beautiful receipt HTML
+                const receiptHtml = `
+                    <div id="whatsapp-receipt" style="
+                        font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
+                        width: 350px;
+                        background: white;
+                        padding: 25px;
+                        border-radius: 16px;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+                    ">
+                        <!-- Header -->
+                        <div style="text-align: center; padding-bottom: 15px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 15px;">
+                            <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 5px 0; color: #1a1a1a;">බුද්ධික ස්ටෝර්ස්</h2>
+                            <p style="font-size: 14px; font-weight: 700; margin: 0 0 8px 0; color: #333;">BUDDIKA STORES</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">අංක 48, මහනුවර පාර, වලපනේ</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">No 48, Kandy Road, Walapane</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">Tel: 052-2279101 / 077-5192756</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">Voice: 0784668883</p>
+                        </div>
+
+                        <!-- Receipt Info -->
+                        <div style="padding-bottom: 12px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 12px;">
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Receipt:</strong> ${escapeHtml(sale.id)}</p>
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Date:</strong> ${receiptDate}</p>
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Cashier:</strong> ${escapeHtml(sale.cashierName)}</p>
+                        </div>
+
+                        <!-- Items -->
+                        <div style="padding-bottom: 12px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 12px;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #333;">
+                                        <th style="text-align: left; padding: 6px 0; font-weight: 700;">Item / අයිතමය</th>
+                                        <th style="text-align: right; padding: 6px 0; font-weight: 700;">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sale.items.map(item => `
+                                        <tr>
+                                            <td style="padding: 8px 0; vertical-align: top;">
+                                                ${item.nameSi ? `<span style="font-weight: 600;">${item.nameSi}</span><br>` : ''}
+                                                ${escapeHtml(item.name)}<br>
+                                                <span style="font-size: 11px; color: #666;">${item.qty} x Rs. ${item.price.toFixed(2)}</span>
+                                                ${item.itemDiscount > 0 ? `<br><span style="font-size: 11px; color: #e53935;">Discount: -Rs. ${item.itemDiscount.toFixed(2)}</span>` : ''}
+                                            </td>
+                                            <td style="text-align: right; padding: 8px 0; vertical-align: top;">Rs. ${item.total.toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Totals -->
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Subtotal / උප එකතුව</span>
+                                <span>Rs. ${sale.subtotal.toFixed(2)}</span>
+                            </div>
+                            ${sale.discount > 0 ? `
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #e53935;">
+                                <span>Discount / වට්ටම</span>
+                                <span>- Rs. ${sale.discount.toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                            <div style="display: flex; justify-content: space-between; padding: 10px 0; margin-top: 8px; border-top: 2px dashed #333; font-size: 16px; font-weight: 700;">
+                                <span>Total / එකතුව</span>
+                                <span>Rs. ${sale.total.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Received / ලැබුණු</span>
+                                <span>Rs. ${sale.received.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Change / ඉතිරි</span>
+                                <span>Rs. ${sale.change.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Payment / ගෙවීම</span>
+                                <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
+                            </div>
+                        </div>
+
+                        <!-- Savings Box -->
+                        ${totalSavings > 0 ? `
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 12px 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
+                            <span style="font-size: 12px; color: #2e7d32;">🎉 ඔබට ඉතිරි වූ මුදල / You Saved</span>
+                            <div style="font-size: 20px; font-weight: 700; color: #1b5e20; margin-top: 5px;">Rs. ${totalSavings.toFixed(2)}</div>
+                        </div>
+                        ` : ''}
+
+                        <!-- Footer -->
+                        <div style="text-align: center; padding-top: 12px; border-top: 2px dashed #e5e5e5;">
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">ස්තූතියි! නැවත එන්න.</p>
+                            <p style="font-size: 13px; font-weight: 700; color: #333; margin: 8px 0;">Thank You! Please Come Again.</p>
+                            <p style="font-size: 11px; color: #888; margin-top: 10px;">www.buddikastores.com</p>
+                            <p style="font-size: 9px; color: #aaa; margin-top: 5px;">Software by Odex Studio (0784-66-88-3)</p>
+                        </div>
+                    </div>
+                `;
+
+                // Create temp container for canvas capture
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = receiptHtml;
+                tempContainer.style.position = 'fixed';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '0';
+                document.body.appendChild(tempContainer);
+
+                // Wait for fonts to load
+                await document.fonts.ready;
+
+                // Capture as canvas
+                const canvas = await html2canvas(tempContainer.querySelector('#whatsapp-receipt'), {
+                    backgroundColor: '#ffffff',
+                    scale: 2, // High resolution
+                    useCORS: true,
+                    logging: false
+                });
+
+                // Remove temp container
+                document.body.removeChild(tempContainer);
+
+                // Convert to blob
+                canvas.toBlob(async (blob) => {
+                    if (!blob) {
+                        showToast('Failed to generate receipt image', 'error');
+                        return;
+                    }
+
+                    // Try native sharing with image (works on mobile)
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'receipt.png', { type: 'image/png' })] })) {
+                        try {
+                            const file = new File([blob], `Buddika_Receipt_${sale.id}.png`, { type: 'image/png' });
+                            await navigator.share({
+                                title: 'Receipt - Buddika Stores',
+                                text: `🧾 Receipt: ${sale.id}\n💵 Total: Rs. ${sale.total.toFixed(2)}\n\nThank you for shopping at Buddika Stores!`,
+                                files: [file],
+                            });
+                            showToast('✅ Receipt shared successfully!', 'success');
+                            return;
+                        } catch (shareErr) {
+                            console.log('Native share failed:', shareErr);
+                        }
+                    }
+
+                    // Fallback: Download image and open WhatsApp with text
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Buddika_Receipt_${sale.id}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Open WhatsApp with simple message
+                    const simpleText = `🧾 *BUDDIKA STORES - RECEIPT*
+━━━━━━━━━━━━━━━━
+*Receipt:* ${sale.id}
+*Date:* ${receiptDate}
+*Total:* Rs. ${sale.total.toFixed(2)}
+━━━━━━━━━━━━━━━━
+
+📎 Receipt image attached above ☝️
+
+_Thank you for shopping with us! 🙏_
+_www.buddikastores.com_`;
+
+                    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(simpleText)}`;
+                    window.open(waUrl, '_blank');
+
+                    showToast('📱 Receipt image downloaded! Attach it to WhatsApp', 'success');
+                }, 'image/png', 1.0);
+
+            } catch (err) {
+                console.error('Receipt image generation error:', err);
+
+                // Fallback to text-only
+                const sale = lastSaleData;
+                const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                let receiptText = `*🧾 BUDDIKA STORES - RECEIPT*
+━━━━━━━━━━━━━━━━
+📍 No 48, Kandy Road, Walapane
+📞 052-2279101 / 077-5192756
+
+*Receipt:* ${sale.id}
+*Date:* ${receiptDate}
+*Cashier:* ${sale.cashierName}
+━━━━━━━━━━━━━━━━
+
+*ITEMS:*
+`;
+                sale.items.forEach((item, i) => {
+                    receiptText += `${i + 1}. ${item.name}
+   ${item.qty} x Rs.${item.price.toFixed(2)} = Rs.${item.total.toFixed(2)}
+`;
+                    if (item.itemDiscount > 0) {
+                        receiptText += `   _Discount: -Rs.${item.itemDiscount.toFixed(2)}_
+`;
+                    }
+                });
+
+                receiptText += `
+━━━━━━━━━━━━━━━━
+*Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
+
+                if (sale.discount > 0) {
+                    receiptText += `
+*Discount:* -Rs.${sale.discount.toFixed(2)}`;
+                }
+
+                receiptText += `
+*TOTAL:* Rs.${sale.total.toFixed(2)}
+*Payment:* ${sale.paymentMethod === 'cash' ? 'Cash' : 'Card'}
+*Received:* Rs.${sale.received.toFixed(2)}
+*Change:* Rs.${sale.change.toFixed(2)}
+━━━━━━━━━━━━━━━━
+
+_Thank you for shopping with us! 🙏_
+_www.buddikastores.com_`;
+
+                const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(receiptText)}`;
+                window.open(waUrl, '_blank');
+
+                showToast('Opening WhatsApp... 📱', 'success');
+            }
         };
 
         // Close Receipt Modal

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Debugger</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        #log-container {
+            background: black;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 300px;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+
+        .error {
+            color: #ff5555;
+        }
+
+        .warn {
+            color: #ffcc00;
+        }
+
+        .info {
+            color: #88ccff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🤖 Chatbot Live Debugger</h1>
+    <p>Please wait for 5 seconds. If nothing happens, click the "Test Init" button.</p>
+    <button onclick="window.manuallyInit()"
+        style="padding: 10px 20px; background: blue; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px;">
+        Test Init (Manually Start)
+    </button>
+
+    <div id="log-container">Initializing Debugger...</div>
+
+    <script>
+        // Override Console to print to screen
+        const logBox = document.getElementById('log-container');
+        function logToScreen(msg, type = 'info') {
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${msg}`;
+            logBox.appendChild(line);
+        }
+
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = function (...args) { originalLog.apply(console, args); logToScreen(args.join(' '), 'info'); };
+        console.error = function (...args) { originalError.apply(console, args); logToScreen(args.join(' '), 'error'); };
+        console.warn = function (...args) { originalWarn.apply(console, args); logToScreen(args.join(' '), 'warn'); };
+
+        window.onerror = function (msg, url, line, col, error) {
+            logToScreen(`${msg} \nAt: ${url}:${line}:${col} \nStack: ${error?.stack}`, 'error');
+            return false;
+        };
+
+        logToScreen("Console Capture Active. Loading Modules...");
+    </script>
+
+    <!-- Load the actual Chatbot Module -->
+    <script type="module">
+        console.log("Attempting to import nex_v5_gold.js...");
+        try {
+            import { initNex, sendNexMessage } from './assets/js/nex_v5_gold.js?v=debug_1.0';
+            console.log("Module Imported Successfully!");
+
+            window.manuallyInit = function () {
+                console.log("Calling initNex()...");
+                initNex();
+                console.log("initNex() called. Check bottom right of screen.");
+            }
+
+            // Auto-start
+            setTimeout(window.manuallyInit, 1000);
+
+        } catch (e) {
+            console.error("FAILED TO IMPORT MODULE:", e);
+        }
+    </script>
+</body>
+
+</html>

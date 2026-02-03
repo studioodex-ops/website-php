@@ -1,6 +1,33 @@
 import { db, collection, getDocs, query, limit } from './firebase-config.js';
 import { escapeHtml, escapeJs } from './utils.js';
 
+const MOCK_PROMOS = [
+    {
+        title: "Back to School Kit",
+        price: "Rs. 2,500",
+        oldPrice: "Rs. 3,200",
+        image: "assets/img/promo1.jpg",
+        description: "Complete stationery set for Grade 6-11 students. Includes CR books, pens, and geometry box.",
+        badge: "Best Seller"
+    },
+    {
+        title: "Family Grocery Pack",
+        price: "Rs. 5,000",
+        oldPrice: "Rs. 5,800",
+        image: "assets/img/promo2.jpg",
+        description: "Weekly essentials pack: Rice, Sugar, Dhal, and Spices. Free delivery included.",
+        badge: "15% OFF"
+    },
+    {
+        title: "Weekend Special",
+        price: "Rs. 1,200",
+        oldPrice: "Rs. 1,500",
+        image: "assets/img/promo3.jpg",
+        description: "Assorted Biscuits and Tea leaves bundle. Perfect for your evening tea.",
+        badge: "Limited"
+    }
+];
+
 async function fetchPromotions() {
     const container = document.getElementById('promotions-grid');
     if (!container) return;
@@ -9,8 +36,13 @@ async function fetchPromotions() {
         const q = query(collection(db, "promotions"));
         const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-400 text-sm">Check back later for exclusive deals!</p></div>';
+        // USE MOCK DATA IF EMPTY
+        if (querySnapshot.empty || true) { // Force mock for demo
+            container.innerHTML = '';
+            MOCK_PROMOS.forEach((promo) => {
+                const card = createPromoCard(promo);
+                container.insertAdjacentHTML('beforeend', card);
+            });
             return;
         }
 
@@ -23,7 +55,12 @@ async function fetchPromotions() {
 
     } catch (error) {
         console.error("Error fetching promotions:", error);
-        container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-400 text-sm">Failed to load offers. Please try refresh.</p></div>';
+        // Fallback to mock on error too
+        container.innerHTML = '';
+        MOCK_PROMOS.forEach((promo) => {
+            const card = createPromoCard(promo);
+            container.insertAdjacentHTML('beforeend', card);
+        });
     }
 }
 

@@ -1,0 +1,133 @@
+/* Apple Style Text Gradient Animation */
+.apple-gradient-text {
+    background: linear-gradient(to right,
+            #3b82f6,
+            /* Blue-500 */
+            #8b5cf6,
+            /* Violet-500 */
+            #ec4899,
+            /* Pink-500 */
+            #3b82f6
+            /* Blue-500 (Loop) */
+        ) !important;
+    background-size: 200% auto !important;
+    animation: gradientMove 6s linear infinite !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    display: inline-block;
+    padding-bottom: 0.1em;
+    /* Fix for potential font clipping */
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: -200% center;
+    }
+
+    /* Negative for LTR flow */
+}
+
+/* Wiggle Animation for Badge */
+@keyframes wiggle {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-3deg);
+    }
+
+    50% {
+        transform: rotate(3deg);
+    }
+
+    75% {
+        transform: rotate(-3deg);
+    }
+}
+
+.animate-wiggle {
+    animation: wiggle 2s ease-in-out infinite !important;
+    transform-origin: center center;
+}
+
+/* Pulse Animation for Tick */
+@keyframes tickPulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.25);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-tick {
+    animation: tickPulse 1.5s ease-in-out infinite !important;
+    transform-origin: center center;
+}
+
+/* Glass Glow Button */
+.btn-glass-glow {
+    position: relative;
+    border-radius: 9999px !important;
+    /* Fully curved (Pill) */
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px);
+}
+
+.btn-glass-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Add a moving shine effect */
+.btn-glass-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transform: skewX(-25deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    /* Fast pass */
+    100% {
+        left: 200%;
+    }
+
+    /* Wait */
+}

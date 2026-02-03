@@ -40,7 +40,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin-style.css">
     <link rel="stylesheet" href="assets/css/receipt.css">
 
     <!-- Sinhala Font -->
@@ -84,47 +84,33 @@
     <div id="pos-container" class="hidden h-screen flex flex-col">
 
         <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-3 md:px-6 py-2 md:py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-4">
-                <a href="index.html"
-                    class="text-lg md:text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
                     <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                         <span class="text-white text-lg">B</span>
                     </div>
-                    <span class="hidden md:inline">POS System</span>
-                    <span class="md:hidden">POS</span>
+                    <span>POS System</span>
                 </a>
-                <span
-                    class="text-[10px] md:text-xs bg-green-100 text-green-700 px-2 md:px-3 py-1 rounded-full font-bold">Online</span>
+                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Online</span>
             </div>
-            <div class="flex items-center gap-2 md:gap-6">
-                <div class="text-right hidden md:block">
+            <div class="flex items-center gap-6">
+                <div class="text-right">
                     <p class="text-xs text-gray-500">Logged in as</p>
                     <p id="cashier-name" class="font-bold text-sm">Cashier</p>
                 </div>
                 <button onclick="handleLogout()"
-                    class="bg-red-50 text-red-600 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold hover:bg-red-100 transition-colors">
+                    class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors">
                     Logout
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-
-            <!-- Mobile Cart Toggle Button -->
-            <button id="mobile-cart-toggle" onclick="toggleMobileCart()"
-                class="md:hidden fixed bottom-4 right-4 z-40 bg-black text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center gap-0.5">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                    </path>
-                </svg>
-                <span id="mobile-cart-count" class="text-xs font-bold">0</span>
-            </button>
+        <div class="flex-1 flex overflow-hidden">
 
             <!-- Left: Products Section -->
-            <div class="flex-1 flex flex-col p-3 md:p-6 overflow-hidden">
+            <div class="flex-1 flex flex-col p-6 overflow-hidden">
 
                 <!-- Search & Filter -->
                 <div class="flex gap-4 mb-6">
@@ -153,19 +139,34 @@
                             data-cat="all">All</button>
                         <button onclick="filterByCategory('Grocery')"
                             class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Grocery">Grocery</button>
-                        <button onclick="filterByCategory('Stationery')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Stationery">Stationery</button>
-                        <button onclick="filterByCategory('Newspapers')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Newspapers">Newspapers</button>
+                            data-cat="Grocery">🛒 Grocery</button>
+                        <button onclick="toggleCategoryDropdown('Stationery')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
+                            data-cat="Stationery">✏️ Stationery <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg></button>
+                        <button onclick="toggleCategoryDropdown('Newspapers')"
+                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
+                            data-cat="Newspapers">📰 Newspapers <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Subcategory Chips Row -->
+                <div id="subcategory-row" class="hidden mb-4 -mt-2">
+                    <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="subcategory-chips">
+                        <!-- Chips will be dynamically inserted here -->
                     </div>
                 </div>
 
                 <!-- Products Grid -->
                 <div id="products-grid"
-                    class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4 pr-2 pb-20 md:pb-2">
+                    class="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pr-2">
                     <!-- Products will be loaded here -->
                     <div class="col-span-full text-center py-20 text-gray-400">
                         <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor"
@@ -178,30 +179,15 @@
                 </div>
             </div>
 
-            <!-- Mobile Cart Overlay -->
-            <div id="mobile-cart-overlay" class="md:hidden fixed inset-0 bg-black/50 z-40 hidden"
-                onclick="closeMobileCart()"></div>
-
-            <!-- Right: Cart Section - Slides up on mobile -->
-            <div id="cart-panel"
-                class="w-full md:w-96 bg-white border-t md:border-t-0 md:border-l border-gray-200 flex flex-col fixed md:relative bottom-0 left-0 right-0 z-50 transform translate-y-full md:translate-y-0 transition-transform duration-300 ease-in-out max-h-[80vh] md:max-h-none rounded-t-3xl md:rounded-none shadow-2xl md:shadow-none">
+            <!-- Right: Cart Section -->
+            <div class="w-96 bg-white border-l border-gray-200 flex flex-col">
 
                 <!-- Cart Header -->
                 <div class="p-4 border-b border-gray-100">
-                    <!-- Mobile Drag Handle -->
-                    <div class="md:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3"></div>
                     <div class="flex items-center justify-between">
                         <h2 class="font-bold text-lg font-heading">Current Sale</h2>
-                        <div class="flex items-center gap-3">
-                            <button onclick="clearCart()"
-                                class="text-xs text-red-500 hover:text-red-700 font-bold">Clear All</button>
-                            <button onclick="closeMobileCart()" class="md:hidden text-gray-400 hover:text-black">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
+                        <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear
+                            All</button>
                     </div>
                 </div>
 
@@ -277,51 +263,41 @@
                             Card
                         </button>
                     </div>
-                    <!-- Payment Validation Status -->
-                    <div id="payment-status"
-                        class="hidden bg-red-500 text-white py-3 rounded-xl font-bold text-center text-sm mt-2">
-                        Received amount is less than total!
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Quantity Input Modal -->
-    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-2 sm:p-4">
-        <div class="bg-white rounded-2xl w-full max-w-xs sm:max-w-sm shadow-2xl">
-            <div class="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-bold text-sm sm:text-base" id="qty-modal-title">Add Product</h3>
-                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black p-1">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-bold" id="qty-modal-title">Add Product</h3>
+                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
             </div>
-            <div class="p-4 sm:p-6">
-                <p class="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4" id="qty-modal-desc">Enter quantity</p>
-                <div class="flex flex-col gap-3 mb-4 sm:mb-6">
-                    <div class="flex items-center justify-center gap-2 sm:gap-3">
-                        <button onclick="adjustQtyInput(-1)"
-                            class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-lg sm:text-xl hover:bg-gray-200 transition-colors flex-shrink-0">-</button>
-                        <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
-                            class="w-20 sm:w-24 text-center text-xl sm:text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-2 sm:py-3 focus:ring-2 focus:ring-black outline-none">
-                        <button onclick="adjustQtyInput(1)"
-                            class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-lg sm:text-xl hover:bg-gray-200 transition-colors flex-shrink-0">+</button>
-                    </div>
-                    <div class="text-center">
-                        <span id="qty-unit-label"
-                            class="text-sm sm:text-lg font-bold text-gray-500 bg-gray-100 px-4 py-1 rounded-full">unit</span>
-                    </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-500 mb-4" id="qty-modal-desc">Enter quantity</p>
+                <div class="flex items-center gap-3 mb-6">
+                    <button onclick="adjustQtyInput(-1)"
+                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">-</button>
+                    <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
+                        class="flex-1 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-3 focus:ring-2 focus:ring-black outline-none">
+                    <button onclick="adjustQtyInput(1)"
+                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">+</button>
+                    <span id="qty-unit-label" class="text-lg font-bold text-gray-500 w-12">unit</span>
                 </div>
-                <div class="flex gap-2 sm:gap-3">
+                <div class="flex gap-3">
                     <button onclick="closeQtyModal()"
-                        class="flex-1 bg-gray-100 text-gray-700 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-200 transition-colors">
+                        class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
                         Cancel
                     </button>
                     <button onclick="confirmAddToCart()"
-                        class="flex-1 bg-black text-white py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-800 transition-colors">
+                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors">
                         Add to Cart
                     </button>
                 </div>
@@ -349,11 +325,17 @@
                 </div>
             </div>
 
+            <!-- WhatsApp Send Section -->
             <div class="p-4 border-t border-gray-100 no-print space-y-3">
-                <!-- WhatsApp Send Section -->
                 <div class="flex gap-2">
-                    <input type="tel" id="receipt-phone" placeholder="Customer phone (07XXXXXXXX)"
-                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    <div class="flex-1 relative">
+                        <input type="tel" id="receipt-phone" placeholder="Customer phone (07XXXXXXXX)"
+                            list="customer-suggestions"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                        <datalist id="customer-suggestions">
+                            <!-- Customer suggestions will be populated here -->
+                        </datalist>
+                    </div>
                     <button onclick="sendReceiptWhatsApp()"
                         class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-600 transition-all flex items-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -383,64 +365,53 @@
     </div>
 
     <!-- Barcode Scanner Modal -->
-    <div id="barcode-modal" class="fixed inset-0 bg-black z-[350] hidden flex flex-col">
-        <div class="bg-black text-white p-3 sm:p-4 flex items-center justify-between safe-area-top">
-            <div class="flex items-center gap-2 sm:gap-3">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
-                    </path>
-                </svg>
-                <h3 class="font-bold text-base sm:text-lg">📷 Scan Barcode</h3>
+    <div id="barcode-modal" class="fixed inset-0 bg-black/90 z-[350] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-black text-white">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
+                        </path>
+                    </svg>
+                    <h3 class="font-bold text-lg">Scan Barcode</h3>
+                </div>
+                <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
             </div>
-            <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
 
-        <!-- Scanner View - Full Screen on Mobile -->
-        <div class="flex-1 relative bg-black">
-            <div id="barcode-scanner-view" class="w-full h-full"></div>
-            <!-- Scan Line Animation -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div class="w-64 sm:w-72 h-40 sm:h-48 border-2 border-green-400 rounded-lg relative">
-                    <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
-                        style="top: 50%; animation: scanLine 2s infinite;"></div>
-                    <!-- Corner markers -->
-                    <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-green-400 rounded-tl"></div>
-                    <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-green-400 rounded-tr"></div>
-                    <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-green-400 rounded-bl">
-                    </div>
-                    <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-green-400 rounded-br">
+            <!-- Scanner View -->
+            <div class="relative bg-black" style="height: 300px;">
+                <div id="barcode-scanner-view" class="w-full h-full"></div>
+                <!-- Scan Line Animation -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-64 h-48 border-2 border-green-400 rounded-lg relative">
+                        <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
+                            style="top: 50%; animation: scanLine 2s infinite;"></div>
                     </div>
                 </div>
             </div>
-            <!-- Tip text -->
-            <div class="absolute bottom-4 left-0 right-0 text-center">
-                <span class="bg-black/70 text-white text-xs sm:text-sm px-4 py-2 rounded-full">
-                    📦 Point camera at barcode
-                </span>
-            </div>
-        </div>
 
-        <!-- Manual Entry - Compact on mobile -->
-        <div class="bg-white p-3 sm:p-4 safe-area-bottom">
-            <div class="text-center text-xs sm:text-sm text-gray-500 mb-2">
-                Or enter barcode manually:
-            </div>
-            <div class="flex gap-2">
-                <input type="text" id="manual-barcode-input" placeholder="Enter barcode..."
-                    class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none">
-                <button onclick="searchByBarcode()"
-                    class="bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors">
-                    Search
-                </button>
-            </div>
-            <div id="barcode-result" class="text-center text-sm mt-2 hidden">
-                <!-- Result will show here -->
+            <!-- Manual Entry -->
+            <div class="p-4 space-y-3">
+                <div class="text-center text-sm text-gray-500">
+                    Or enter barcode manually:
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="manual-barcode-input" placeholder="Enter barcode number..."
+                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                    <button onclick="searchByBarcode()"
+                        class="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                        Search
+                    </button>
+                </div>
+                <div id="barcode-result" class="text-center text-sm hidden">
+                    <!-- Result will show here -->
+                </div>
             </div>
         </div>
     </div>
@@ -460,6 +431,9 @@
         }
     </style>
 
+    <!-- html2canvas for receipt image capture -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <!-- QuaggaJS Barcode Scanner Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
@@ -473,8 +447,22 @@
         let cart = [];
         let currentUser = null;
         let currentCategory = 'all';
+        let currentSubcategory = null; // NEW: Track selected subcategory
         let discountMode = 'rs'; // rs or percent
         let lastSaleData = null; // Store last sale for WhatsApp
+        let allCustomers = []; // NEW: For auto-suggest
+
+        // Subcategory Definitions (Matching Website Structure)
+        const subcategories = {
+            'Stationery': {
+                'Sathara Publications': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Past Papers', 'Story Books', 'Monthly Magazines'],
+                'CR Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule Books', 'Notebooks'],
+                'Other': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
+            },
+            'Newspapers': {
+                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers']
+            }
+        };
 
         // DOM Elements
         const loginContainer = document.getElementById('login-container');
@@ -509,8 +497,8 @@
             document.getElementById('barcode-modal').classList.add('hidden');
         };
 
-        // Start Barcode Scanner with Quagga - iOS Compatible
-        async function startBarcodeScanner() {
+        // Start Barcode Scanner with Quagga
+        function startBarcodeScanner() {
             if (typeof Quagga === 'undefined') {
                 console.error('Quagga not loaded');
                 showToast('Scanner library not loaded', 'error');
@@ -519,89 +507,28 @@
 
             if (scannerActive) return;
 
-            // Check HTTPS requirement (iOS requires HTTPS for camera)
-            const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            if (!isSecure) {
-                const resultDiv = document.getElementById('barcode-result');
-                resultDiv.innerHTML = `
-                    <div class="bg-orange-50 text-orange-700 p-3 rounded-lg">
-                        <p class="font-bold">⚠️ HTTPS Required</p>
-                        <p class="text-xs mt-1">iOS requires HTTPS for camera access. Use manual barcode entry below, or access via HTTPS.</p>
-                    </div>
-                `;
-                resultDiv.classList.remove('hidden');
-                console.warn('[Scanner] HTTPS required for camera on iOS');
-            }
-
-            // First, explicitly request camera permission (better iOS support)
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: { ideal: "environment" },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    }
-                });
-                // Stop the temporary stream - Quagga will create its own
-                stream.getTracks().forEach(track => track.stop());
-                console.log('[Scanner] Camera permission granted');
-            } catch (permErr) {
-                console.error('[Scanner] Camera permission error:', permErr);
-                const resultDiv = document.getElementById('barcode-result');
-
-                let errorMsg = 'Camera access denied';
-                if (permErr.name === 'NotAllowedError') {
-                    errorMsg = '📵 Camera permission denied. Please allow camera access in your browser/device settings.';
-                } else if (permErr.name === 'NotFoundError') {
-                    errorMsg = '📷 No camera found on this device.';
-                } else if (permErr.name === 'NotReadableError') {
-                    errorMsg = '📷 Camera is in use by another app.';
-                } else if (permErr.name === 'OverconstrainedError') {
-                    errorMsg = '📷 Camera does not meet requirements.';
-                } else if (permErr.name === 'SecurityError') {
-                    errorMsg = '🔒 HTTPS required for camera access on iOS.';
-                }
-
-                resultDiv.innerHTML = `
-                    <div class="bg-red-50 text-red-700 p-3 rounded-lg">
-                        <p class="font-bold">❌ Camera Error</p>
-                        <p class="text-xs mt-1">${errorMsg}</p>
-                        <p class="text-xs mt-2 text-gray-500">Tip: Enter barcode manually below ⬇️</p>
-                    </div>
-                `;
-                resultDiv.classList.remove('hidden');
-                showToast(errorMsg, 'error');
-                return;
-            }
-
-            // Initialize Quagga with iOS-optimized settings
             Quagga.init({
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
                     target: document.getElementById('barcode-scanner-view'),
                     constraints: {
-                        facingMode: { ideal: "environment" }, // Back camera
-                        width: { min: 640, ideal: 1280, max: 1920 },
-                        height: { min: 480, ideal: 720, max: 1080 },
-                        aspectRatio: { ideal: 1.777778 } // 16:9
+                        facingMode: "environment", // Use back camera
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
                     }
                 },
                 decoder: {
                     readers: [
-                        "ean_reader",        // EAN-13 (most products)
-                        "ean_8_reader",      // EAN-8
+                        "ean_reader",        // EAN-13, EAN-8
+                        "ean_8_reader",
                         "code_128_reader",   // Code 128
                         "code_39_reader",    // Code 39
-                        "upc_reader",        // UPC-A
-                        "upc_e_reader",      // UPC-E
-                        "i2of5_reader",      // Interleaved 2 of 5 (packaging)
-                        "codabar_reader"     // Codabar
-                    ],
-                    multiple: false
+                        "upc_reader",        // UPC-A, UPC-E
+                        "upc_e_reader"
+                    ]
                 },
                 locate: true,
-                frequency: 10, // Detection attempts per second
                 locator: {
                     halfSample: true,
                     patchSize: "medium"
@@ -609,10 +536,10 @@
             }, function (err) {
                 if (err) {
                     console.error('Quagga init error:', err);
-                    showToast('Failed to start camera. Try manual entry.', 'error');
+                    showToast('Camera access denied or not available', 'error');
                     return;
                 }
-                console.log('[Scanner] Initialized successfully');
+                console.log('[Scanner] Initialized');
                 Quagga.start();
                 scannerActive = true;
             });
@@ -622,11 +549,8 @@
                 const code = result.codeResult.code;
                 console.log('[Scanner] Detected:', code);
 
-                // Play beep sound + vibration
+                // Play beep sound
                 playBeep();
-                if (navigator.vibrate) {
-                    navigator.vibrate(100); // Haptic feedback
-                }
 
                 // Search product
                 handleBarcodeResult(code);
@@ -647,55 +571,22 @@
             scannerActive = false;
         }
 
-        // Handle barcode result - search product (Enhanced for external barcodes)
+        // Handle barcode result - search product
         function handleBarcodeResult(barcode) {
             const resultDiv = document.getElementById('barcode-result');
-            const searchBarcode = barcode.trim();
 
-            // Try multiple matching strategies for external barcodes
-            let product = null;
-
-            // Strategy 1: Exact match on sku or barcode field
-            product = allProducts.find(p =>
-                p.sku === searchBarcode ||
-                p.barcode === searchBarcode
+            // Search product by SKU/barcode
+            const product = allProducts.find(p =>
+                p.sku === barcode ||
+                p.barcode === barcode ||
+                (p.sku && p.sku.toLowerCase() === barcode.toLowerCase())
             );
-
-            // Strategy 2: Case-insensitive match
-            if (!product) {
-                const lowerBarcode = searchBarcode.toLowerCase();
-                product = allProducts.find(p =>
-                    (p.sku && p.sku.toLowerCase() === lowerBarcode) ||
-                    (p.barcode && p.barcode.toLowerCase() === lowerBarcode)
-                );
-            }
-
-            // Strategy 3: Try with/without leading zeros (EAN-13 barcode issue)
-            if (!product) {
-                const withoutLeadingZero = searchBarcode.replace(/^0+/, '');
-                const withLeadingZero = '0' + searchBarcode;
-                product = allProducts.find(p =>
-                    p.sku === withoutLeadingZero ||
-                    p.barcode === withoutLeadingZero ||
-                    p.sku === withLeadingZero ||
-                    p.barcode === withLeadingZero
-                );
-            }
-
-            // Strategy 4: Check if barcode contains or is contained by product barcode
-            if (!product && searchBarcode.length >= 6) {
-                product = allProducts.find(p =>
-                    (p.sku && (p.sku.includes(searchBarcode) || searchBarcode.includes(p.sku))) ||
-                    (p.barcode && (p.barcode.includes(searchBarcode) || searchBarcode.includes(p.barcode)))
-                );
-            }
 
             if (product) {
                 resultDiv.innerHTML = `
                     <div class="bg-green-50 text-green-700 p-3 rounded-lg">
                         <p class="font-bold">✅ Found: ${escapeHtml(product.name)}</p>
                         <p class="text-xs">Rs. ${product.price} | Stock: ${product.stock}</p>
-                        <p class="text-[10px] text-gray-400 mt-1">Barcode: ${searchBarcode}</p>
                     </div>
                 `;
                 resultDiv.classList.remove('hidden');
@@ -709,12 +600,11 @@
                 resultDiv.innerHTML = `
                     <div class="bg-red-50 text-red-700 p-3 rounded-lg">
                         <p class="font-bold">❌ Product not found</p>
-                        <p class="text-xs">Barcode: ${searchBarcode}</p>
-                        <p class="text-[10px] text-gray-400 mt-1">💡 Add this barcode to a product in Admin Panel</p>
+                        <p class="text-xs">Barcode: ${barcode}</p>
                     </div>
                 `;
                 resultDiv.classList.remove('hidden');
-                showToast('Product not found: ' + searchBarcode, 'error');
+                showToast('Product not found for barcode: ' + barcode, 'error');
             }
         }
 
@@ -778,43 +668,13 @@
             updateTotals();
         };
 
-        // MOBILE CART TOGGLE
-        window.toggleMobileCart = () => {
-            const cart = document.getElementById('cart-panel');
-            const overlay = document.getElementById('mobile-cart-overlay');
-
-            if (cart.classList.contains('translate-y-full')) {
-                // Open cart
-                cart.classList.remove('translate-y-full');
-                cart.classList.add('translate-y-0');
-                overlay.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            } else {
-                // Close cart
-                closeMobileCart();
-            }
-        };
-
-        window.closeMobileCart = () => {
-            const cart = document.getElementById('cart-panel');
-            const overlay = document.getElementById('mobile-cart-overlay');
-
-            cart.classList.remove('translate-y-0');
-            cart.classList.add('translate-y-full');
-            overlay.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        };
-
-        function updateMobileCartCount() {
-            const countEl = document.getElementById('mobile-cart-count');
-            if (countEl) {
-                countEl.innerText = cart.length;
-            }
-        }
-
-        // Filter by Category
+        // Filter by Category (Clear subcategory when category changes)
         window.filterByCategory = (category) => {
             currentCategory = category;
+            currentSubcategory = null; // Reset subcategory
+
+            // Hide subcategory row
+            document.getElementById('subcategory-row').classList.add('hidden');
 
             // Update UI
             document.querySelectorAll('.category-btn').forEach(btn => {
@@ -830,6 +690,102 @@
             renderProducts();
         };
 
+        // Toggle Category Dropdown (Show Subcategory Chips)
+        window.toggleCategoryDropdown = (category) => {
+            currentCategory = category;
+            currentSubcategory = null;
+
+            // Update category button styling
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.add('bg-black', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            // Get subcategories for this category
+            const catData = subcategories[category];
+            if (!catData) {
+                document.getElementById('subcategory-row').classList.add('hidden');
+                renderProducts();
+                return;
+            }
+
+            // Build subcategory chips
+            const chipsContainer = document.getElementById('subcategory-chips');
+            let chipsHtml = `<button onclick="clearSubcategory()" 
+                class="subcategory-chip whitespace-nowrap bg-black text-white px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0">
+                All ${category}
+            </button>`;
+
+            // Add grouped subcategories
+            for (const [group, items] of Object.entries(catData)) {
+                items.forEach(subcat => {
+                    chipsHtml += `<button onclick="filterBySubcategory('${subcat}')" 
+                        class="subcategory-chip whitespace-nowrap bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-gray-200 flex-shrink-0"
+                        data-subcat="${subcat}">
+                        ${subcat}
+                    </button>`;
+                });
+            }
+
+            chipsContainer.innerHTML = chipsHtml;
+            document.getElementById('subcategory-row').classList.remove('hidden');
+
+            renderProducts();
+        };
+
+        // Filter by Subcategory
+        window.filterBySubcategory = (subcategory) => {
+            currentSubcategory = subcategory;
+
+            // Update subcategory chip styling
+            document.querySelectorAll('.subcategory-chip').forEach(chip => {
+                if (chip.dataset.subcat === subcategory) {
+                    chip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    chip.classList.add('bg-black', 'text-white');
+                } else {
+                    chip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    chip.classList.remove('bg-black', 'text-white');
+                }
+            });
+
+            // First chip is "All [Category]"
+            const firstChip = document.querySelector('.subcategory-chip');
+            if (firstChip && !subcategory) {
+                firstChip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.add('bg-black', 'text-white');
+            } else if (firstChip) {
+                firstChip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.remove('bg-black', 'text-white');
+            }
+
+            renderProducts();
+        };
+
+        // Clear Subcategory (Show all in category)
+        window.clearSubcategory = () => {
+            currentSubcategory = null;
+
+            // Reset all chips
+            document.querySelectorAll('.subcategory-chip').forEach(chip => {
+                chip.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                chip.classList.remove('bg-black', 'text-white');
+            });
+
+            // Highlight first chip
+            const firstChip = document.querySelector('.subcategory-chip');
+            if (firstChip) {
+                firstChip.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                firstChip.classList.add('bg-black', 'text-white');
+            }
+
+            renderProducts();
+        };
+
         // Auth State - Redirect to admin if not logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -838,6 +794,7 @@
                 posContainer.classList.remove('hidden');
                 document.getElementById('cashier-name').innerText = user.displayName || user.email;
                 loadProducts();
+                loadCustomers(); // Load customer autocomplete suggestions
             } else {
                 // Not logged in - redirect to admin panel for login
                 window.location.href = 'admin.html';
@@ -918,6 +875,34 @@
             }
         }
 
+        // Load Customers for Auto-Suggest
+        async function loadCustomers() {
+            try {
+                if (!navigator.onLine) {
+                    console.log('[POS] Offline - Skipping customer load');
+                    return;
+                }
+
+                const snapshot = await getDocs(collection(db, 'customers'));
+                allCustomers = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Populate datalist with customer phone numbers
+                const datalist = document.getElementById('customer-suggestions');
+                if (datalist) {
+                    datalist.innerHTML = allCustomers.map(c =>
+                        `<option value="${c.phone}">${c.phone} (${c.totalPurchases || 0} purchases)</option>`
+                    ).join('');
+                }
+
+                console.log('[POS] Loaded', allCustomers.length, 'customers for auto-suggest');
+            } catch (error) {
+                console.warn('Error loading customers:', error);
+            }
+        }
+
         // Update online/offline status indicator
         function updateOnlineStatus(isOnline) {
             const statusBadge = document.querySelector('header span.bg-green-100, header span.bg-red-100');
@@ -943,11 +928,20 @@
                 filtered = filtered.filter(p => p.category && p.category.trim().toLowerCase() === targetCat);
             }
 
+            // Filter by subcategory (NEW)
+            if (currentSubcategory) {
+                const targetSubcat = currentSubcategory.trim().toLowerCase();
+                filtered = filtered.filter(p =>
+                    p.subcategory && p.subcategory.trim().toLowerCase() === targetSubcat
+                );
+            }
+
             // Filter by search
             if (searchTerm) {
                 filtered = filtered.filter(p =>
                     p.name.toLowerCase().includes(searchTerm) ||
-                    (p.sku && p.sku.toLowerCase().includes(searchTerm))
+                    (p.sku && p.sku.toLowerCase().includes(searchTerm)) ||
+                    (p.subcategory && p.subcategory.toLowerCase().includes(searchTerm))
                 );
             }
 
@@ -1239,7 +1233,6 @@
             }).join('');
 
             updateTotals();
-            updateMobileCartCount();
         }
 
         // Update Cart Quantity
@@ -1342,21 +1335,6 @@
             const change = Math.max(0, received - total);
 
             document.getElementById('change-amount').innerText = `Rs. ${change.toFixed(2)}`;
-
-            // Show/hide payment validation - compare as cents (integers) to avoid floating point issues
-            const paymentStatus = document.getElementById('payment-status');
-            if (paymentStatus) {
-                // Convert to cents (integers) for accurate comparison
-                const receivedCents = Math.round(received * 100);
-                const totalCents = Math.round(total * 100);
-                const isShort = receivedCents < totalCents && received > 0 && cart.length > 0;
-
-                if (isShort) {
-                    paymentStatus.classList.remove('hidden');
-                } else {
-                    paymentStatus.classList.add('hidden');
-                }
-            }
         };
 
         // Filter by Category
@@ -1417,9 +1395,14 @@
                     subtotal: subtotal,
                     discount: discount,
                     total: total,
+                    // Calculate profit (total - sum of item costs)
+                    totalCost: cart.reduce((sum, item) => sum + ((item.cost || 0) * item.qty), 0),
+                    profit: total - cart.reduce((sum, item) => sum + ((item.cost || 0) * item.qty), 0),
                     received: paymentMethod === 'cash' ? received : total,
                     change: paymentMethod === 'cash' ? Math.max(0, received - total) : 0,
                     paymentMethod: paymentMethod,
+                    // Customer phone (will be set when WhatsApp button is clicked)
+                    customerPhone: null,
                     cashierId: currentUser.uid,
                     cashierName: currentUser.displayName || currentUser.email,
                     createdAt: new Date()
@@ -1639,18 +1622,6 @@
                         <span>Payment / ගෙවීම</span>
                         <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
                     </div>
-                    ${(() => {
-                    const itemDiscounts = sale.items.reduce((sum, item) => sum + (item.itemDiscount || 0), 0);
-                    const totalSavings = itemDiscounts + (sale.discount || 0);
-                    if (totalSavings > 0) {
-                        return `
-                    <div class="total-row" style="background: #e8f5e9; padding: 8px; margin-top: 10px; border-radius: 6px; border: 1px dashed #4caf50;">
-                        <span style="color: #2e7d32; font-weight: bold;">🎉 ඔබට ඉතිරි වූ මුදල / You Saved</span>
-                        <span style="color: #2e7d32; font-weight: bold; font-size: 14px;">Rs. ${totalSavings.toFixed(2)}</span>
-                    </div>`;
-                    }
-                    return '';
-                })()}
                 </div>
                 
                 <div class="receipt-footer">
@@ -1669,8 +1640,8 @@
             window.print();
         };
 
-        // Send Receipt via WhatsApp
-        window.sendReceiptWhatsApp = () => {
+        // Send Receipt via WhatsApp - Beautiful Image Version
+        window.sendReceiptWhatsApp = async () => {
             const phoneInput = document.getElementById('receipt-phone').value.trim();
 
             if (!phoneInput) {
@@ -1693,93 +1664,300 @@
                 return;
             }
 
-            // Get receipt data from the DOM or lastSaleData
-            let receiptText = '';
+            if (!lastSaleData) {
+                showToast('No receipt data available', 'error');
+                return;
+            }
 
-            if (lastSaleData) {
+            // Save customer phone to the sale in Firebase
+            try {
+                const sale = lastSaleData;
+
+                // Update the sale document with customer phone
+                if (navigator.onLine && sale.id) {
+                    await updateDoc(doc(db, 'sales', sale.id), {
+                        customerPhone: phoneInput
+                    });
+
+                    // Update or create customer record
+                    const customerRef = doc(db, 'customers', phoneInput);
+                    const customerDoc = await getDocs(query(collection(db, 'customers')));
+                    const existingCustomer = customerDoc.docs.find(d => d.id === phoneInput);
+
+                    if (existingCustomer) {
+                        // Update existing customer
+                        await updateDoc(customerRef, {
+                            totalPurchases: increment(1),
+                            totalSpent: increment(sale.total),
+                            lastVisit: new Date()
+                        });
+                    } else {
+                        // Create new customer
+                        await setDoc(customerRef, {
+                            phone: phoneInput,
+                            totalPurchases: 1,
+                            totalSpent: sale.total,
+                            lastVisit: new Date(),
+                            createdAt: new Date()
+                        });
+                    }
+
+                    // Refresh customer suggestions
+                    loadCustomers();
+                    console.log('[POS] Customer saved:', phoneInput);
+                }
+            } catch (err) {
+                console.warn('Failed to save customer data:', err);
+            }
+
+            showToast('🎨 Generating beautiful receipt...', 'info');
+
+            try {
+                // Generate a beautiful receipt HTML for WhatsApp
                 const sale = lastSaleData;
                 const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
                     year: 'numeric', month: '2-digit', day: '2-digit',
                     hour: '2-digit', minute: '2-digit'
                 });
 
-                receiptText = `*🧾 බුද්ධික ස්ටෝර්ස්*
-*BUDDIKA STORES*
+                // Calculate total savings
+                let totalSavings = sale.discount || 0;
+                sale.items.forEach(item => {
+                    if (item.itemDiscount > 0) {
+                        totalSavings += item.itemDiscount;
+                    }
+                });
+
+                // Create beautiful receipt HTML
+                const receiptHtml = `
+                    <div id="whatsapp-receipt" style="
+                        font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
+                        width: 350px;
+                        background: white;
+                        padding: 25px;
+                        border-radius: 16px;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+                    ">
+                        <!-- Header -->
+                        <div style="text-align: center; padding-bottom: 15px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 15px;">
+                            <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 5px 0; color: #1a1a1a;">බුද්ධික ස්ටෝර්ස්</h2>
+                            <p style="font-size: 14px; font-weight: 700; margin: 0 0 8px 0; color: #333;">BUDDIKA STORES</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">අංක 48, මහනුවර පාර, වලපනේ</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">No 48, Kandy Road, Walapane</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">Tel: 052-2279101 / 077-5192756</p>
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">Voice: 0784668883</p>
+                        </div>
+
+                        <!-- Receipt Info -->
+                        <div style="padding-bottom: 12px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 12px;">
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Receipt:</strong> ${escapeHtml(sale.id)}</p>
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Date:</strong> ${receiptDate}</p>
+                            <p style="font-size: 12px; margin: 4px 0;"><strong>Cashier:</strong> ${escapeHtml(sale.cashierName)}</p>
+                        </div>
+
+                        <!-- Items -->
+                        <div style="padding-bottom: 12px; border-bottom: 2px dashed #e5e5e5; margin-bottom: 12px;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #333;">
+                                        <th style="text-align: left; padding: 6px 0; font-weight: 700;">Item / අයිතමය</th>
+                                        <th style="text-align: right; padding: 6px 0; font-weight: 700;">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sale.items.map(item => `
+                                        <tr>
+                                            <td style="padding: 8px 0; vertical-align: top;">
+                                                ${item.nameSi ? `<span style="font-weight: 600;">${item.nameSi}</span><br>` : ''}
+                                                ${escapeHtml(item.name)}<br>
+                                                <span style="font-size: 11px; color: #666;">${item.qty} x Rs. ${item.price.toFixed(2)}</span>
+                                                ${item.itemDiscount > 0 ? `<br><span style="font-size: 11px; color: #e53935;">Discount: -Rs. ${item.itemDiscount.toFixed(2)}</span>` : ''}
+                                            </td>
+                                            <td style="text-align: right; padding: 8px 0; vertical-align: top;">Rs. ${item.total.toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Totals -->
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Subtotal / උප එකතුව</span>
+                                <span>Rs. ${sale.subtotal.toFixed(2)}</span>
+                            </div>
+                            ${sale.discount > 0 ? `
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: #e53935;">
+                                <span>Discount / වට්ටම</span>
+                                <span>- Rs. ${sale.discount.toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                            <div style="display: flex; justify-content: space-between; padding: 10px 0; margin-top: 8px; border-top: 2px dashed #333; font-size: 16px; font-weight: 700;">
+                                <span>Total / එකතුව</span>
+                                <span>Rs. ${sale.total.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Received / ලැබුණු</span>
+                                <span>Rs. ${sale.received.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Change / ඉතිරි</span>
+                                <span>Rs. ${sale.change.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
+                                <span>Payment / ගෙවීම</span>
+                                <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
+                            </div>
+                        </div>
+
+                        <!-- Savings Box -->
+                        ${totalSavings > 0 ? `
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 12px 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
+                            <span style="font-size: 12px; color: #2e7d32;">🎉 ඔබට ඉතිරි වූ මුදල / You Saved</span>
+                            <div style="font-size: 20px; font-weight: 700; color: #1b5e20; margin-top: 5px;">Rs. ${totalSavings.toFixed(2)}</div>
+                        </div>
+                        ` : ''}
+
+                        <!-- Footer -->
+                        <div style="text-align: center; padding-top: 12px; border-top: 2px dashed #e5e5e5;">
+                            <p style="font-size: 11px; color: #666; margin: 3px 0;">ස්තූතියි! නැවත එන්න.</p>
+                            <p style="font-size: 13px; font-weight: 700; color: #333; margin: 8px 0;">Thank You! Please Come Again.</p>
+                            <p style="font-size: 11px; color: #888; margin-top: 10px;">www.buddikastores.com</p>
+                            <p style="font-size: 9px; color: #aaa; margin-top: 5px;">Software by Odex Studio (0784-66-88-3)</p>
+                        </div>
+                    </div>
+                `;
+
+                // Create temp container for canvas capture
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = receiptHtml;
+                tempContainer.style.position = 'fixed';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '0';
+                document.body.appendChild(tempContainer);
+
+                // Wait for fonts to load
+                await document.fonts.ready;
+
+                // Capture as canvas
+                const canvas = await html2canvas(tempContainer.querySelector('#whatsapp-receipt'), {
+                    backgroundColor: '#ffffff',
+                    scale: 2, // High resolution
+                    useCORS: true,
+                    logging: false
+                });
+
+                // Remove temp container
+                document.body.removeChild(tempContainer);
+
+                // Convert to blob
+                canvas.toBlob(async (blob) => {
+                    if (!blob) {
+                        showToast('Failed to generate receipt image', 'error');
+                        return;
+                    }
+
+                    // Try native sharing with image (works on mobile)
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'receipt.png', { type: 'image/png' })] })) {
+                        try {
+                            const file = new File([blob], `Buddika_Receipt_${sale.id}.png`, { type: 'image/png' });
+                            await navigator.share({
+                                title: 'Receipt - Buddika Stores',
+                                text: `🧾 Receipt: ${sale.id}\n💵 Total: Rs. ${sale.total.toFixed(2)}\n\nThank you for shopping at Buddika Stores!`,
+                                files: [file],
+                            });
+                            showToast('✅ Receipt shared successfully!', 'success');
+                            return;
+                        } catch (shareErr) {
+                            console.log('Native share failed:', shareErr);
+                        }
+                    }
+
+                    // Fallback: Download image and open WhatsApp with text
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Buddika_Receipt_${sale.id}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Open WhatsApp with simple message
+                    const simpleText = `🧾 *BUDDIKA STORES - RECEIPT*
 ━━━━━━━━━━━━━━━━
-📍 අංක 48, මහනුවර පාර, වලපනේ
-     No 48, Kandy Road, Walapane
+*Receipt:* ${sale.id}
+*Date:* ${receiptDate}
+*Total:* Rs. ${sale.total.toFixed(2)}
+━━━━━━━━━━━━━━━━
+
+📎 Receipt image attached above ☝️
+
+_Thank you for shopping with us! 🙏_
+_www.buddikastores.com_`;
+
+                    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(simpleText)}`;
+                    window.open(waUrl, '_blank');
+
+                    showToast('📱 Receipt image downloaded! Attach it to WhatsApp', 'success');
+                }, 'image/png', 1.0);
+
+            } catch (err) {
+                console.error('Receipt image generation error:', err);
+
+                // Fallback to text-only
+                const sale = lastSaleData;
+                const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                let receiptText = `*🧾 BUDDIKA STORES - RECEIPT*
+━━━━━━━━━━━━━━━━
+📍 No 48, Kandy Road, Walapane
 📞 052-2279101 / 077-5192756
 
-*රිසිට්පත / Receipt:* ${sale.id}
-*දිනය / Date:* ${receiptDate}
-*කැෂියර් / Cashier:* ${sale.cashierName}
+*Receipt:* ${sale.id}
+*Date:* ${receiptDate}
+*Cashier:* ${sale.cashierName}
 ━━━━━━━━━━━━━━━━
 
-*අයිතම / ITEMS:*
+*ITEMS:*
 `;
                 sale.items.forEach((item, i) => {
-                    // Add Sinhala name if available
-                    if (item.nameSi) {
-                        receiptText += `${i + 1}. *${item.nameSi}*
-     ${item.name}
-`;
-                    } else {
-                        receiptText += `${i + 1}. ${item.name}
-`;
-                    }
-                    receiptText += `     ${item.qty} x Rs.${item.price.toFixed(2)} = *Rs.${item.total.toFixed(2)}*
+                    receiptText += `${i + 1}. ${item.name}
+   ${item.qty} x Rs.${item.price.toFixed(2)} = Rs.${item.total.toFixed(2)}
 `;
                     if (item.itemDiscount > 0) {
-                        receiptText += `     🏷️ _වට්ටම / Disc: -Rs.${item.itemDiscount.toFixed(2)}_
+                        receiptText += `   _Discount: -Rs.${item.itemDiscount.toFixed(2)}_
 `;
                     }
                 });
 
                 receiptText += `
 ━━━━━━━━━━━━━━━━
-*උප එකතුව / Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
+*Subtotal:* Rs.${sale.subtotal.toFixed(2)}`;
 
                 if (sale.discount > 0) {
                     receiptText += `
-*වට්ටම / Discount:* -Rs.${sale.discount.toFixed(2)}`;
+*Discount:* -Rs.${sale.discount.toFixed(2)}`;
                 }
 
                 receiptText += `
-*එකතුව / TOTAL:* Rs.${sale.total.toFixed(2)}
-━━━━━━━━━━━━━━━━
-*ගෙවීම / Payment:* ${sale.paymentMethod === 'cash' ? 'මුදල් / Cash' : 'කාඩ් / Card'}
-*ලැබුණු / Received:* Rs.${sale.received.toFixed(2)}
-*ඉතිරි / Change:* Rs.${sale.change.toFixed(2)}`;
-
-                // Calculate total savings (item discounts + cart discount)
-                const itemDiscounts = sale.items.reduce((sum, item) => sum + (item.itemDiscount || 0), 0);
-                const totalSavings = itemDiscounts + (sale.discount || 0);
-
-                if (totalSavings > 0) {
-                    receiptText += `
-
-🎉 *ඔබට ඉතිරි වූ මුදල / YOU SAVED:*
-    *Rs.${totalSavings.toFixed(2)}* 🎉`;
-                }
-
-                receiptText += `
+*TOTAL:* Rs.${sale.total.toFixed(2)}
+*Payment:* ${sale.paymentMethod === 'cash' ? 'Cash' : 'Card'}
+*Received:* Rs.${sale.received.toFixed(2)}
+*Change:* Rs.${sale.change.toFixed(2)}
 ━━━━━━━━━━━━━━━━
 
-🙏 _ස්තූතියි! නැවත එන්න._
-_Thank you! Please come again._
+_Thank you for shopping with us! 🙏_
+_www.buddikastores.com_`;
 
-🌐 www.buddikastores.com`;
+                const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(receiptText)}`;
+                window.open(waUrl, '_blank');
 
-            } else {
-                showToast('No receipt data available', 'error');
-                return;
+                showToast('Opening WhatsApp... 📱', 'success');
             }
-
-            // Open WhatsApp with the receipt
-            const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(receiptText)}`;
-            window.open(waUrl, '_blank');
-
-            showToast('Opening WhatsApp... 📱', 'success');
         };
 
         // Close Receipt Modal

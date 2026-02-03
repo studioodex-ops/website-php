@@ -34,7 +34,24 @@ function createWindow() {
     });
 
     // Handle external links
+    // Handle external links and POPUPS
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        // Allow Google Auth Popups
+        if (url.startsWith('https://accounts.google.com') ||
+            url.startsWith('https://www.googleapis.com') ||
+            url.includes('auth/handler')) {
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    autoHideMenuBar: true,
+                    // Keep popup constrained if possible, or let it float
+                    width: 500,
+                    height: 600
+                }
+            };
+        }
+
+        // Open other links in default browser
         shell.openExternal(url);
         return { action: 'deny' };
     });

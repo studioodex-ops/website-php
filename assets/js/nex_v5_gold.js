@@ -12,10 +12,15 @@ async function fetchStoreConfig() {
         const docRef = doc(db, "settings", "store_config");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            globalApiKey = docSnap.data().geminiApiKey?.trim();
+            globalApiKey = docSnap.data().geminiApiKey?.trim() || '';
+        } else {
+            // Default if doc doesn't exist
+            globalApiKey = '';
         }
     } catch (e) {
         console.error("Nex: Config load failed", e);
+        // Fallback on error
+        globalApiKey = '';
     }
 }
 
@@ -126,18 +131,65 @@ function renderNexUI() {
         <div id="nex-messages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50"></div>
         <div class="p-4 bg-white border-t border-gray-100 rounded-b-2xl">
             <div class="flex items-center gap-2 bg-gray-100 p-2 rounded-xl">
-                <input type="text" id="nex-input" placeholder="Ask anything..." class="flex-1 bg-transparent outline-none text-sm" onkeypress="if(event.key === 'Enter') sendNexMessage()">
+                <button id="nex-mic-btn" class="text-gray-500 hover:text-black p-2 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+                <input type="text" id="nex-input" placeholder="Ask or speak..." class="flex-1 bg-transparent outline-none text-sm" onkeypress="if(event.key === 'Enter') sendNexMessage()">
                 <button onclick="sendNexMessage()" class="bg-black text-white p-2 rounded-lg">➤</button>
             </div>
         </div>
     </div>`;
     if (document.body) {
         document.body.insertAdjacentHTML('beforeend', uiHtml);
+        setTimeout(setupVoiceInput, 1000); // Init Voice after render
     } else {
         window.addEventListener('DOMContentLoaded', () => {
             document.body.insertAdjacentHTML('beforeend', uiHtml);
+            setTimeout(setupVoiceInput, 1000);
         });
     }
+}
+
+function setupVoiceInput() {
+    const btn = document.getElementById('nex-mic-btn');
+    if (!btn) return;
+
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        btn.style.display = 'none'; // Not supported
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US'; // Default to English, but tries to detect
+
+    btn.addEventListener('click', () => {
+        try {
+            recognition.start();
+            btn.classList.add('text-red-600', 'animate-pulse');
+            document.getElementById('nex-input').placeholder = "Listening...";
+        } catch (e) { console.error(e); }
+    });
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('nex-input').value = transcript;
+        sendNexMessage();
+    };
+
+    recognition.onend = () => {
+        btn.classList.remove('text-red-600', 'animate-pulse');
+        btn.classList.add('text-gray-500');
+        document.getElementById('nex-input').placeholder = "Ask anything...";
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech Error:", event.error);
+        btn.classList.remove('text-red-600', 'animate-pulse');
+        document.getElementById('nex-input').placeholder = "Error. Try again.";
+    };
 }
 
 function attachNexEvents() {
@@ -165,12 +217,23 @@ window.sendNexMessage = async () => {
     addMessage('user', text);
     const typingId = showTyping();
 
-    if (!globalApiKey && !localStorage.getItem(API_KEY_STORAGE_KEY)) await fetchStoreConfig();
+    // Priority: Global Var > LocalStorage > Fetch from DB
+    if (!globalApiKey) {
+        const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+        if (storedKey) {
+            globalApiKey = storedKey;
+        } else {
+            await fetchStoreConfig();
+        }
+    }
+
     let key = globalApiKey;
 
     if (!key) {
         removeTyping(typingId);
-        addMessage('system', '⚠️ API Key Missing in Settings.');
+        const msg = '⚠️ API Key Missing! Please go to Admin > Settings and save your Gemini API Key.';
+        addMessage('system', msg);
+        alert(msg);
         return;
     }
 
@@ -180,7 +243,10 @@ window.sendNexMessage = async () => {
         addMessage('bot', reply);
     } catch (err) {
         removeTyping(typingId);
-        addMessage('system', `❌ ${err.message}`);
+        addMessage('system', `❌ Error: ${err.message}`);
+        console.error("Nex Error:", err);
+        // Debug Alert
+        alert("Chatbot Error: " + err.message);
     }
 };
 
