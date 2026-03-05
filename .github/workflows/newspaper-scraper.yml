@@ -20,11 +20,11 @@ jobs:
          
 
       - name: Install Dependencies
-        working-directory: ./scripts/newspaper-automation
+       
         run: npm ci
 
       - name: Run Web Scraper
-        working-directory: ./scripts/newspaper-automation
+        
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node index.js
