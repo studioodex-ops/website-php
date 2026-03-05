@@ -188,6 +188,8 @@ async function runAutomation() {
     }
 
     console.log("=== Automation Cycle Complete ===");
+    process.exit(0);
 }
 
 runAutomation();
+
