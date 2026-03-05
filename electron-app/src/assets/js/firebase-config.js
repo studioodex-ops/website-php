@@ -6,12 +6,13 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyA26ajnCTs20mcB_Dce5wDNn3Ics2Q4qoc",
-    authDomain: "buddika-stores.firebaseapp.com",
-    projectId: "buddika-stores",
-    storageBucket: "buddika-stores.firebasestorage.app",
-    messagingSenderId: "441313974780",
-    appId: "1:441313974780:web:9f33f5c77d0fd904d4e94d"
+    apiKey: "AIzaSyCGYJeWqgsK69IE6Jd3v_gnBXvi7E7ZdUo",
+    authDomain: "buddika-stores-web.firebaseapp.com",
+    projectId: "buddika-stores-web",
+    storageBucket: "buddika-stores-web.firebasestorage.app",
+    messagingSenderId: "735788546514",
+    appId: "1:735788546514:web:9cf85d0d6caa55d907700b",
+    measurementId: "G-4B5Y4LFDQ2"
 };
 
 // Initialize Firebase

@@ -140,6 +140,19 @@
 
                 <div class="flex flex-col items-center">
 
+                    <!-- Search Input -->
+                    <div class="w-full max-w-4xl mx-auto mb-8 px-4" id="page-search-container">
+                        <div class="relative group w-full">
+                            <input type="text" id="page-search-input" placeholder="Search for products (e.g., 'cr book', 'pen', 'sugar')..." 
+                                class="w-full bg-white border border-gray-300 rounded-full py-4 px-6 pl-12 text-gray-900 focus:border-black focus:ring-2 focus:ring-black outline-none shadow-sm transition-all text-sm font-medium">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <!-- clear button -->
+                            <button id="clear-search-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black hidden transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Horizontal Filter Bar -->
                     <div class="flex flex-wrap justify-center items-center gap-4 mb-12 w-full max-w-4xl mx-auto">
                         <!-- All -->
@@ -151,7 +164,7 @@
 
                         <!-- Grocery -->
                         <button onclick="filterByCategory('Grocery')"
-                            class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                            class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
                             data-filter="Grocery">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -164,7 +177,7 @@
                         <!-- Stationery (With Mega Menu) -->
                         <div class="relative group static-on-mobile">
                             <button onclick="filterByCategory('Stationery')"
-                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
                                 data-filter="Stationery" id="btn-stationery">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -307,7 +320,7 @@
                         <!-- Newspapers (With Dropdown) -->
                         <div class="relative group static-on-mobile">
                             <button onclick="filterByCategory('Newspapers')"
-                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-black hover:bg-gray-50 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
                                 data-filter="Newspapers" id="btn-newspapers">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -359,7 +372,8 @@
 
 
                     <!-- Product Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="product-grid">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"
+                        id="product-grid">
                         <!-- Products will be injected here via JS -->
                     </div>
 
@@ -411,9 +425,12 @@
             // Handle URL Query Params
             const params = new URLSearchParams(window.location.search);
             const urlCategory = params.get('category');
+            const urlSearch = params.get('search');
+            
             // Allow any category from URL, default to 'all'
             let currentCategory = urlCategory || 'all';
             let currentSubCategory = null; // New State for Subcategory Filters
+            let currentSearchTerm = urlSearch ? urlSearch.toLowerCase() : '';
 
             // Expose subcategory filter function to global window scope so HTML onclicks work
             window.filterBySubCategory = (subCat) => {
@@ -444,13 +461,13 @@
                     btn.classList.remove('bg-accent-color', 'text-white', 'border-accent-color', 'active');
 
                     if (btn.dataset.filter === selectedCat) {
-                        btn.classList.add('bg-accent-color', 'text-white', 'active'); // Removed border-black
-                        btn.classList.remove('text-secondary', 'border-glass');
+                        btn.classList.add('bg-black', 'text-white', 'active');
+                        btn.classList.remove('text-gray-900', 'border-gray-300', 'bg-white');
                         // Add font-bold too?
                         btn.classList.add('font-bold');
                     } else {
-                        btn.classList.add('text-secondary', 'border-glass');
-                        btn.classList.remove('font-bold');
+                        btn.classList.add('text-gray-900', 'border-gray-300', 'bg-white'); // Darker border & text
+                        btn.classList.remove('active', 'bg-black', 'text-white', 'font-bold');
                     }
                 });
             }
@@ -461,24 +478,19 @@
                 const textSpan = btn.querySelector('span:last-child');
 
                 // Remove existing high-contrast classes if present from previous logic
-                btn.classList.remove('bg-accent-color', 'text-white', 'border-accent-color');
+                btn.classList.remove('bg-black', 'text-white', 'border-black');
 
                 if (btn.dataset.filter === currentCategory) {
-                    btn.classList.add('bg-accent-color', 'text-white', 'font-bold');
-                    btn.classList.remove('bg-card', 'text-secondary', 'border-glass');
+                    btn.classList.add('bg-black', 'text-white', 'font-bold');
+                    btn.classList.remove('bg-white', 'text-gray-900', 'border-gray-300');
 
                     // Update Icon
                     if (iconBox) {
                         iconBox.classList.remove('bg-card', 'text-secondary');
-                        // No specific icon bg needed for active state if button is colored
-                    }
-                    // Update Text
-                    if (textSpan) {
-                        // Text is white inheriting from button
                     }
                 } else {
-                    btn.classList.remove('bg-accent-color', 'text-white', 'font-bold');
-                    btn.classList.add('bg-card', 'text-secondary', 'border-glass');
+                    btn.classList.remove('bg-black', 'text-white', 'font-bold');
+                    btn.classList.add('bg-white', 'text-gray-900', 'border-gray-300'); // Consistent Inactive Style
 
                     // Reset Icon
                     if (iconBox) {
@@ -522,10 +534,15 @@
                     // Removed orderBy("createdAt") to prevent empty results if migration data lacks timestamp.
                     // This ensures all products are fetched.
                     if (currentCategory === 'all') {
-                        if (isLoadMore && lastVisible) {
-                            q = query(productsRef, startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                        if (currentSearchTerm) {
+                            // Fetch all to filter locally
+                            q = query(productsRef);
                         } else {
-                            q = query(productsRef, limit(PRODUCTS_PER_PAGE));
+                            if (isLoadMore && lastVisible) {
+                                q = query(productsRef, startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                            } else {
+                                q = query(productsRef, limit(PRODUCTS_PER_PAGE));
+                            }
                         }
                     } else {
                         // Filtered Query (Robust Case Handling)
@@ -546,9 +563,11 @@
                             constraints.push(where("subcategory", "==", currentSubCategory));
                         }
 
-                        constraints.push(limit(PRODUCTS_PER_PAGE));
+                        if (!currentSearchTerm) {
+                            constraints.push(limit(PRODUCTS_PER_PAGE));
+                        }
 
-                        if (isLoadMore && lastVisible) {
+                        if (isLoadMore && lastVisible && !currentSearchTerm) {
                             q = query(productsRef, ...constraints, startAfter(lastVisible));
                         } else {
                             q = query(productsRef, ...constraints);
@@ -572,10 +591,21 @@
                     lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
                     // Process Data
-                    const newProducts = [];
+                    let newProducts = [];
                     querySnapshot.forEach((doc) => {
                         newProducts.push({ id: doc.id, ...doc.data() }); // Ensure ID is captured
                     });
+
+                    // Search filtering (Local)
+                    if (currentSearchTerm) {
+                         newProducts = newProducts.filter(p => {
+                             const nameMatch = p.name && p.name.toLowerCase().includes(currentSearchTerm);
+                             const descMatch = p.desc && p.desc.toLowerCase().includes(currentSearchTerm);
+                             const catMatch = p.category && p.category.toLowerCase().includes(currentSearchTerm);
+                             const subMatch = p.subcategory && p.subcategory.toLowerCase().includes(currentSearchTerm);
+                             return nameMatch || descMatch || catMatch || subMatch;
+                         });
+                    }
 
                     if (isLoadMore) {
                         allProducts = [...allProducts, ...newProducts];
@@ -587,7 +617,10 @@
                     renderProducts();
 
                     // Show/Hide Load More
-                    if (querySnapshot.docs.length < PRODUCTS_PER_PAGE) {
+                    if (currentSearchTerm) {
+                        noMoreProducts = true;
+                        loadMoreContainer.classList.add('hidden');
+                    } else if (querySnapshot.docs.length < PRODUCTS_PER_PAGE) {
                         noMoreProducts = true;
                         loadMoreContainer.classList.add('hidden');
                     } else {
@@ -652,34 +685,42 @@
 
                     const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.active === false;
 
+                    // Updated Link: Now wraps the image and title area
+                    const productUrl = `product.html?id=${p.id}`;
+
                     return `
                         <div id="product-${p.id}" class="product-card group relative bg-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-glass animate-fade-in flex flex-col h-full ${isOutOfStock ? 'opacity-75 grayscale' : ''} ${p.isDeepLink ? 'ring-2 ring-accent-color transform scale-105 z-10 shadow-purple-500/20' : ''}">
                             ${isOutOfStock ? '<div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">Out of Stock</div>' : ''}
+                            
                             <button onclick="shareProduct('${escapeJs(p.id)}')" class="absolute top-3 left-3 bg-black/20 hover:bg-black/50 backdrop-blur-md text-white p-2 rounded-full z-10 transition-colors opacity-0 group-hover:opacity-100" title="Copy Link">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                                 </svg>
                             </button>
-                            <div class="aspect-w-1 aspect-h-1 bg-white/5 flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} h-64 overflow-hidden relative">
+
+                            <a href="${productUrl}" class="block aspect-w-1 aspect-h-1 bg-white/5 flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} h-64 overflow-hidden relative cursor-pointer">
                                 ${imageHTML}
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
+                            </a>
+
+                            <div class="p-3 md:p-6 flex flex-col flex-grow">
                                 <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-2 block">${escapeHtml(p.category)} ${p.subcategory ? '• ' + escapeHtml(p.subcategory) : ''}</span>
-                                <h3 class="text-lg font-bold font-heading mb-2 leading-tight text-primary">${escapeHtml(p.name)}</h3>
+                                <a href="${productUrl}" class="hover:underline decoration-primary">
+                                    <h3 class="text-lg font-bold font-heading mb-2 leading-tight text-primary">${escapeHtml(p.name)}</h3>
+                                </a>
                                 <p class="text-secondary text-sm mb-4 line-clamp-1">${escapeHtml(p.desc)}</p>
                                 <div class="mt-auto">
                                     <div class="flex justify-between items-center mb-4">
                                         <span class="font-bold text-lg text-primary">${escapeHtml(p.price)} <span class="text-xs text-secondary font-normal">/ ${escapeHtml(unit)}</span></span>
                                     </div>
-                                    <div class="flex items-center justify-between gap-3 bg-white/5 border border-glass rounded-lg p-1">
-                                        <div class="flex items-center">
-                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', -${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg">-</button>
-                                            <span id="qty-${escapeHtml(p.id)}" class="w-12 text-center font-bold text-sm bg-transparent text-primary">${initialQty}</span>
-                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg">+</button>
+                                    <div class="flex flex-col md:flex-row items-center gap-2 bg-white/5 border border-glass rounded-lg p-2">
+                                        <div class="flex items-center justify-center w-full md:w-auto justify-between md:justify-start gap-4 md:gap-0">
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', -${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg bg-gray-100 md:bg-transparent">-</button>
+                                            <span id="qty-${escapeHtml(p.id)}" class="w-8 text-center font-bold text-sm bg-transparent text-primary">${initialQty}</span>
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg bg-gray-100 md:bg-transparent">+</button>
                                         </div>
                                         <button onclick="try { window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}', ${p.stock !== undefined ? p.stock : 999999}); } catch(e) { alert('JS Error: ' + e); }"
                                             ${isOutOfStock ? 'disabled' : ''}
-                                            class="flex-1 bg-accent-color text-white py-2 rounded-md font-bold text-sm hover:bg-blue-600 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed shadow-lg">
+                                            class="w-full md:flex-1 bg-blue-600 text-white py-2 rounded-md font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed shadow-lg">
                                             ${isOutOfStock ? 'Sold Out' : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> Add`}
                                         </button>
                                     </div>
@@ -721,6 +762,69 @@
 
             // --- EVENT LISTENERS ---
 
+            const searchInputEl = document.getElementById('page-search-input');
+            const clearSearchBtn = document.getElementById('clear-search-btn');
+
+            if (searchInputEl) {
+                // Initialize from URL
+                if (currentSearchTerm) {
+                    searchInputEl.value = urlSearch;
+                    clearSearchBtn.classList.remove('hidden');
+                }
+
+                searchInputEl.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    if (val) {
+                        clearSearchBtn.classList.remove('hidden');
+                    } else {
+                        clearSearchBtn.classList.add('hidden');
+                    }
+                });
+
+                let searchTimeout;
+                searchInputEl.addEventListener('keyup', (e) => {
+                     clearTimeout(searchTimeout);
+                     searchTimeout = setTimeout(() => {
+                         const val = e.target.value.toLowerCase();
+                         if (val !== currentSearchTerm) {
+                             currentSearchTerm = val;
+                             allProducts = [];
+                             lastVisible = null;
+                             noMoreProducts = false;
+                             
+                             // Update URL without reload
+                             const url = new URL(window.location);
+                             if (val) {
+                                 url.searchParams.set('search', e.target.value);
+                             } else {
+                                 url.searchParams.delete('search');
+                             }
+                             window.history.pushState({}, '', url);
+
+                             fetchProducts(false);
+                         }
+                     }, 500); // 500ms debounce
+                });
+
+                clearSearchBtn.addEventListener('click', () => {
+                     searchInputEl.value = '';
+                     clearSearchBtn.classList.add('hidden');
+                     
+                     if (currentSearchTerm !== '') {
+                         currentSearchTerm = '';
+                         allProducts = [];
+                         lastVisible = null;
+                         noMoreProducts = false;
+                         
+                         const url = new URL(window.location);
+                         url.searchParams.delete('search');
+                         window.history.pushState({}, '', url);
+                         
+                         fetchProducts(false);
+                     }
+                });
+            }
+
             if (loadMoreBtn) {
                 loadMoreBtn.addEventListener('click', () => {
                     fetchProducts(true);
@@ -739,6 +843,11 @@
                     currentCategory = btn.dataset.filter;
                     currentSubCategory = null; // Reset subcat on main cat change
 
+                    // Update URL
+                    const url = new URL(window.location);
+                    url.searchParams.set('category', currentCategory);
+                    window.history.pushState({}, '', url);
+
                     // Reset Logic
                     allProducts = [];
                     lastVisible = null;
@@ -756,7 +865,7 @@
 
             // --- DEEP LINKING & SHARE LOGIC ---
             window.shareProduct = (id) => {
-                const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
+                const url = `${window.location.origin}/product.html?id=${id}`;
                 navigator.clipboard.writeText(url).then(() => {
                     // Show a toast or alert
                     const toast = document.createElement('div');

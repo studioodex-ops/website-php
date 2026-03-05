@@ -52,14 +52,24 @@ Instructions:
 
 // 3. Initialize
 export function initNex() {
+    console.log("Nex: Initializing chatbot...");
     renderNexUI();
     attachNexEvents();
     fetchStoreConfig(); // Background fetch
+    // Attach sendNexMessage to window for onclick handlers
+    window.sendNexMessage = sendNexMessage;
+    console.log("Nex: Chatbot initialized successfully!");
 }
 
 // 4. UI Rendering
 function renderNexUI() {
-    // Remove any old chatbot elements if they exist
+    // Check if already initialized - prevent duplicates
+    if (document.getElementById('nex-icon')) {
+        console.log("Nex: UI already exists, skipping...");
+        return;
+    }
+
+    // Remove any old chatbot elements if they exist (legacy cleanup)
     const oldIcon = document.getElementById('chat-icon');
     if (oldIcon) oldIcon.remove();
     const oldWindow = document.getElementById('chat-window');
@@ -67,14 +77,14 @@ function renderNexUI() {
 
     const uiHtml = `
     <!-- Nex Icon -->
-    <div id="nex-icon" class="fixed bottom-6 right-6 z-50 cursor-pointer hover:scale-110 transition-transform duration-300">
-        <div class="bg-black text-white p-4 rounded-full shadow-lg flex items-center justify-center w-16 h-16 border-2 border-white">
-            <span class="text-3xl">🤖</span>
+    <div id="nex-icon" class="fixed bottom-28 md:bottom-6 right-4 md:right-6 z-[9999] cursor-pointer hover:scale-110 transition-transform duration-300">
+        <div class="bg-black text-white p-3 md:p-4 rounded-full shadow-lg flex items-center justify-center w-14 h-14 md:w-16 md:h-16 border-2 border-white">
+            <span class="text-2xl md:text-3xl">🤖</span>
         </div>
     </div>
 
     <!-- Nex Window -->
-    <div id="nex-window" class="fixed bottom-24 right-6 w-96 bg-white rounded-2xl shadow-2xl z-50 transform transition-all duration-300 origin-bottom-right scale-0 opacity-0 hidden flex flex-col h-[500px]">
+    <div id="nex-window" class="fixed bottom-44 md:bottom-24 right-4 md:right-6 w-[calc(100vw-2rem)] md:w-96 bg-white rounded-2xl shadow-2xl z-[9999] transform transition-all duration-300 origin-bottom-right scale-0 opacity-0 hidden flex flex-col h-[400px] md:h-[500px] max-h-[60vh] md:max-h-[70vh]">
         <!-- Header -->
         <div class="bg-black text-white p-4 rounded-t-2xl flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -146,7 +156,7 @@ function attachNexEvents() {
 }
 
 // 5. Messaging Logic
-window.sendNexMessage = async () => {
+export async function sendNexMessage() {
     const input = document.getElementById('nex-input');
     const text = input.value.trim();
     if (!text) return;
@@ -303,5 +313,5 @@ function removeTyping(id) {
     if (el) el.remove();
 }
 
-// Auto-init
-document.addEventListener('DOMContentLoaded', initNex);
+// Note: Do NOT auto-init here. Initialization is handled by the importing script.
+// This prevents duplicate initialization.

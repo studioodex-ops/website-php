@@ -198,7 +198,7 @@ async function loadHeader() {
 
 function loadFooter() {
     const footerHTML = `
-        <footer class="text-white pt-16 pb-8">
+        <footer class="bg-black text-white pt-16 pb-8 transition-colors duration-500">
             <div class="container mx-auto px-4 md:px-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div class="col-span-1 md:col-span-2">

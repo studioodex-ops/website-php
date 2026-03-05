@@ -341,7 +341,7 @@ function renderCart() {
                     <p class="text-xs text-gray-500">${escapeHtml(item.qty)} ${escapeHtml(item.unit || 'unit')} x ${escapeHtml(item.price)}</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="font-bold text-sm">Rs. ${displayItemTotal}</span>
+                    <span class="font-bold text-sm text-black">Rs. ${displayItemTotal}</span>
                     <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 p-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
@@ -577,146 +577,156 @@ function injectCartModal() {
         <div id="cart-backdrop" class="cart-backdrop absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeCart()"></div>
         
         <!-- Drawer Panel -->
-        <div id="cart-panel" class="cart-drawer absolute right-0 top-0 h-full w-full max-w-lg bg-white shadow-2xl p-6 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
+        <div id="cart-panel" class="cart-drawer absolute right-0 top-0 h-full w-full max-w-lg bg-white shadow-2xl flex flex-col">
+            
+            <!-- Header (Fixed) -->
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-100 shrink-0">
                 <h2 class="text-xl font-bold font-heading">Shopping Cart</h2>
                 <button onclick="closeCart()" class="p-2 hover:bg-gray-100 rounded-full">
                     <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
 
-            <!-- Items Scroll Area -->
-            <div id="cart-items-container" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
-                <!-- Items injected here -->
-            </div>
-
-            <!-- Footer Area -->
-            <div class="mt-auto border-t border-gray-100 pt-4">
+            <!-- Main Scrollable Area (Items + Forms + Button) -->
+            <div id="cart-main-scroll" class="flex-1 overflow-y-auto p-4 md:p-6 pb-32">
                 
-                <!-- 1. Shipping Method Selection -->
-                <div class="mb-5">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Select Shipping Method</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="shipping" value="delivery" class="peer hidden" checked onchange="handleShippingChange(this.value)">
-                            <div class="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
-                                <span class="font-bold text-sm">Delivery</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="shipping" value="pickup" class="peer hidden" onchange="handleShippingChange(this.value)">
-                            <div class="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                <span class="font-bold text-sm">Store Pickup</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="shipping" value="threewheel" class="peer hidden" onchange="handleShippingChange(this.value)">
-                            <div class="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400">
-                                <span class="text-2xl">🛺</span>
-                                <span class="font-bold text-sm">Three-wheel</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="shipping" value="courier" class="peer hidden" onchange="handleShippingChange(this.value)">
-                            <div class="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400">
-                                <span class="text-2xl">📦</span>
-                                <span class="font-bold text-sm">Courier</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- Driver Selection (Visible for Three-wheel) -->
-                    <div id="driver-selection" class="hidden mt-4 animate-fade-in-up">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Driver</label>
-                        <select id="driver-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
-                            <option value="">-- Choose a Driver --</option>
-                        </select>
-                        <p class="text-[10px] text-gray-400 mt-1 italic">* Hire fee is separate and paid directly to the driver.</p>
-                    </div>
-
-                    <div id="courier-area-selection" class="hidden mt-4 animate-fade-in-up">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Delivery Area</label>
-                        <select id="courier-area-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none" onchange="handleCourierAreaChange()">
-                            <option value="">-- Select Area --</option>
-                            <option value="colombo">Nuwaraeliya & Suburbs</option>
-                            <option value="outstation">Outstation (Other Areas)</option>
-                        </select>
-                    </div>
-
-                    <!-- Address Form (Visible for Delivery) -->
-                    <div id="address-form" class="mt-4 space-y-3 animate-fade-in-up">
-                        <div>
-                            <textarea id="addr-text" rows="2" placeholder="Start typing your address... (House No, Street, City)" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none">${savedAddress}</textarea>
-                        </div>
-                        <div>
-                            <input type="tel" id="addr-phone" placeholder="Contact Number *" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all">
-                        </div>
-                    </div>
+                <!-- Items List -->
+                <div id="cart-items-container" class="space-y-3 mb-6">
+                    <!-- Items injected here -->
                 </div>
 
-                <div class="flex flex-col gap-2 mb-4 border-t border-dashed border-gray-200 pt-3">
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <span>Items Total</span>
-                        <span id="cart-item-total">Rs. 0.00</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm text-gray-500 hidden" id="cart-shipping-row">
-                        <span>Shipping Fee</span>
-                        <span id="cart-shipping-fee">Rs. 0.00</span>
-                    </div>
-                    <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                        <span class="text-gray-900 font-bold">Grand Total</span>
-                        <span id="cart-total" class="text-2xl font-bold font-heading">Rs. 0.00</span>
-                    </div>
-                </div>
-
-                <!-- Payment Method Selection -->
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Payment Method</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="whatsapp" class="peer hidden" checked onchange="handlePaymentChange(this.value)">
-                            <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
-                                <span id="payment-method-cod-text" class="text-xs font-bold block">WhatsApp / COD</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="bank" class="peer hidden" onchange="handlePaymentChange(this.value)">
-                            <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
-                                <span class="text-xs font-bold block">Bank Transfer</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="crypto" class="peer hidden" onchange="handlePaymentChange(this.value)">
-                            <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
-                                <span class="text-xs font-bold block">Crypto</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment" value="card" class="peer hidden" onchange="handlePaymentChange(this.value)">
-                            <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
-                                <span class="text-xs font-bold block">Card Payment</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- Payment Details Section -->
-                    <div id="payment-details-bank" class="hidden mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200 animate-fade-in-up">
-                        <h4 class="text-xs font-bold uppercase text-gray-500 mb-2">Bank Details</h4>
-                        <div class="text-sm space-y-1">
-                            <p><span class="font-bold">Bank:</span> Bank of Ceylon</p>
-                            <p><span class="font-bold">Branch:</span> Walapane Branch</p>
-                            <p><span class="font-bold">Name:</span> Tharindu Mayuranga</p>
-                            <p><span class="font-bold">Acc No:</span> 0004134063</p>
+                <!-- Forms & Options Area -->
+                <div class="border-t border-gray-100 pt-6">
+                    
+                    <!-- 1. Shipping Method Selection -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Select Shipping Method</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="shipping" value="delivery" class="peer hidden" checked onchange="handleShippingChange(this.value)">
+                                <div class="border border-gray-200 rounded-xl p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400 h-full justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+                                    <span class="font-bold text-xs">Delivery</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="shipping" value="pickup" class="peer hidden" onchange="handleShippingChange(this.value)">
+                                <div class="border border-gray-200 rounded-xl p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400 h-full justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                    <span class="font-bold text-xs">Pickup</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="shipping" value="threewheel" class="peer hidden" onchange="handleShippingChange(this.value)">
+                                <div class="border border-gray-200 rounded-xl p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400 h-full justify-center">
+                                    <span class="text-xl">🛺</span>
+                                    <span class="font-bold text-xs">3-Wheel</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="shipping" value="courier" class="peer hidden" onchange="handleShippingChange(this.value)">
+                                <div class="border border-gray-200 rounded-xl p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all flex flex-col items-center gap-2 hover:border-gray-400 h-full justify-center">
+                                    <span class="text-xl">📦</span>
+                                    <span class="font-bold text-xs">Courier</span>
+                                </div>
+                            </label>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2 italic">Please send the receipt via WhatsApp after checking out.</p>
+
+                        <!-- Driver Selection -->
+                        <div id="driver-selection" class="hidden mt-4 animate-fade-in-up">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Driver</label>
+                            <select id="driver-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                                <option value="">-- Choose a Driver --</option>
+                            </select>
+                            <p class="text-[10px] text-gray-400 mt-1 italic">* Hire fee paid to driver.</p>
+                        </div>
+
+                        <div id="courier-area-selection" class="hidden mt-4 animate-fade-in-up">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Delivery Area</label>
+                            <select id="courier-area-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none" onchange="handleCourierAreaChange()">
+                                <option value="">-- Select Area --</option>
+                                <option value="colombo">Nuwaraeliya & Suburbs</option>
+                                <option value="outstation">Outstation (Other Areas)</option>
+                            </select>
+                        </div>
+
+                        <!-- Address Form -->
+                        <div id="address-form" class="mt-4 space-y-3 animate-fade-in-up">
+                            <div>
+                                <textarea id="addr-text" rows="2" placeholder="Address (House No, Street, City)" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none">${savedAddress}</textarea>
+                            </div>
+                            <div>
+                                <input type="tel" id="addr-phone" placeholder="Contact Number *" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Payment</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="whatsapp" class="peer hidden" checked onchange="handlePaymentChange(this.value)">
+                                <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
+                                    <span id="payment-method-cod-text" class="text-xs font-bold block">WhatsApp/COD</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="bank" class="peer hidden" onchange="handlePaymentChange(this.value)">
+                                <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
+                                    <span class="text-xs font-bold block">Bank Transfer</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="crypto" class="peer hidden" onchange="handlePaymentChange(this.value)">
+                                <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
+                                    <span class="text-xs font-bold block">Crypto</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="card" class="peer hidden" onchange="handlePaymentChange(this.value)">
+                                <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
+                                    <span class="text-xs font-bold block">Card</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Payment Details Section -->
+                        <div id="payment-details-bank" class="hidden mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200 animate-fade-in-up">
+                            <h4 class="text-xs font-bold uppercase text-gray-500 mb-2">Bank Details</h4>
+                            <div class="text-sm space-y-1">
+                                <p><span class="font-bold">Bank:</span> Bank of Ceylon</p>
+                                <p><span class="font-bold">Branch:</span> Walapane Branch</p>
+                                <p><span class="font-bold">Name:</span> Tharindu Mayuranga</p>
+                                <p><span class="font-bold">Acc No:</span> 0004134063</p>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 italic">Send receipt via WhatsApp.</p>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="flex flex-col gap-2 mb-4 border-t border-dashed border-gray-200 pt-3">
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>Items Total</span>
+                            <span id="cart-item-total">Rs. 0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-gray-500 hidden" id="cart-shipping-row">
+                            <span>Shipping Fee</span>
+                            <span id="cart-shipping-fee">Rs. 0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <span class="text-gray-900 font-bold">Grand Total</span>
+                            <span id="cart-total" class="text-2xl font-bold font-heading">Rs. 0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button (Now Inside Scrollable Area) -->
+                    <div class="mt-4">
+                        <button onclick="checkout()" class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-transform active:scale-95 shadow-lg">
+                            Checkout & Place Order
+                        </button>
                     </div>
                 </div>
-
-                <button onclick="checkout()" class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-transform active:scale-95 shadow-lg">
-                    Checkout & Place Order
-                </button>
             </div>
         </div>
     </div>

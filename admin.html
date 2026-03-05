@@ -5780,7 +5780,8 @@ Buddika Stores
     </style>
 
     <!-- QuaggaJS Barcode Scanner Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- html5-qrcode Barcode Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <!-- Admin Barcode Scanner Script -->
     <script>
@@ -5802,56 +5803,35 @@ Buddika Stores
 
         // Start Admin Barcode Scanner
         function startAdminBarcodeScanner() {
-            if (typeof Quagga === 'undefined') {
-                console.error('Quagga not loaded');
+            if (typeof Html5Qrcode === 'undefined') {
+                console.error('html5-qrcode not loaded');
                 alert('Scanner library not loaded. Please refresh the page.');
                 return;
             }
 
             if (adminScannerActive) return;
 
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.getElementById('admin-barcode-scanner-view'),
-                    constraints: {
-                        facingMode: "environment",
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    }
-                },
-                decoder: {
-                    readers: [
-                        "ean_reader",
-                        "ean_8_reader",
-                        "code_128_reader",
-                        "code_39_reader",
-                        "upc_reader",
-                        "upc_e_reader"
-                    ]
-                },
-                locate: true,
-                locator: {
-                    halfSample: true,
-                    patchSize: "medium"
-                }
-            }, function (err) {
-                if (err) {
-                    console.error('Quagga init error:', err);
-                    const resultDiv = document.getElementById('admin-barcode-result');
-                    resultDiv.innerHTML = '<div class="text-orange-600">📷 Camera not available. Use manual entry.</div>';
-                    resultDiv.classList.remove('hidden');
-                    return;
-                }
-                console.log('[Admin Scanner] Initialized');
-                Quagga.start();
-                adminScannerActive = true;
-            });
+            const html5QrCode = new Html5Qrcode("admin-barcode-scanner-view");
+            window.adminScannerInstance = html5QrCode;
 
-            Quagga.onDetected(function (result) {
-                const code = result.codeResult.code;
-                console.log('[Admin Scanner] Detected:', code);
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // If you want to prefer back camera:
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+                .then(() => {
+                    console.log('[Admin Scanner] Initialized');
+                    adminScannerActive = true;
+                    document.getElementById('admin-barcode-result').classList.add('hidden');
+                })
+                .catch(err => {
+                    console.error('Scanner init error:', err);
+                    const resultDiv = document.getElementById('admin-barcode-result');
+                    resultDiv.innerHTML = '<div class="text-orange-600">📷 Camera access failed. Use manual entry.</div>';
+                    resultDiv.classList.remove('hidden');
+                });
+
+            function onScanSuccess(decodedText, decodedResult) {
+                console.log('[Admin Scanner] Detected:', decodedText);
 
                 // Play beep
                 try {
@@ -5868,25 +5848,43 @@ Buddika Stores
                 } catch (e) { }
 
                 // Fill SKU field
-                document.getElementById('p-sku').value = code;
+                document.getElementById('p-sku').value = decodedText;
 
                 // Show result
                 const resultDiv = document.getElementById('admin-barcode-result');
-                resultDiv.innerHTML = '<div class="bg-green-50 text-green-700 p-2 rounded">✅ Barcode: ' + code + '</div>';
+                resultDiv.innerHTML = '<div class="bg-green-50 text-green-700 p-2 rounded">✅ Barcode: ' + decodedText + '</div>';
                 resultDiv.classList.remove('hidden');
 
                 // Close after short delay
                 setTimeout(() => {
                     closeAdminBarcodeScanner();
                 }, 800);
-            });
+            }
+
+            function onScanFailure(error) {
+                // handle scan failure, usually better to ignore and keep scanning.
+                // console.warn(`Code scan error = ${error}`);
+            }
         }
 
         // Stop Admin Barcode Scanner
         function stopAdminBarcodeScanner() {
             if (!adminScannerActive) return;
             try {
-                Quagga.stop();
+                try {
+                    if (window.adminScannerInstance) {
+                        window.adminScannerInstance.stop().then((ignore) => {
+                            // QR Code scanning is stopped.
+                            adminScannerActive = false;
+                            window.adminScannerInstance.clear();
+                        }).catch((err) => {
+                            // Stop failed, handle it.
+                            console.error("Failed to stop scanner", err);
+                        });
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
             } catch (e) { }
             adminScannerActive = false;
         }
@@ -6180,59 +6178,10 @@ Just a friendly reminder that we're here for all your shopping needs!
             updateMorningPreview();
         };
 
-        // ==================== SETTINGS LOGIC (RESTORED) ====================
-        window.openSettingsModal = async () => {
-            const modal = document.getElementById('settings-modal');
-            const content = document.getElementById('settings-modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => content.classList.remove('scale-95', 'opacity-0'), 10);
+        // ==================== SETTINGS LOGIC REMOVED (DUPLICATE) ====================
+        // The correct settings logic is already defined in the main script block above (around line 5532).
+        // This block was overwriting it with incorrect IDs (gemini-api-key vs setting-api-key).
 
-            // Load Config
-            try {
-                const docRef = doc(db, 'settings', 'store_config');
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if (document.getElementById('gemini-api-key')) document.getElementById('gemini-api-key').value = data.geminiApiKey || '';
-                    if (document.getElementById('setting-courier-colombo')) document.getElementById('setting-courier-colombo').value = data.courierColombo || '';
-                    if (document.getElementById('setting-courier-outstation')) document.getElementById('setting-courier-outstation').value = data.courierOutstation || '';
-                } else {
-                    // Default if no settings exist
-                    if (document.getElementById('gemini-api-key')) document.getElementById('gemini-api-key').value = '';
-                }
-            } catch (e) { console.error("Error loading settings:", e); }
-        }
-
-        window.closeSettingsModal = () => {
-            const modal = document.getElementById('settings-modal');
-            const content = document.getElementById('settings-modal-content');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        window.saveSettings = async () => {
-            const apiKey = document.getElementById('gemini-api-key').value.trim();
-            const colombo = document.getElementById('setting-courier-colombo').value;
-            const outstation = document.getElementById('setting-courier-outstation').value;
-
-            try {
-                const settings = {
-                    geminiApiKey: apiKey,
-                    courierColombo: colombo,
-                    courierOutstation: outstation,
-                    updatedAt: new Date()
-                };
-
-                await setDoc(doc(db, 'settings', 'store_config'), settings, { merge: true });
-
-                if (apiKey) localStorage.setItem('gemini_api_key', apiKey); // Backup
-
-                showToast('✅ Settings Saved Successfully!', 'success');
-                closeSettingsModal();
-            } catch (e) {
-                showToast('Failed to save settings: ' + e.message, 'error');
-            }
-        }
 
         // Driver Stub (to prevent errors)
         window.addDriver = () => {

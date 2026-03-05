@@ -134,7 +134,7 @@ function renderNexUI() {
                 <button id="nex-mic-btn" class="text-gray-500 hover:text-black p-2 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                 </button>
-                <input type="text" id="nex-input" placeholder="Ask or speak..." class="flex-1 bg-transparent outline-none text-sm" onkeypress="if(event.key === 'Enter') sendNexMessage()">
+                <input type="text" id="nex-input" placeholder="Ask or speak..." class="flex-1 bg-transparent outline-none text-sm text-black placeholder-gray-500" onkeypress="if(event.key === 'Enter') sendNexMessage()">
                 <button onclick="sendNexMessage()" class="bg-black text-white p-2 rounded-lg">➤</button>
             </div>
         </div>
@@ -359,7 +359,7 @@ async function getProductData() {
 
 function addMessage(sender, text) {
     const c = document.getElementById('nex-messages');
-    const bg = sender === 'user' ? 'bg-black text-white' : (sender === 'system' ? 'bg-red-100 text-red-800' : 'bg-white border');
+    const bg = sender === 'user' ? 'bg-black text-white' : (sender === 'system' ? 'bg-red-100 text-red-800' : 'bg-white border text-black');
     const align = sender === 'user' ? 'items-end' : 'items-start';
     c.insertAdjacentHTML('beforeend', `<div class="flex flex-col ${align}"><div class="${bg} p-3 rounded-2xl max-w-[85%] text-sm">${text}</div></div>`);
     c.scrollTop = c.scrollHeight;

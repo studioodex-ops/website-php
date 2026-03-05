@@ -338,3 +338,31 @@ h6,
 }
 
 /* --- ANIMATIONS END --- */
+
+/* GLOBAL INPUT CONTRAST FIX */
+input,
+textarea,
+select {
+    color: #1d1d1f !important;
+    /* Force dark text */
+}
+
+[data-theme='dark'] input,
+[data-theme='dark'] textarea,
+[data-theme='dark'] select {
+    color: #f5f5f7 !important;
+    /* Light text for dark mode IF background is dark */
+}
+
+/* Specific fix for inputs with light backgrounds in Dark Mode (like Contact Form) */
+[data-theme='dark'] input.bg-gray-50,
+[data-theme='dark'] textarea.bg-gray-50,
+[data-theme='dark'] input.bg-white,
+[data-theme='dark'] textarea.bg-white {
+    color: #1d1d1f !important;
+}
+
+/* Chatbot Input Specific Fix (Always Black) */
+#nex-input {
+    color: #000000 !important;
+}
