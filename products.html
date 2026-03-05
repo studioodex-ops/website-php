@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+    <title>Shop Products | Buddika Stores Walapane - Grocery & Stationery</title>
+    <meta name="title" content="Shop Products | Buddika Stores Walapane - Grocery & Stationery">
+    <meta name="description"
+        content="Browse our wide range of products: grocery items, school stationery, newspapers, and daily essentials. Fast delivery service in Walapane, Nildandahinna, and Harasbedda.">
+    <meta name="keywords"
+        content="products, grocery Walapane, stationery Walapane, Buddika Stores, Nildandahinna shops, online delivery Sri Lanka, Walapane bookshops">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://buddikastores.com/products.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buddikastores.com/products.html">
+    <meta property="og:title" content="Shop Products | Buddika Stores">
+    <meta property="og:description"
+        content="Browse our wide range of grocery, stationery, and daily essentials. Order via WhatsApp!">
+    <meta property="og:image" content="https://buddikastores.com/assets/images/og-products.jpg">
+    <meta property="og:site_name" content="Buddika Stores">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shop Products | Buddika Stores">
+    <meta name="twitter:description" content="Browse our wide range of grocery, stationery, and daily essentials.">
+    <meta name="twitter:image" content="https://buddikastores.com/assets/images/og-products.jpg">
+
+    <!-- JSON-LD Structured Data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://buddikastores.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Products",
+                "item": "https://buddikastores.com/products.html"
+            }
+        ]
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: ItemList (Product Collection) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Buddika Stores Products",
+        "description": "Browse our collection of grocery items, stationery, newspapers, and daily essentials.",
+        "url": "https://buddikastores.com/products.html",
+        "numberOfItems": 100,
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Grocery Items"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "School Stationery"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Daily Newspapers"
+            }
+        ]
+    }
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: ['class', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        gray: {
+                            50: '#fcfcfc',
+                            100: '#f4f4f5',
+                            900: '#18181b',
+                        },
+                        // Map to style.css CSS Variables
+                        'accent-color': 'var(--accent-color)',
+                        'body': 'var(--bg-body)',
+                        'card': 'var(--bg-card)',
+                        'primary': 'var(--text-primary)',
+                        'secondary': 'var(--text-secondary)',
+                        'glass': 'var(--border-glass)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/theme-switch.js"></script>
+</head>
+
+<body class="bg-body text-primary antialiased transition-colors duration-500">
+
+    <div id="header-container"></div>
+
+    <main class="pt-20">
+        <section class="bg-body py-16 transition-colors duration-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold font-heading mb-4 tracking-tighter text-primary">Our Products
+                </h1>
+                <p class="text-secondary max-w-xl mx-auto">Browse through our wide selection of items.</p>
+            </div>
+        </section>
+
+        <section class="py-16 bg-body min-h-screen transition-colors duration-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+
+                <div class="flex flex-col items-center">
+
+                    <!-- Search Input -->
+                    <div class="w-full max-w-4xl mx-auto mb-8 px-4" id="page-search-container">
+                        <div class="relative group w-full">
+                            <input type="text" id="page-search-input" placeholder="Search for products (e.g., 'cr book', 'pen', 'sugar')..." 
+                                class="w-full bg-white border border-gray-300 rounded-full py-4 px-6 pl-12 text-gray-900 focus:border-black focus:ring-2 focus:ring-black outline-none shadow-sm transition-all text-sm font-medium">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <!-- clear button -->
+                            <button id="clear-search-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black hidden transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Horizontal Filter Bar -->
+                    <div class="flex flex-wrap justify-center items-center gap-4 mb-12 w-full max-w-4xl mx-auto">
+                        <!-- All -->
+                        <button onclick="filterByCategory('all')"
+                            class="filter-btn active px-6 py-2.5 rounded-full border border-gray-200 bg-black text-white hover:bg-gray-800 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                            data-filter="all">
+                            <span>All Categories</span>
+                        </button>
+
+                        <!-- Grocery -->
+                        <button onclick="filterByCategory('Grocery')"
+                            class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                            data-filter="Grocery">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <span>Grocery</span>
+                        </button>
+
+                        <!-- Stationery (With Mega Menu) -->
+                        <div class="relative group static-on-mobile">
+                            <button onclick="filterByCategory('Stationery')"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                data-filter="Stationery" id="btn-stationery">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                    </path>
+                                </svg>
+                                <span>Stationery</span>
+                                <!-- Dropdown Arrow -->
+                                <svg class="w-3 h-3 ml-1 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Mega Menu Dropdown -->
+                            <div
+                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[90vw] md:w-[600px] bg-white border border-gray-200 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 p-6 text-left top-full overflow-hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                    <!-- Col 1: Sathara Publications -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            Sathara Publications</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Preschool')"
+                                                    class="hover:text-black hover:underline block">Preschool</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 1')"
+                                                    class="hover:text-black hover:underline block">Grade 1</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 2')"
+                                                    class="hover:text-black hover:underline block">Grade 2</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 3')"
+                                                    class="hover:text-black hover:underline block">Grade 3</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 4')"
+                                                    class="hover:text-black hover:underline block">Grade 4</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 5')"
+                                                    class="hover:text-black hover:underline block">Grade 5</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 6')"
+                                                    class="hover:text-black hover:underline block">Grade 6</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 7')"
+                                                    class="hover:text-black hover:underline block">Grade 7</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 2: Sathara (Cont.) + Others -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider text-transparent select-none">
+                                            .</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 8')"
+                                                    class="hover:text-black hover:underline block">Grade 8</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 9')"
+                                                    class="hover:text-black hover:underline block">Grade 9</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 10')"
+                                                    class="hover:text-black hover:underline block">Grade 10</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 11 O Level')"
+                                                    class="hover:text-black hover:underline block">Grade 11 O Level</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Grade 12 A Level')"
+                                                    class="hover:text-black hover:underline block">Grade 12 A Level</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Past Papers')"
+                                                    class="hover:text-black hover:underline block">Past Papers</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Story Books')"
+                                                    class="hover:text-black hover:underline block">Story Books</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Monthly Magazines')"
+                                                    class="hover:text-black hover:underline block">Monthly Magazines</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Col 3: Other + CR -->
+                                    <div>
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            Other / CR</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Educational Books')"
+                                                    class="hover:text-black hover:underline block">Educational Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Children\'s Books')"
+                                                    class="hover:text-black hover:underline block">Children's Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Sinhala Literature')"
+                                                    class="hover:text-black hover:underline block">Sinhala
+                                                    Literature</a></li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Religious Books')"
+                                                    class="hover:text-black hover:underline block">Religious Books</a>
+                                            </li>
+                                        </ul>
+
+                                        <h4
+                                            class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                                            CR Books & Tools</h4>
+                                        <ul class="space-y-2 text-sm text-gray-600">
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('B5 Exercise Books')"
+                                                    class="hover:text-black hover:underline block">B5 Exercise Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('A5 Exercise Books')"
+                                                    class="hover:text-black hover:underline block">A5 Exercise Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Square Rule Books')"
+                                                    class="hover:text-black hover:underline block">Square Rule Books</a>
+                                            </li>
+                                            <li><a href="#"
+                                                    onclick="event.preventDefault(); filterBySubCategory('Notebooks')"
+                                                    class="hover:text-black hover:underline block">Notebooks</a></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Newspapers (With Dropdown) -->
+                        <div class="relative group static-on-mobile">
+                            <button onclick="filterByCategory('Newspapers')"
+                                class="filter-btn px-6 py-2.5 rounded-full border border-gray-300 bg-white text-gray-900 hover:border-black hover:bg-gray-100 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                                data-filter="Newspapers" id="btn-newspapers">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                                    </path>
+                                </svg>
+                                <span>Newspapers</span>
+                                <!-- Dropdown Arrow -->
+                                <svg class="w-3 h-3 ml-1 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Simple Dropdown -->
+                            <div
+                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2 text-left top-full overflow-hidden">
+                                <ul class="text-sm text-gray-600">
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Daily Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Daily
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Sunday Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Sunday
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('Women Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Women
+                                            Papers</a></li>
+                                    <li><a href="#"
+                                            onclick="event.preventDefault(); filterBySubCategory('English Papers')"
+                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">English
+                                            Papers</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sort Dropdown -->
+                        <select id="sort-select"
+                            class="px-6 py-2.5 rounded-full border border-glass bg-card text-primary text-sm font-bold focus:border-accent-color focus:ring-0 outline-none cursor-pointer hover:bg-white/5 shadow-sm ml-2">
+                            <option value="default">Sort By</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name">Name (A-Z)</option>
+                        </select>
+                    </div>
+
+
+                    <!-- Product Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8"
+                        id="product-grid">
+                        <!-- Products will be injected here via JS -->
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div id="load-more-container" class="text-center mt-12 hidden">
+                        <button id="load-more-btn"
+                            class="px-8 py-3 bg-white border border-gray-300 text-black font-bold rounded-full hover:bg-black hover:text-white transition-all shadow-sm">
+                            Load More Products
+                        </button>
+                        <p class="text-xs text-gray-400 mt-2">Showing partial results for performance</p>
+                    </div> <!-- Recommendations Section -->
+                    <div id="recommendations-container" class="mt-12 hidden">
+                        <!-- Will be populated by recommender.js -->
+                    </div>
+                </div> <!-- Close Main Content -->
+            </div> <!-- Close Flex Container -->
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+    <script type="module" src="assets/js/recommender.js?v=1.0"></script>
+
+
+    <!-- Main Logic -->
+    <script type="module">
+        import { db, collection, getDocs, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
+        import { escapeHtml, escapeJs } from './assets/js/utils.js';
+        import { addToCart } from './assets/js/cart.js'; // Explicit Import
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('product-grid');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const loadMoreContainer = document.getElementById('load-more-container');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const sortSelect = document.getElementById('sort-select');
+
+            // State
+            let allProducts = [];
+            let lastVisible = null;
+            let PRODUCTS_PER_PAGE = 12;
+            let isFetching = false;
+            let noMoreProducts = false;
+
+            // Handle URL Query Params
+            const params = new URLSearchParams(window.location.search);
+            const urlCategory = params.get('category');
+            const urlSearch = params.get('search');
+            
+            // Allow any category from URL, default to 'all'
+            let currentCategory = urlCategory || 'all';
+            let currentSubCategory = null; // New State for Subcategory Filters
+            let currentSearchTerm = urlSearch ? urlSearch.toLowerCase() : '';
+
+            // Expose subcategory filter function to global window scope so HTML onclicks work
+            window.filterBySubCategory = (subCat) => {
+                console.log(`Filtering by subcategory: ${subCat}`);
+
+                // Set main category to stationery if not already
+                if (currentCategory !== 'Stationery') {
+                    // Update main buttons UI
+                    updateFilterButtons('Stationery');
+                    currentCategory = 'Stationery';
+                }
+
+                currentSubCategory = subCat;
+
+                // Optional: Update UI to show selected subcategory (maybe a breadcrumb or tag?)
+                // For now, just reload products
+                allProducts = [];
+                lastVisible = null;
+                noMoreProducts = false;
+                fetchProducts(false);
+            };
+
+            function updateFilterButtons(selectedCat) {
+                filterBtns.forEach(btn => {
+                    const iconBox = btn.querySelector('span:first-child');
+
+                    // Manual update:
+                    btn.classList.remove('bg-accent-color', 'text-white', 'border-accent-color', 'active');
+
+                    if (btn.dataset.filter === selectedCat) {
+                        btn.classList.add('bg-black', 'text-white', 'active');
+                        btn.classList.remove('text-gray-900', 'border-gray-300', 'bg-white');
+                        // Add font-bold too?
+                        btn.classList.add('font-bold');
+                    } else {
+                        btn.classList.add('text-gray-900', 'border-gray-300', 'bg-white'); // Darker border & text
+                        btn.classList.remove('active', 'bg-black', 'text-white', 'font-bold');
+                    }
+                });
+            }
+
+            // Update Active Button UI
+            filterBtns.forEach(btn => {
+                const iconBox = btn.querySelector('span:first-child');
+                const textSpan = btn.querySelector('span:last-child');
+
+                // Remove existing high-contrast classes if present from previous logic
+                btn.classList.remove('bg-black', 'text-white', 'border-black');
+
+                if (btn.dataset.filter === currentCategory) {
+                    btn.classList.add('bg-black', 'text-white', 'font-bold');
+                    btn.classList.remove('bg-white', 'text-gray-900', 'border-gray-300');
+
+                    // Update Icon
+                    if (iconBox) {
+                        iconBox.classList.remove('bg-card', 'text-secondary');
+                    }
+                } else {
+                    btn.classList.remove('bg-black', 'text-white', 'font-bold');
+                    btn.classList.add('bg-white', 'text-gray-900', 'border-gray-300'); // Consistent Inactive Style
+
+                    // Reset Icon
+                    if (iconBox) {
+                        // iconBox.classList...
+                    }
+                }
+            });
+
+            // Initial Loading State
+            grid.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
+                    <p class="text-gray-400">Loading ${currentCategory === 'all' ? 'products' : currentCategory}...</p>
+                </div>
+            `;
+
+            // --- FETCH DATA (PAGINATED & FILTERED) ---
+            async function fetchProducts(isLoadMore = false) {
+                if (isFetching || (noMoreProducts && isLoadMore)) return;
+                isFetching = true;
+
+                if (isLoadMore) {
+                    loadMoreBtn.innerText = "Loading...";
+                    loadMoreBtn.disabled = true;
+                } else {
+                    // Reset grid for new category load
+                    grid.innerHTML = `
+                        <div class="col-span-full flex flex-col items-center justify-center py-20">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
+                            <p class="text-gray-400">Loading...</p>
+                        </div>
+                    `;
+                    loadMoreContainer.classList.add('hidden');
+                }
+
+                try {
+                    let q;
+                    const productsRef = collection(db, "products");
+
+                    // Query Logic
+                    // Removed orderBy("createdAt") to prevent empty results if migration data lacks timestamp.
+                    // This ensures all products are fetched.
+                    if (currentCategory === 'all') {
+                        if (currentSearchTerm) {
+                            // Fetch all to filter locally
+                            q = query(productsRef);
+                        } else {
+                            if (isLoadMore && lastVisible) {
+                                q = query(productsRef, startAfter(lastVisible), limit(PRODUCTS_PER_PAGE));
+                            } else {
+                                q = query(productsRef, limit(PRODUCTS_PER_PAGE));
+                            }
+                        }
+                    } else {
+                        // Filtered Query (Robust Case Handling)
+                        // Create variants: e.g. "Stationery", "stationery", "STATIONERY"
+                        const searchCats = [
+                            currentCategory,
+                            currentCategory.toLowerCase(),
+                            currentCategory.toUpperCase(),
+                            currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()
+                        ];
+                        // Remove duplicates
+                        const uniqueCats = [...new Set(searchCats)];
+
+                        let constraints = [where("category", "in", uniqueCats)];
+
+                        // Add Subcategory Constraint if Active
+                        if (currentSubCategory) {
+                            constraints.push(where("subcategory", "==", currentSubCategory));
+                        }
+
+                        if (!currentSearchTerm) {
+                            constraints.push(limit(PRODUCTS_PER_PAGE));
+                        }
+
+                        if (isLoadMore && lastVisible && !currentSearchTerm) {
+                            q = query(productsRef, ...constraints, startAfter(lastVisible));
+                        } else {
+                            q = query(productsRef, ...constraints);
+                        }
+                    }
+
+                    const querySnapshot = await getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        noMoreProducts = true;
+                        if (!isLoadMore) {
+                            grid.innerHTML = '<p class="text-center col-span-full text-gray-400 py-12">No products found in this category.</p>';
+                        }
+                        loadMoreContainer.classList.add('hidden');
+                        isFetching = false;
+                        if (!isLoadMore) allProducts = [];
+                        return;
+                    }
+
+                    // Update Cursor
+                    lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+                    // Process Data
+                    let newProducts = [];
+                    querySnapshot.forEach((doc) => {
+                        newProducts.push({ id: doc.id, ...doc.data() }); // Ensure ID is captured
+                    });
+
+                    // Search filtering (Local)
+                    if (currentSearchTerm) {
+                         newProducts = newProducts.filter(p => {
+                             const nameMatch = p.name && p.name.toLowerCase().includes(currentSearchTerm);
+                             const descMatch = p.desc && p.desc.toLowerCase().includes(currentSearchTerm);
+                             const catMatch = p.category && p.category.toLowerCase().includes(currentSearchTerm);
+                             const subMatch = p.subcategory && p.subcategory.toLowerCase().includes(currentSearchTerm);
+                             return nameMatch || descMatch || catMatch || subMatch;
+                         });
+                    }
+
+                    if (isLoadMore) {
+                        allProducts = [...allProducts, ...newProducts];
+                    } else {
+                        allProducts = newProducts;
+                        noMoreProducts = false;
+                    }
+
+                    renderProducts();
+
+                    // Show/Hide Load More
+                    if (currentSearchTerm) {
+                        noMoreProducts = true;
+                        loadMoreContainer.classList.add('hidden');
+                    } else if (querySnapshot.docs.length < PRODUCTS_PER_PAGE) {
+                        noMoreProducts = true;
+                        loadMoreContainer.classList.add('hidden');
+                    } else {
+                        loadMoreContainer.classList.remove('hidden');
+                        noMoreProducts = false;
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching products:", error);
+                    if (!isLoadMore) {
+                        grid.innerHTML = `
+                            <div class="col-span-full text-center py-20 text-red-500">
+                                <p>Unable to load products. Please check your connection.</p>
+                                <p class="text-xs mt-2 text-gray-400">${error.message}</p>
+                            </div>
+                        `;
+                    }
+                } finally {
+                    isFetching = false;
+                    if (isLoadMore) {
+                        loadMoreBtn.innerText = "Load More";
+                        loadMoreBtn.disabled = false;
+                    }
+                }
+            }
+
+            // --- RENDER FUNCTION ---
+            function renderProducts() {
+                let filtered = allProducts;
+                const sortValue = sortSelect.value;
+
+                // Sort client-side since we fetched chunk without sort
+                filtered = [...filtered];
+
+                if (sortValue === 'price-asc') {
+                    filtered.sort((a, b) => parseFloat(a.price.replace(/Rs\.|,/g, '')) - parseFloat(b.price.replace(/Rs\.|,/g, '')));
+                } else if (sortValue === 'price-desc') {
+                    filtered.sort((a, b) => parseFloat(b.price.replace(/Rs\.|,/g, '')) - parseFloat(a.price.replace(/Rs\.|,/g, '')));
+                } else if (sortValue === 'name') {
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                }
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<p class="text-center col-span-full text-gray-400 py-12">No products found.</p>';
+                    return;
+                }
+
+                grid.innerHTML = filtered.map(p => {
+                    let imageHTML = '';
+                    if (p.image && p.image.startsWith('emoji:')) {
+                        const emoji = p.image.split(':')[1];
+                        imageHTML = `<span class="text-4xl">${emoji}</span>`;
+                    } else {
+                        const imgSrc = p.image || 'https://placehold.co/400x400?text=No+Image';
+                        imageHTML = `<img src="${imgSrc}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`;
+                    }
+
+                    const unit = p.unit || 'unit';
+                    const step = unit === 'kg' ? 0.5 : 1;
+                    const min = unit === 'kg' ? 0.5 : 1;
+                    const initialQty = min;
+
+                    const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.active === false;
+
+                    // Updated Link: Now wraps the image and title area
+                    const productUrl = `product.html?id=${p.id}`;
+
+                    return `
+                        <div id="product-${p.id}" class="product-card group relative bg-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-glass animate-fade-in flex flex-col h-full ${isOutOfStock ? 'opacity-75 grayscale' : ''} ${p.isDeepLink ? 'ring-2 ring-accent-color transform scale-105 z-10 shadow-purple-500/20' : ''}">
+                            ${isOutOfStock ? '<div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">Out of Stock</div>' : ''}
+                            
+                            <button onclick="shareProduct('${escapeJs(p.id)}')" class="absolute top-3 left-3 bg-black/20 hover:bg-black/50 backdrop-blur-md text-white p-2 rounded-full z-10 transition-colors opacity-0 group-hover:opacity-100" title="Copy Link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                            </button>
+
+                            <a href="${productUrl}" class="block aspect-w-1 aspect-h-1 bg-white/5 flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} h-64 overflow-hidden relative cursor-pointer">
+                                ${imageHTML}
+                            </a>
+
+                            <div class="p-3 md:p-6 flex flex-col flex-grow">
+                                <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-2 block">${escapeHtml(p.category)} ${p.subcategory ? '• ' + escapeHtml(p.subcategory) : ''}</span>
+                                <a href="${productUrl}" class="hover:underline decoration-primary">
+                                    <h3 class="text-lg font-bold font-heading mb-2 leading-tight text-primary">${escapeHtml(p.name)}</h3>
+                                </a>
+                                <p class="text-secondary text-sm mb-4 line-clamp-1">${escapeHtml(p.desc)}</p>
+                                <div class="mt-auto">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="font-bold text-lg text-primary">${escapeHtml(p.price)} <span class="text-xs text-secondary font-normal">/ ${escapeHtml(unit)}</span></span>
+                                    </div>
+                                    <div class="flex flex-col md:flex-row items-center gap-2 bg-white/5 border border-glass rounded-lg p-2">
+                                        <div class="flex items-center justify-center w-full md:w-auto justify-between md:justify-start gap-4 md:gap-0">
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', -${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg bg-gray-100 md:bg-transparent">-</button>
+                                            <span id="qty-${escapeHtml(p.id)}" class="w-8 text-center font-bold text-sm bg-transparent text-primary">${initialQty}</span>
+                                            <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 flex items-center justify-center text-secondary hover:text-primary hover:bg-white/10 rounded-md transition-colors font-bold text-lg bg-gray-100 md:bg-transparent">+</button>
+                                        </div>
+                                        <button onclick="try { window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}', ${p.stock !== undefined ? p.stock : 999999}); } catch(e) { alert('JS Error: ' + e); }"
+                                            ${isOutOfStock ? 'disabled' : ''}
+                                            class="w-full md:flex-1 bg-blue-600 text-white py-2 rounded-md font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:bg-gray-500 disabled:cursor-not-allowed shadow-lg">
+                                            ${isOutOfStock ? 'Sold Out' : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg> Add`}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                }).join('');
+
+                // Show recommendations based on first product
+                if (filtered.length > 0 && window.getRecommendations && window.renderRecommendations) {
+                    setTimeout(async () => {
+                        try {
+                            const recs = await window.getRecommendations(filtered[0], 4);
+                            window.renderRecommendations('recommendations-container', recs);
+                        } catch (e) {
+                            console.warn('Error showing recommendations:', e);
+                        }
+                    }, 500);
+                }
+            }
+
+            // Expose Logic
+            window.adjustQty = (id, change, min) => {
+                const qtyEl = document.getElementById(`qty-${id}`);
+                let currentQty = parseFloat(qtyEl.innerText);
+                let newQty = currentQty + change;
+                if (newQty < min) newQty = min;
+                newQty = Math.round(newQty * 100) / 100;
+                qtyEl.innerText = newQty;
+            };
+
+            window.addToCartWithQty = (id, name, price, unit, maxStock) => {
+                const qtyEl = document.getElementById(`qty-${id}`);
+                const qty = parseFloat(qtyEl.innerText);
+                // Directly call the imported function
+                addToCart(name, price, qty, unit, maxStock);
+            };
+
+            // --- EVENT LISTENERS ---
+
+            const searchInputEl = document.getElementById('page-search-input');
+            const clearSearchBtn = document.getElementById('clear-search-btn');
+
+            if (searchInputEl) {
+                // Initialize from URL
+                if (currentSearchTerm) {
+                    searchInputEl.value = urlSearch;
+                    clearSearchBtn.classList.remove('hidden');
+                }
+
+                searchInputEl.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    if (val) {
+                        clearSearchBtn.classList.remove('hidden');
+                    } else {
+                        clearSearchBtn.classList.add('hidden');
+                    }
+                });
+
+                let searchTimeout;
+                searchInputEl.addEventListener('keyup', (e) => {
+                     clearTimeout(searchTimeout);
+                     searchTimeout = setTimeout(() => {
+                         const val = e.target.value.toLowerCase();
+                         if (val !== currentSearchTerm) {
+                             currentSearchTerm = val;
+                             allProducts = [];
+                             lastVisible = null;
+                             noMoreProducts = false;
+                             
+                             // Update URL without reload
+                             const url = new URL(window.location);
+                             if (val) {
+                                 url.searchParams.set('search', e.target.value);
+                             } else {
+                                 url.searchParams.delete('search');
+                             }
+                             window.history.pushState({}, '', url);
+
+                             fetchProducts(false);
+                         }
+                     }, 500); // 500ms debounce
+                });
+
+                clearSearchBtn.addEventListener('click', () => {
+                     searchInputEl.value = '';
+                     clearSearchBtn.classList.add('hidden');
+                     
+                     if (currentSearchTerm !== '') {
+                         currentSearchTerm = '';
+                         allProducts = [];
+                         lastVisible = null;
+                         noMoreProducts = false;
+                         
+                         const url = new URL(window.location);
+                         url.searchParams.delete('search');
+                         window.history.pushState({}, '', url);
+                         
+                         fetchProducts(false);
+                     }
+                });
+            }
+
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', () => {
+                    fetchProducts(true);
+                });
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-black', 'text-white', 'border-black');
+                        b.classList.add('text-gray-500', 'border-gray-200');
+                    });
+                    btn.classList.remove('text-gray-500', 'border-gray-200');
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+
+                    currentCategory = btn.dataset.filter;
+                    currentSubCategory = null; // Reset subcat on main cat change
+
+                    // Update URL
+                    const url = new URL(window.location);
+                    url.searchParams.set('category', currentCategory);
+                    window.history.pushState({}, '', url);
+
+                    // Reset Logic
+                    allProducts = [];
+                    lastVisible = null;
+                    noMoreProducts = false;
+                    fetchProducts(false);
+                });
+            });
+
+            // Sort Listener
+            sortSelect.addEventListener('change', () => {
+                renderProducts();
+            });
+
+            fetchProducts();
+
+            // --- DEEP LINKING & SHARE LOGIC ---
+            window.shareProduct = (id) => {
+                const url = `${window.location.origin}/product.html?id=${id}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    // Show a toast or alert
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl z-50 animate-fade-in-up';
+                    toast.innerText = 'Link Copied to Clipboard! 📋';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 2000);
+                }).catch(err => console.error('Could not copy text: ', err));
+            };
+
+            const urlProductId = params.get('id');
+            if (urlProductId) {
+                handleDeepLink(urlProductId);
+            }
+
+            async function handleDeepLink(id) {
+                try {
+                    // Temporarily show loading state if you want, or just fetch
+                    const docRef = doc(db, "products", id);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const product = { id: docSnap.id, ...docSnap.data(), isDeepLink: true };
+                        // Prepend to allProducts or set as the only one? 
+                        // Let's prepend it so user sees it first, but can still browse others.
+                        // Wait for initial fetch to complete? 
+                        // Actually, if we prepend it now, the initial fetch (which is async) might overwrite 'allProducts' or append to it.
+                        // Let's handle it by modifying 'allProducts' AFTER fetchProducts completes, or inject it.
+                        // However, 'fetchProducts' is called above.
+
+                        // Let's wait a bit or push it to the top after fetch
+                        // A cleaner way: Push to top of list and re-render.
+                        // Since fetchProducts is async, we can't easily guarantee order unless we chain.
+                        // But simply rendering it immediately into the grid alongside others is fine.
+
+                        // Let's just add it to 'allProducts' and re-render immediately.
+                        // If it's duplicating what fetchProducts brings, we should de-dupe.
+
+                        // Better approach:
+                        // Just toggle the category to 'all' (default)
+                        // And verify if it's already in the list. if not, add it.
+                        // Then scroll to it.
+
+                        // For simplicity: We will just wait for window load or 1s, then check.
+                        // Or, just set it as a special item.
+
+                        setTimeout(() => {
+                            const exists = allProducts.find(p => p.id === id);
+                            if (!exists) {
+                                allProducts.unshift(product);
+                            } else {
+                                // Mark existing as deep link for highlighting
+                                exists.isDeepLink = true;
+                                // Move to top
+                                allProducts = allProducts.filter(p => p.id !== id);
+                                allProducts.unshift(exists);
+                            }
+                            renderProducts();
+
+                            // Scroll to View
+                            setTimeout(() => {
+                                const el = document.getElementById(`product - ${id}`);
+                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 500);
+                        }, 1000); // Wait for initial fetch
+
+                    } else {
+                        console.log("No such product!");
+                    }
+                } catch (e) {
+                    console.error("Deep link error:", e);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
+```

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Cover Service | Buddika Stores</title>
+    <meta name="description"
+        content="Ready-to-Go Book Pack - Submit your book list, we cover and label them, ready for pickup!">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .font-sinhala {
+            font-family: 'Noto Sans Sinhala', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-black antialiased">
+    <!-- Dynamic Header -->
+    <div id="header-container"></div>
+
+    <main class="relative z-10 pt-20">
+        <!-- Hero Section -->
+        <section class="gradient-bg text-white py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <span class="text-xs font-bold tracking-widest uppercase text-purple-200 mb-2 block">New Service!</span>
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">📚 Ready-to-Go Book Pack</h1>
+                <p class="text-lg md:text-xl text-purple-100 mb-2">
+                    රෑ එළි වෙනකම් පොත් කවර දාන්න වද වෙන්න එපා!
+                </p>
+                <p class="text-purple-200">
+                    ලිස්ට් එක අපිට දීලා ගෙදර ගිහින් නිදාගන්න. කවර දාලා, නම් දමා ලෑස්තියි!
+                </p>
+            </div>
+        </section>
+
+        <!-- Order Form Section -->
+        <section class="py-12 md:py-16">
+            <div class="max-w-2xl mx-auto px-4">
+                <div class="bg-white rounded-2xl shadow-xl p-6 md:p-10">
+                    <h2 class="text-2xl font-bold mb-6 text-center">📝 Order Form</h2>
+
+                    <form id="book-order-form" class="space-y-6">
+                        <!-- Student Details -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-gray-700 border-b pb-2">Student Details</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Student Name (English)
+                                        *</label>
+                                    <input type="text" id="student-name-en" required placeholder="e.g. Kasun Perera"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Student Name
+                                        (Sinhala)</label>
+                                    <input type="text" id="student-name-si" placeholder="උදා: කසුන් පෙරේරා"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none font-sinhala">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">School Name *</label>
+                                    <input type="text" id="school-name" required
+                                        placeholder="e.g. Walapane Central College"
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Grade/Class *</label>
+                                    <select id="grade" required
+                                        class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                                        <option value="">Select Grade</option>
+                                        <option value="Grade 1">Grade 1</option>
+                                        <option value="Grade 2">Grade 2</option>
+                                        <option value="Grade 3">Grade 3</option>
+                                        <option value="Grade 4">Grade 4</option>
+                                        <option value="Grade 5">Grade 5</option>
+                                        <option value="Grade 6">Grade 6</option>
+                                        <option value="Grade 7">Grade 7</option>
+                                        <option value="Grade 8">Grade 8</option>
+                                        <option value="Grade 9">Grade 9</option>
+                                        <option value="Grade 10">Grade 10</option>
+                                        <option value="Grade 11">Grade 11</option>
+                                        <option value="Grade 12">Grade 12 (A/L)</option>
+                                        <option value="Grade 13">Grade 13 (A/L)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Contact Number (WhatsApp)
+                                    *</label>
+                                <input type="tel" id="phone" required placeholder="077-1234567"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Book List -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-gray-700 border-b pb-2">Book List</h3>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Enter Book Names (one per
+                                    line) *</label>
+                                <textarea id="book-list" required rows="6"
+                                    placeholder="Sinhala Reader&#10;Mathematics&#10;English Reader&#10;Environmental Studies&#10;..."
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none resize-none"></textarea>
+                                <p class="text-xs text-gray-400 mt-1">Or upload a photo of the book list below</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Upload Book List Photo
+                                    (Optional)</label>
+                                <input type="file" id="book-list-photo" accept="image/*"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                            </div>
+                        </div>
+
+                        <!-- Service Options -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-gray-700 border-b pb-2">Service Options</h3>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">Cover Type *</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label
+                                        class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer hover:bg-purple-50 transition-colors">
+                                        <input type="radio" name="cover-type" value="plastic" checked
+                                            class="w-5 h-5 text-purple-600">
+                                        <div>
+                                            <p class="font-medium">Plastic Cover</p>
+                                            <p class="text-xs text-gray-400">Standard clear cover</p>
+                                        </div>
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer hover:bg-purple-50 transition-colors">
+                                        <input type="radio" name="cover-type" value="sticky"
+                                            class="w-5 h-5 text-purple-600">
+                                        <div>
+                                            <p class="font-medium">Sticky Cover</p>
+                                            <p class="text-xs text-gray-400">+Rs.10/book</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-600 mb-2">Name Label Style *</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label
+                                        class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer hover:bg-purple-50 transition-colors">
+                                        <input type="radio" name="label-type" value="printed" checked
+                                            class="w-5 h-5 text-purple-600">
+                                        <div>
+                                            <p class="font-medium">Printed Sticker</p>
+                                            <p class="text-xs text-gray-400">+Rs.5/label (Professional)</p>
+                                        </div>
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer hover:bg-purple-50 transition-colors">
+                                        <input type="radio" name="label-type" value="handwritten"
+                                            class="w-5 h-5 text-purple-600">
+                                        <div>
+                                            <p class="font-medium">Handwritten</p>
+                                            <p class="text-xs text-gray-400">Free</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 p-4 bg-amber-50 rounded-xl">
+                                <input type="checkbox" id="express" class="w-5 h-5 text-purple-600">
+                                <div>
+                                    <p class="font-medium">⚡ Express Service</p>
+                                    <p class="text-xs text-gray-500">Ready in 1 day (+Rs.50)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Calculation -->
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-bold text-gray-700 mb-4">💰 Estimated Price</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Number of Books:</span>
+                                    <span id="book-count" class="font-bold">0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Base Service (Rs.25/book):</span>
+                                    <span id="base-price">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between" id="sticky-row" style="display:none;">
+                                    <span>Sticky Cover (+Rs.10/book):</span>
+                                    <span id="sticky-price">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between" id="label-row" style="display:none;">
+                                    <span>Printed Labels (+Rs.5/label):</span>
+                                    <span id="label-price">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between" id="express-row" style="display:none;">
+                                    <span>Express Service:</span>
+                                    <span>Rs. 50</span>
+                                </div>
+                                <div class="border-t pt-2 mt-2 flex justify-between text-lg font-bold text-purple-700">
+                                    <span>Total:</span>
+                                    <span id="total-price">Rs. 0</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">* Final price may vary based on actual book count</p>
+                        </div>
+
+                        <!-- Pickup Date -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Preferred Pickup Date</label>
+                            <input type="date" id="pickup-date"
+                                class="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                            <p class="text-xs text-gray-400 mt-1">Normal: 2 days | Express: 1 day</p>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-lg">
+                            <span>📚</span> Submit Order
+                        </button>
+
+                        <p class="text-xs text-center text-gray-400">
+                            By submitting, you agree to pay an advance when dropping off books.
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                        <span class="text-3xl mb-2 block">📋</span>
+                        <h4 class="font-bold">Step 1</h4>
+                        <p class="text-sm text-gray-500">Submit book list online</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                        <span class="text-3xl mb-2 block">📦</span>
+                        <h4 class="font-bold">Step 2</h4>
+                        <p class="text-sm text-gray-500">Drop books at store</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 text-center shadow-sm">
+                        <span class="text-3xl mb-2 block">✅</span>
+                        <h4 class="font-bold">Step 3</h4>
+                        <p class="text-sm text-gray-500">Pick up ready pack!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Dynamic Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+
+    <script type="module">
+        import { db, collection, doc, setDoc } from './assets/js/firebase-config.js';
+
+        // Calculate price when inputs change
+        const bookListInput = document.getElementById('book-list');
+        const coverRadios = document.querySelectorAll('input[name="cover-type"]');
+        const labelRadios = document.querySelectorAll('input[name="label-type"]');
+        const expressCheckbox = document.getElementById('express');
+
+        function calculatePrice() {
+            const bookList = bookListInput.value.trim();
+            const books = bookList.split('\n').filter(line => line.trim() !== '');
+            const bookCount = books.length;
+
+            const coverType = document.querySelector('input[name="cover-type"]:checked').value;
+            const labelType = document.querySelector('input[name="label-type"]:checked').value;
+            const isExpress = expressCheckbox.checked;
+
+            // Base price: Rs.25/book
+            let basePrice = bookCount * 25;
+            let stickyPrice = coverType === 'sticky' ? bookCount * 10 : 0;
+            let labelPrice = labelType === 'printed' ? bookCount * 5 : 0;
+            let expressPrice = isExpress ? 50 : 0;
+
+            let total = basePrice + stickyPrice + labelPrice + expressPrice;
+
+            // Update UI
+            document.getElementById('book-count').textContent = bookCount;
+            document.getElementById('base-price').textContent = `Rs. ${basePrice}`;
+
+            document.getElementById('sticky-row').style.display = stickyPrice > 0 ? 'flex' : 'none';
+            document.getElementById('sticky-price').textContent = `Rs. ${stickyPrice}`;
+
+            document.getElementById('label-row').style.display = labelPrice > 0 ? 'flex' : 'none';
+            document.getElementById('label-price').textContent = `Rs. ${labelPrice}`;
+
+            document.getElementById('express-row').style.display = isExpress ? 'flex' : 'none';
+
+            document.getElementById('total-price').textContent = `Rs. ${total}`;
+
+            return { bookCount, basePrice, stickyPrice, labelPrice, expressPrice, total };
+        }
+
+        // Event listeners
+        bookListInput.addEventListener('input', calculatePrice);
+        coverRadios.forEach(r => r.addEventListener('change', calculatePrice));
+        labelRadios.forEach(r => r.addEventListener('change', calculatePrice));
+        expressCheckbox.addEventListener('change', calculatePrice);
+
+        // Set minimum pickup date (tomorrow)
+        const pickupInput = document.getElementById('pickup-date');
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 2);
+        pickupInput.min = tomorrow.toISOString().split('T')[0];
+        pickupInput.value = tomorrow.toISOString().split('T')[0];
+
+        // Form submission
+        document.getElementById('book-order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const priceData = calculatePrice();
+
+            if (priceData.bookCount === 0) {
+                alert('Please enter at least one book in the list.');
+                return;
+            }
+
+            const orderData = {
+                studentNameEn: document.getElementById('student-name-en').value.trim(),
+                studentNameSi: document.getElementById('student-name-si').value.trim(),
+                school: document.getElementById('school-name').value.trim(),
+                grade: document.getElementById('grade').value,
+                phone: document.getElementById('phone').value.trim(),
+                bookList: document.getElementById('book-list').value.trim(),
+                bookCount: priceData.bookCount,
+                coverType: document.querySelector('input[name="cover-type"]:checked').value,
+                labelType: document.querySelector('input[name="label-type"]:checked').value,
+                isExpress: document.getElementById('express').checked,
+                pickupDate: document.getElementById('pickup-date').value,
+                estimatedPrice: priceData.total,
+                status: 'pending',
+                createdAt: new Date(),
+                notified: false
+            };
+
+            try {
+                const orderId = 'BO-' + Date.now();
+                await setDoc(doc(db, "book_orders", orderId), orderData);
+
+                alert('✅ Order submitted successfully!\n\nOrder ID: ' + orderId + '\n\nPlease bring your books to the store. We will notify you via WhatsApp when ready.');
+
+                // Reset form
+                document.getElementById('book-order-form').reset();
+                calculatePrice();
+
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                alert('Error submitting order. Please try again or contact us directly.');
+            }
+        });
+    </script>
+</body>
+
+</html>

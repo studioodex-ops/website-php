@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
+    <!-- Primary SEO Meta Tags -->
+    <title>About Us | Buddika Stores - Serving Walapane Since 1985</title>
+    <meta name="title" content="About Us | Buddika Stores - Serving Walapane Since 1985">
+    <meta name="description"
+        content="Learn about Buddika Stores - your trusted local shop serving the Walapane community since 1985 with quality grocery, stationery, and daily essentials.">
+    <meta name="keywords" content="about Buddika Stores, Walapane store, local shop, grocery store history, Sri Lanka">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://buddikastores.com/about.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buddikastores.com/about.html">
+    <meta property="og:title" content="About Us | Buddika Stores">
+    <meta property="og:description"
+        content="Serving the Walapane community since 1985 with quality products and dedication.">
+    <meta property="og:image" content="https://buddikastores.com/assets/images/og-about.jpg">
+    <meta property="og:site_name" content="Buddika Stores">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About Us | Buddika Stores">
+    <meta name="twitter:description" content="Serving the Walapane community since 1985 with quality products.">
+    <meta name="twitter:image" content="https://buddikastores.com/assets/images/og-about.jpg">
+
+    <!-- JSON-LD Structured Data: AboutPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "name": "About Buddika Stores",
+        "description": "Learn about Buddika Stores, serving the Walapane community since 1985.",
+        "url": "https://buddikastores.com/about.html",
+        "mainEntity": {
+            "@type": "LocalBusiness",
+            "name": "Buddika Stores",
+            "foundingDate": "1985",
+            "description": "Your trusted local shop for retail, grocery, newspapers, and school stationery in Walapane, Sri Lanka."
+        }
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://buddikastores.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "About Us",
+                "item": "https://buddikastores.com/about.html"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        gray: {
+                            50: '#fcfcfc',
+                            100: '#f4f4f5',
+                            900: '#18181b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/theme-switch.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body class="bg-body text-primary antialiased transition-colors duration-500">
+
+    <div id="header-container"></div>
+    <!-- Optional: Minimal 3D background or none for inner pages. Let's include it for consistency -->
+    <div id="canvas-container" class="opacity-30"></div>
+
+    <main class="pt-20">
+        <!-- Page Header -->
+        <section class="bg-black text-white py-20 md:py-32 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-black to-gray-900 z-0"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold font-heading mb-4 tracking-tighter">About Buddika Stores</h1>
+                <p class="text-gray-400 max-w-2xl text-lg">Serving our community with dedication and quality products
+                    since 1985.</p>
+            </div>
+        </section>
+
+        <!-- Our Story -->
+        <section class="py-24 bg-body relative transition-colors duration-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold font-heading mb-6 tracking-tight text-primary">Our Story</h2>
+                        <div class="space-y-4 text-secondary leading-relaxed text-lg">
+                            <p>
+                                Buddika Stores began with a simple mission: to provide the local community with easy
+                                access to high-quality daily essentials. What started as a small retail shop has grown
+                                into a trusted name for groceries, stationery, and newspapers.
+                            </p>
+                            <p>
+                                We believe in the power of community. Every product on our shelves is selected with our
+                                customers' needs in mind. From the student looking for the perfect pen to the family
+                                shopping for weekly groceries, we are here to serve you.
+                            </p>
+                            <p>
+                                Ideally positioned to serve you better, we continue to expand our range and improve our
+                                services, ensuring that Buddika Stores remains your preferred local partner.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="relative h-96 bg-gray-100 rounded-2xl overflow-hidden shadow-2xl group">
+                        <img src="assets/img/store.jpg" alt="Buddika Stores Storefront"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105">
+                        <div
+                            class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values -->
+        <section class="py-24 bg-body border-t border-glass relative transition-colors duration-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold font-heading mb-4 tracking-tight text-primary">Core Values</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-10 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="text-4xl mb-6">💎</div>
+                        <h3 class="text-xl font-bold mb-3 font-heading text-primary">Quality First</h3>
+                        <p class="text-secondary">We never compromise on the quality of goods we sell, ensuring you get
+                            the best value for money.</p>
+                    </div>
+                    <div class="glass-panel p-10 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="text-4xl mb-6">🤝</div>
+                        <h3 class="text-xl font-bold mb-3 font-heading text-primary">Customer Centric</h3>
+                        <p class="text-secondary">Your satisfaction is our priority. We listen, adapt, and serve with a
+                            smile.</p>
+                    </div>
+                    <div class="glass-panel p-10 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="text-4xl mb-6">🌍</div>
+                        <h3 class="text-xl font-bold mb-3 font-heading text-primary">Community</h3>
+                        <p class="text-secondary">We are more than a store; we are a part of your daily life and the
+                            local ecosystem.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-container"></div>
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

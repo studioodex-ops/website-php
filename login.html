@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register | Buddika Stores</title>
+    <meta name="description" content="Login or register to shop at Buddika Stores.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Stores">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        brand: {
+                            black: '#000000', // Reverting to Black Theme
+                            dark: '#333333'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .split-card {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Container (Card) -->
+    <div
+        class="bg-white w-full max-w-5xl rounded-3xl overflow-hidden flex flex-col md:flex-row split-card min-h-[600px]">
+
+        <!-- Left Side (Dark Panel) -->
+        <div class="w-full md:w-1/3 bg-black text-white p-10 flex flex-col justify-between relative overflow-hidden">
+            <!-- Background Pattern Effect -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+
+            <div>
+                <a href="index.html" class="text-2xl font-bold font-heading tracking-tighter mb-8 block">Buddika
+                    Stores</a>
+
+                <h2 id="page-title" class="text-3xl font-bold font-heading mb-4">Log In</h2>
+                <p id="page-desc" class="text-gray-400 text-sm leading-relaxed">
+                    Shopped with us before? Log in with your details to access your order history and faster checkout.
+                </p>
+            </div>
+
+            <!-- Toggle Box -->
+            <div class="mt-12 bg-white/10 rounded-xl p-6 border border-white/10">
+                <p id="toggle-text" class="text-sm text-gray-300 mb-3">New member?</p>
+                <button id="toggle-btn" onclick="toggleAuthMode()"
+                    class="w-full bg-white hover:bg-gray-200 text-black font-bold py-3 rounded-lg transition-colors uppercase tracking-wider text-sm">
+                    Click here to Register
+                </button>
+            </div>
+
+            <div class="mt-8 text-xs text-gray-500">
+                <p>Have trouble logging in?</p>
+                <p>Call us on <span class="text-white font-bold">052-2279101</span> or WhatsApp <span
+                        class="text-white font-bold">077-5192756</span></p>
+            </div>
+        </div>
+
+        <!-- Right Side (Form Panel) -->
+        <div class="w-full md:w-2/3 bg-white p-10 relative">
+            <button onclick="window.location.href='index.html'"
+                class="absolute top-6 right-6 text-gray-400 hover:text-black">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Login Form -->
+            <form id="login-form" class="h-full flex flex-col justify-center max-w-lg mx-auto fade-in-up">
+
+                <button type="button" id="btn-login-google"
+                    class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl flex items-center justify-center transition-all mb-6">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-3">
+                    Sign in with Google
+                </button>
+
+                <!-- OR Divider -->
+                <div class="relative flex py-2 items-center mb-6">
+                    <div class="flex-grow border-t border-gray-200"></div>
+                    <span class="flex-shrink mx-4 text-gray-400 text-xs uppercase">Or with email</span>
+                    <div class="flex-grow border-t border-gray-200"></div>
+                </div>
+
+                <!-- Email/Password Section -->
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Email</label>
+                    <input type="email" id="login-email" placeholder="name@example.com"
+                        class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors bg-white text-black placeholder-gray-300">
+                </div>
+
+                <div class="mb-8 relative">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Password</label>
+                    <input type="password" id="login-password" placeholder="Password"
+                        class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors bg-white text-black placeholder-gray-300">
+                </div>
+
+                <button type="button" id="btn-login-email"
+                    class="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95 mb-8">
+                    Log In
+                </button>
+            </form>
+
+            <!-- Register Form (Hidden by default) -->
+            <form id="register-form" class="h-full flex flex-col justify-center max-w-lg mx-auto hidden">
+
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Full
+                        Name</label>
+                    <input type="text" id="reg-name" placeholder="Your Name"
+                        class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors bg-white text-black placeholder-gray-300">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Email</label>
+                    <input type="email" id="reg-email" placeholder="name@example.com"
+                        class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors bg-white text-black placeholder-gray-300">
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Password</label>
+                    <input type="password" id="reg-password" placeholder="Create a password"
+                        class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-black transition-colors bg-white text-black placeholder-gray-300">
+                </div>
+
+                <button type="button" id="btn-register-popup"
+                    class="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 rounded-xl shadow-lg shadow-gray-200 transition-all transform active:scale-95 mt-4">
+                    Create Account
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Logic -->
+    <script type="module">
+        import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from './assets/js/firebase-config.js';
+
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const pageTitle = document.getElementById('page-title');
+        const pageDesc = document.getElementById('page-desc');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const toggleText = document.getElementById('toggle-text');
+
+        // Allow global access to toggle function
+        window.toggleAuthMode = toggleAuthMode;
+
+        let isLogin = true;
+
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+
+            if (isLogin) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                pageTitle.innerText = "Log In";
+                pageDesc.innerText = "Shopped with us before? Log in with your details to access your order history and faster checkout.";
+                toggleText.innerText = "New member?";
+                toggleBtn.innerText = "Click here to Register";
+                loginForm.classList.add('fade-in-up');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                registerForm.classList.add('fade-in-up');
+                pageTitle.innerText = "Create Account";
+                pageDesc.innerText = "Enter your details to create an account to shop online.";
+                toggleText.innerText = "Already have an account?";
+                toggleBtn.innerText = "Click here to Log In";
+            }
+        }
+
+        // Attach Event Listeners to Forms
+        document.getElementById('btn-login-email').addEventListener('click', handleEmailLogin);
+        document.getElementById('btn-login-google').addEventListener('click', handleGoogleLogin);
+        document.getElementById('btn-register-popup').addEventListener('click', handleRegister);
+
+        async function handleEmailLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) return alert("Please enter email and password");
+
+            try {
+                showToast("Logging in...", "info");
+                await signInWithEmailAndPassword(auth, email, password);
+                showToast("Logged In Successfully!", "success");
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (error) {
+                console.error(error);
+                showToast(error.message, "error");
+            }
+        }
+
+        async function handleGoogleLogin() {
+            try {
+                await signInWithPopup(auth, googleProvider);
+                showToast("Logged In with Google!", "success");
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (error) {
+                console.error(error);
+                showToast(error.message, "error");
+            }
+        }
+
+        async function handleRegister() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (!name || !email || !password) return alert("Please fill all fields");
+
+            try {
+                showToast("Creating Account...", "info");
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+                // Update Display Name
+                await updateProfile(userCredential.user, {
+                    displayName: name
+                });
+
+                showToast("Account Created!", "success");
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (error) {
+                console.error(error);
+                showToast(error.message, "error");
+            }
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.createElement('div');
+            const bgClass = type === 'error' ? 'bg-red-600' : (type === 'info' ? 'bg-gray-800' : 'bg-green-600');
+            toast.className = `fixed top-5 left-1/2 transform -translate-x-1/2 ${bgClass} text-white px-8 py-4 rounded-full shadow-2xl z-50 animate-bounce font-bold`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+    <script type="module" src="assets/js/components.js?v=2.0"></script>
+    <script type="module" src="assets/js/cart.js?v=2.2"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+</body>
+
+</html>

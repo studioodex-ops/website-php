@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Import Tool | Buddika Stores</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buddika Admin">
+    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full">
+        <h1 class="text-2xl font-bold mb-2 text-gray-800">Import Stationery CSV</h1>
+        <p class="text-gray-500 mb-6 text-sm">Log in as admin to upload items to "Stationery".</p>
+
+        <!-- Login Section -->
+        <div id="login-section" class="mb-6 pb-6 border-b border-gray-100">
+            <h2 class="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Admin Login</h2>
+            <div class="space-y-3">
+                <input type="email" id="email" value="studioodex@gmail.com" placeholder="Admin Email"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                <input type="password" id="password" value="admin123" placeholder="Password"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                <button onclick="login()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-sm transition-colors">Login
+                    / Auto-Create</button>
+            </div>
+            <p id="auth-status" class="mt-2 text-xs text-red-500 font-bold hidden"></p>
+            <p class="text-[10px] text-gray-400 mt-1">Default Password: <b>admin123</b>. If account doesn't exist, it
+                will be created automatically.</p>
+        </div>
+
+        <!-- Import Section (Hidden by default) -->
+        <div id="import-section" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
+            <div
+                class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors relative">
+                <input type="file" id="csv-file" accept=".csv"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <div class="text-gray-400">
+                    <svg class="w-10 h-10 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <p class="font-bold text-sm">Click to select CSV</p>
+                    <p class="text-xs mt-1" id="file-name">No file selected</p>
+                </div>
+            </div>
+
+            <button onclick="processCSV()" id="import-btn" disabled
+                class="w-full bg-black text-white font-bold py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors">
+                Start Import
+            </button>
+        </div>
+
+        <!-- Log Output -->
+        <div class="mt-8 border-t border-gray-100 pt-4">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Progress Log</h3>
+            <div id="log-area" class="bg-gray-900 text-green-400 font-mono text-xs p-4 rounded-lg h-64 overflow-y-auto">
+                <p class="opacity-50">Waiting for login...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { db, collection, addDoc, auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from './assets/js/firebase-config.js';
+
+        const fileInput = document.getElementById('csv-file');
+        const fileNameDisplay = document.getElementById('file-name');
+        const importBtn = document.getElementById('import-btn');
+        const logArea = document.getElementById('log-area');
+        const loginSection = document.getElementById('login-section');
+        const importSection = document.getElementById('import-section');
+        const authStatus = document.getElementById('auth-status');
+
+        // Auth Listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                log('Authenticated as: ' + user.email, 'success');
+                loginSection.style.display = 'none';
+                importSection.classList.remove('opacity-50', 'pointer-events-none');
+                log('Ready to import.', 'success');
+            } else {
+                log('Please login to continue.', 'error');
+                loginSection.style.display = 'block';
+                importSection.classList.add('opacity-50', 'pointer-events-none');
+            }
+        });
+
+        window.login = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            authStatus.classList.add('hidden');
+
+            try {
+                log('Attempting login...', 'info');
+                await signInWithEmailAndPassword(auth, email, password);
+                log('Login successful!', 'success');
+            } catch (error) {
+                console.warn("Login failed, attempting creation...", error);
+
+                // If login fails (e.g. user not found), try creating the user
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    log('Account created & logged in!', 'success');
+                } catch (createError) {
+                    console.error(createError);
+
+                    let msg = createError.message;
+                    if (createError.code === 'auth/email-already-in-use') {
+                        msg = "Account exists but incorrect password. Reset password or try another.";
+                    }
+
+                    authStatus.innerText = msg;
+                    authStatus.classList.remove('hidden');
+                    log('Error: ' + msg, 'error');
+                }
+            }
+        };
+
+        // File Selection UI
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameDisplay.innerText = file.name;
+                importBtn.disabled = false;
+                log('File selected: ' + file.name);
+            } else {
+                fileNameDisplay.innerText = "No file selected";
+                importBtn.disabled = true;
+            }
+        });
+
+        // Logger
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.innerText = `> ${msg}`;
+            if (type === 'error') div.classList.add('text-red-400');
+            if (type === 'success') div.classList.add('text-green-400');
+            logArea.appendChild(div);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // CSV Parser
+        window.processCSV = async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            importBtn.disabled = true;
+            importBtn.innerText = "Processing...";
+            log('Reading file...');
+
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                const text = e.target.result;
+                const lines = text.split('\n');
+
+                log(`Found ${lines.length} lines. Starting import...`);
+
+                let successCount = 0;
+                let failCount = 0;
+
+                for (let i = 1; i < lines.length; i++) { // Skip header
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    // Regex for CSV splitting (handles quotes)
+                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/^"|"$/g, '').trim());
+
+                    const name = cols[0];
+                    let price = 0;
+
+                    for (let j = 1; j < cols.length; j++) {
+                        const val = cols[j].replace(/[^0-9.]/g, '');
+                        if (val && !isNaN(val) && parseFloat(val) > 0) {
+                            price = cols[j];
+                        }
+                    }
+
+                    if (!name) {
+                        failCount++;
+                        continue;
+                    }
+
+                    try {
+                        await addDoc(collection(db, "products"), {
+                            name: name,
+                            nameSi: '',
+                            category: 'Stationery',
+                            subcategory: 'General',
+                            price: price || '0.00',
+                            cost: '0.00',
+                            stock: 100,
+                            unit: 'unit',
+                            active: true,
+                            image: '',
+                            createdAt: new Date().toISOString()
+                        });
+                        log(`Imported: ${name} (Rs. ${price})`, 'success');
+                        successCount++;
+                    } catch (err) {
+                        console.error(err);
+                        log(`Error adding ${name}: ${err.message}`, 'error');
+                        failCount++;
+                    }
+
+                    await new Promise(r => setTimeout(r, 50));
+                }
+
+                log('-----------------------------------');
+                log(`COMPLETED! Success: ${successCount}, Failed: ${failCount}`, 'success');
+                importBtn.innerText = "Import Complete";
+            };
+
+            reader.readAsText(file);
+        };
+    </script>
+</body>
+
+</html>
