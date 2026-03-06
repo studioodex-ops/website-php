@@ -4,5 +4,10 @@ dist/
 .DS_Store
 Thumbs.db
 
+# Firebase Service Account Keys (NEVER commit these!)
+scripts/newspaper-automation/serviceAccountKey.json
+scripts/newspaper-automation/buddika-stores-web-*.json
+scripts/newspaper-automation/test-connection.js
+
 # Local Netlify folder
 .netlify
