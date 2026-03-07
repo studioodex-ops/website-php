@@ -5,7 +5,14 @@ const axios = require('axios');
 const Parser = require('rss-parser');
 const fs = require('fs');
 
-const parser = new Parser();
+const parser = new Parser({
+    customFields: {
+        item: [
+            ['content:encoded', 'contentEncoded'],
+            ['description', 'description']
+        ]
+    }
+});
 const SERVICE_ACCOUNT_PATH = './serviceAccountKey.json';
 
 // Initialize Firebase Admin
@@ -32,7 +39,7 @@ const db = admin.firestore();
 const RSS_TARGETS = [
     { name: "Gossip Lanka", url: "https://gossiplankanews.com/feeds/posts/default?alt=rss", category: "News", brand: "Gossip Lanka" },
     { name: "Dinamina", url: "https://www.dinamina.lk/feed/", category: "News", brand: "Dinamina" },
-    { name: "Divaina", url: "https://divaina.lk/feed/", category: "News", brand: "Divaina" },
+    { name: "Divaina", url: "https://divaina.lk/feed/", category: "News", brand: "Divaina" }
     // Ada Derana, NewsFirst, Daily Mirror were removed as their standard RSS feeds contain English news
 ];
 
@@ -65,10 +72,18 @@ async function fetchRSS(target) {
             // A basic fallback is used if no image is clearly defined.
             let imageUrl = item.enclosure ? item.enclosure.url : "https://via.placeholder.com/300?text=News";
 
-            // Try to extract image from content if enclosure is missing
-            if (!item.enclosure && item.content) {
-                const match = item.content.match(/<img[^>]+src="([^">]+)"/);
-                if (match) imageUrl = match[1];
+            // Try to extract image from content, description, or contentEncoded if enclosure is missing
+            if (imageUrl === "https://via.placeholder.com/300?text=News") {
+                const searchAreas = [item.content, item.contentEncoded, item.description, item.contentSnippet];
+                for (let html of searchAreas) {
+                    if (html) {
+                        const match = html.match(/<img[^>]+src="([^">]+)"/i);
+                        if (match) {
+                            imageUrl = match[1];
+                            break;
+                        }
+                    }
+                }
             }
 
             items.push({
