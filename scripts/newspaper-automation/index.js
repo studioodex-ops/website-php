@@ -30,11 +30,10 @@ const db = admin.firestore();
 // 1. RSS Feeds for Fast Breaking News & Main Newspapers
 // Most major news sites offer an RSS feed which is the easiest and most reliable way to get headings.
 const RSS_TARGETS = [
-    { name: "Ada Derana", url: "http://adaderana.lk/rss.php", category: "News", brand: "Ada Derana" },
-    { name: "Hiru News", url: "https://www.hirunews.lk/rss/sinhala.xml", category: "News", brand: "Hiru News" },
-    { name: "NewsFirst", url: "https://www.newsfirst.lk/feed/", category: "News", brand: "NewsFirst" },
-    { name: "Daily Mirror", url: "https://www.dailymirror.lk/rss/all", category: "News", brand: "Daily Mirror" },
-    // You can add more valid RSS feed URLs here (e.g., Lankadeepa or Dinamina if they expose their RSS).
+    { name: "Gossip Lanka", url: "https://gossiplankanews.com/feeds/posts/default?alt=rss", category: "News", brand: "Gossip Lanka" },
+    { name: "Dinamina", url: "https://www.dinamina.lk/feed/", category: "News", brand: "Dinamina" },
+    { name: "Divaina", url: "https://divaina.lk/feed/", category: "News", brand: "Divaina" },
+    // Ada Derana, NewsFirst, Daily Mirror were removed as their standard RSS feeds contain English news
 ];
 
 // 2. Educational & Kids Sites (Requires Web Scraping)
