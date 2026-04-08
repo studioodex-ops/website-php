@@ -66,31 +66,31 @@ async function fetchAndDisplayBundles() {
         const productNames = bundle.products;
 
         html += `
-                <div class="bg-card rounded-2xl shadow-lg border border-glass overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="bg-purple-600 text-white p-4 text-center">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="bg-red-600 text-white p-4 text-center">
                         <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-xl mb-1 text-primary">${escapeHtml(bundle.name)}</h3>
-                        ${bundle.nameSi ? `<p class="text-secondary text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
+                        <h3 class="font-bold text-xl mb-1 text-gray-900">${escapeHtml(bundle.name)}</h3>
+                        ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
                         
-                        <div class="space-y-1 text-sm text-secondary mb-4 max-h-24 overflow-y-auto">
-                            ${productNames.map(name => `<div class="flex items-center gap-2"><span>✓</span> ${escapeHtml(name)}</div>`).join('')}
+                        <div class="space-y-1 text-sm text-gray-600 mb-4 max-h-24 overflow-y-auto">
+                            ${productNames.map(name => `<div class="flex items-center gap-2"><span class="text-green-500">✓</span> ${escapeHtml(name)}</div>`).join('')}
                         </div>
                         
-                        <div class="border-t border-glass pt-4">
+                        <div class="border-t border-gray-100 pt-4">
                             <div class="flex items-center justify-between mb-3">
-                                <span class="text-secondary line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
-                                <span class="text-green-500 font-bold text-xs">Save Rs. ${savings.toFixed(0)}</span>
+                                <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
+                                <span class="text-green-600 font-bold text-xs bg-green-50 px-2 py-1 rounded">Save Rs. ${savings.toFixed(0)}</span>
                             </div>
-                            <div class="text-2xl font-bold text-primary mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
+                            <div class="text-2xl font-bold text-gray-900 mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
                             
                             <button onclick="alert('Added mock bundle to cart!')" 
-                                class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-3 rounded-xl transition-colors hover:opacity-90 flex items-center justify-center gap-2 shadow-lg">
+                                class="w-full bg-red-600 text-white font-bold py-3 rounded-xl transition-colors hover:bg-red-700 flex items-center justify-center gap-2 shadow hover:shadow-lg">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
-                                Add Bundle to Cart
+                                Add Bundle
                             </button>
                         </div>
                     </div>

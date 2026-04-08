@@ -1,0 +1,16 @@
+diff --git a/assets/js/news.js b/assets/js/news.js
+index 4c3c683..73e5200 100644
+--- a/assets/js/news.js
++++ b/assets/js/news.js
+@@ -53,9 +53,10 @@ async function fetchNews() {
+ 
+     try {
+         // Fetch from "products" collection where automation uploads newspaper data
++        // Support both 'Newspapers' and 'news' category values
+         const q = query(
+             collection(db, "products"),
+-            where("category", "==", "Newspapers"),
++            where("category", "in", ["Newspapers", "newspapers", "news", "News"]),
+             orderBy('createdAt', 'desc'),
+             limit(3)
+         );

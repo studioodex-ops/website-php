@@ -1,0 +1,55 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .firebase/hosting..cache
+	modified:   404.html
+	modified:   about.html
+	modified:   admin.html
+	deleted:    assets/css/apple-animations.css
+	modified:   assets/css/style.css
+	deleted:    assets/js/background-3d.js
+	modified:   assets/js/components.js
+	deleted:    assets/js/cursor.js
+	modified:   assets/js/news.js
+	modified:   assets/js/recommender.js
+	modified:   book-cover-service.html
+	modified:   contact.html
+	modified:   debug_chat.html
+	modified:   electron-app/src/admin.html
+	modified:   electron-app/src/pos.html
+	modified:   import_csv.html
+	modified:   index.html
+	modified:   login.html
+	modified:   offline.html
+	modified:   pos.html
+	modified:   product.html
+	modified:   products.html
+	modified:   profile.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	assets/img/hero-grocery.png
+	fix-imports.html
+	gitlog.txt
+	gitstatus.txt
+	scripts/newspaper-automation/catch-index.js
+	scripts/newspaper-automation/check-news.js
+	scripts/newspaper-automation/check-query.js
+	scripts/newspaper-automation/check-rss.js
+	scripts/newspaper-automation/clear-news.js
+	scripts/newspaper-automation/error.txt
+	scripts/newspaper-automation/firebase-debug.log
+	scripts/newspaper-automation/fix-images.js
+	scripts/newspaper-automation/fix-papers.js
+	scripts/newspaper-automation/output-utf8.txt
+	scripts/newspaper-automation/output.txt
+	scripts/newspaper-automation/test-images.js
+	scripts/newspaper-automation/test-rss-2.js
+	scripts/newspaper-automation/test-rss.js
+	scripts/newspaper-automation/upload-stationery.js
+	scripts/newspaper-automation/upload-stationery.mjs
+
+no changes added to commit (use "git add" and/or "git commit -a")

@@ -263,6 +263,13 @@
                 </svg>
                 Inventory
             </a>
+            <a href="#" onclick="switchTab('expiry')" id="tab-expiry"
+                class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-orange-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Expiry Items
+            </a>
             <a href="#" onclick="switchTab('suppliers')" id="tab-suppliers"
                 class="flex items-center gap-3 py-3 px-6 hover:bg-gray-800 transition-colors border-l-4 border-transparent text-blue-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -911,7 +918,43 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="news-list">
-                    <div class="text-center py-20 text-gray-400 col-span-full">Loading news...</div>
+            </div>
+
+            <!-- VIEW: EXPIRY -->
+            <div id="view-expiry" class="hidden max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold font-heading text-gray-900">Expiry Management</h2>
+                        <p class="text-gray-500 text-sm mt-1">Track items that are near or past their expiration dates.</p>
+                    </div>
+                    <button onclick="fetchFullExpiryItems()"
+                        class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
+                                <tr>
+                                    <th class="p-4">Product Name</th>
+                                    <th class="p-4">Stock</th>
+                                    <th class="p-4">Expiry Date</th>
+                                    <th class="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="full-expiry-table-body" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td colspan="4" class="p-12 text-center text-gray-400">Click "Refresh" to load...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -2454,6 +2497,7 @@ Hello! We have exciting news for you!
                 'bookorders': 'view-bookorders',
                 'luckydraw': 'view-luckydraw',
                 'suppliers': 'view-suppliers',
+                'expiry': 'view-expiry',
                 'finance': 'view-finance',
                 'whatsapppromo': 'view-whatsapppromo',
                 'morningupdate': 'view-morningupdate'
@@ -2472,6 +2516,7 @@ Hello! We have exciting news for you!
                 'bookorders': 'tab-bookorders',
                 'luckydraw': 'tab-luckydraw',
                 'suppliers': 'tab-suppliers',
+                'expiry': 'tab-expiry',
                 'finance': 'tab-finance',
                 'whatsapppromo': 'tab-whatsapppromo',
                 'morningupdate': 'tab-morningupdate'
@@ -2524,6 +2569,7 @@ Hello! We have exciting news for you!
             else if (tab === 'bookorders') fetchBookOrders();
             else if (tab === 'luckydraw') fetchLuckyDrawEntries();
             else if (tab === 'suppliers') fetchSuppliers();
+            else if (tab === 'expiry') fetchFullExpiryItems();
             else if (tab === 'finance') initFinanceModule();
             // WhatsApp Promo - Check existence to avoid Web crashes if missing
             else if (tab === 'whatsapppromo') {
@@ -4131,6 +4177,75 @@ Buddika Stores
             }
         };
 
+        // Fetch Full Expiry Items Table
+        window.fetchFullExpiryItems = async () => {
+            const list = document.getElementById('full-expiry-table-body');
+            if (!list) return;
+
+            list.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-gray-400">Loading...</td></tr>';
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'products'), orderBy('expiryDate')));
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const alerts = [];
+
+                snapshot.docs.forEach(doc => {
+                    const p = doc.data();
+                    if (!p.expiryDate) return;
+
+                    const expiryDate = new Date(p.expiryDate);
+                    const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+                    let color, badge;
+                    if (daysUntilExpiry <= 0) {
+                        color = 'bg-red-50 text-red-700';
+                        badge = '🔴 EXPIRED (' + daysUntilExpiry + ' days)';
+                    } else if (daysUntilExpiry <= 7) {
+                        color = 'bg-orange-50 text-orange-700';
+                        badge = `🟠 Expires in ${daysUntilExpiry} days`;
+                    } else if (daysUntilExpiry <= 30) {
+                        color = 'bg-yellow-50 text-yellow-700';
+                        badge = `🟡 Expires in ${daysUntilExpiry} days`;
+                    } else {
+                        color = 'text-gray-500';
+                        badge = `🟢 Healthy (${daysUntilExpiry} days)`;
+                    }
+
+                    alerts.push({
+                        name: p.name,
+                        expiryDate: p.expiryDate,
+                        daysUntilExpiry,
+                        color,
+                        badge,
+                        stock: p.stock
+                    });
+                });
+
+                if (alerts.length === 0) {
+                    list.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-gray-500">No items with expiry dates found.</td></tr>';
+                    return;
+                }
+
+                // Sort by urgency (expired first)
+                alerts.sort((a, b) => a.daysUntilExpiry - b.daysUntilExpiry);
+
+                list.innerHTML = alerts.map(a => `
+                    <tr class="${a.color}">
+                        <td class="p-4 font-bold text-gray-900">${escapeHtml(a.name)}</td>
+                        <td class="p-4">${a.stock}</td>
+                        <td class="p-4">${a.expiryDate}</td>
+                        <td class="p-4 font-bold">${a.badge}</td>
+                    </tr>
+                `).join('');
+
+            } catch (e) {
+                console.error('Error fetching expiry alerts:', e);
+                list.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-red-500">Error loading data</td></tr>';
+            }
+        };
+
         // Fetch Stock Movements
         window.fetchStockMovements = async () => {
             const list = document.getElementById('stock-movements-list');
@@ -4309,7 +4424,7 @@ Buddika Stores
                 const choice = prompt(
                     `Found ${jsonData.length} products in Excel file.\n\n` +
                     `Choose import mode:\n` +
-                    `1 = Update existing products (match by _id or SKU)\n` +
+                    `1 = Update existing products (Match by ID, SKU, or Exact Name)\n` +
                     `2 = Add all as new products\n` +
                     `3 = Cancel\n\n` +
                     `Enter 1, 2, or 3:`
@@ -4369,16 +4484,34 @@ Buddika Stores
                                     await setDoc(doc(db, 'products', skuSnapshot.docs[0].id), productData, { merge: true });
                                     successCount++;
                                 } else {
-                                    // Create new if not found
+                                    // Try to find by Name as last resort to prevent duplicates
+                                    const nameQuery = query(collection(db, 'products'), where('name', '==', productData.name));
+                                    const nameSnapshot = await getDocs(nameQuery);
+                                    
+                                    if (!nameSnapshot.empty) {
+                                        await setDoc(doc(db, 'products', nameSnapshot.docs[0].id), productData, { merge: true });
+                                        successCount++;
+                                    } else {
+                                        // Create new if not found
+                                        productData.createdAt = new Date().toISOString();
+                                        await setDoc(doc(collection(db, 'products')), productData);
+                                        successCount++;
+                                    }
+                                }
+                            } else {
+                                // Try to find by Name as last resort to prevent duplicates
+                                const nameQuery = query(collection(db, 'products'), where('name', '==', productData.name));
+                                const nameSnapshot = await getDocs(nameQuery);
+                                
+                                if (!nameSnapshot.empty) {
+                                    await setDoc(doc(db, 'products', nameSnapshot.docs[0].id), productData, { merge: true });
+                                    successCount++;
+                                } else {
+                                    // Create new if no ID, SKU or Name match
                                     productData.createdAt = new Date().toISOString();
                                     await setDoc(doc(collection(db, 'products')), productData);
                                     successCount++;
                                 }
-                            } else {
-                                // Create new if no ID or SKU
-                                productData.createdAt = new Date().toISOString();
-                                await setDoc(doc(collection(db, 'products')), productData);
-                                successCount++;
                             }
                         } else {
                             // Add as new product
@@ -5397,14 +5530,11 @@ Buddika Stores
         }
 
         async function callGeminiAPI(key, prompt) {
-            // 1. Defined Candidates (Priority Order)
             const candidates = [
+                { model: 'gemini-2.0-flash', version: 'v1beta' },
                 { model: 'gemini-1.5-flash', version: 'v1beta' },
-                { model: 'gemini-1.5-flash', version: 'v1' },
                 { model: 'gemini-1.5-pro', version: 'v1beta' },
-                { model: 'gemini-1.5-pro', version: 'v1' },
-                { model: 'gemini-pro', version: 'v1' },
-                { model: 'gemini-1.0-pro', version: 'v1beta' }
+                { model: 'gemini-pro', version: 'v1beta' }
             ];
 
             let errors = [];

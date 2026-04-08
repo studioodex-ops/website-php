@@ -335,14 +335,14 @@ function renderCart() {
         const displayItemTotal = itemTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         return `
-            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg animate-fade-in-up">
+            <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-lg animate-fade-in-up">
                 <div>
-                    <h4 class="font-bold text-sm text-black">${escapeHtml(item.name)}</h4>
-                    <p class="text-xs text-gray-500">${escapeHtml(item.qty)} ${escapeHtml(item.unit || 'unit')} x ${escapeHtml(item.price)}</p>
+                    <h4 class="font-bold text-sm text-black dark:text-white">${escapeHtml(item.name)}</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">${escapeHtml(item.qty)} ${escapeHtml(item.unit || 'unit')} x ${escapeHtml(item.price)}</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="font-bold text-sm text-black">Rs. ${displayItemTotal}</span>
-                    <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 p-1">
+                    <span class="font-bold text-sm text-black dark:text-white">Rs. ${displayItemTotal}</span>
+                    <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 dark:hover:text-red-400 p-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
@@ -577,13 +577,13 @@ function injectCartModal() {
         <div id="cart-backdrop" class="cart-backdrop absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeCart()"></div>
         
         <!-- Drawer Panel -->
-        <div id="cart-panel" class="cart-drawer absolute right-0 top-0 h-full w-full max-w-lg bg-white shadow-2xl flex flex-col">
+        <div id="cart-panel" class="cart-drawer absolute right-0 top-0 h-full w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl flex flex-col transition-colors duration-500">
             
             <!-- Header (Fixed) -->
-            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-100 shrink-0">
-                <h2 class="text-xl font-bold font-heading">Shopping Cart</h2>
-                <button onclick="closeCart()" class="p-2 hover:bg-gray-100 rounded-full">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-200 dark:border-gray-800 shrink-0">
+                <h2 class="text-xl font-bold font-heading text-gray-900 dark:text-white">Shopping Cart</h2>
+                <button onclick="closeCart()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                    <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
 
@@ -596,7 +596,7 @@ function injectCartModal() {
                 </div>
 
                 <!-- Forms & Options Area -->
-                <div class="border-t border-gray-100 pt-6">
+                <div class="border-t border-gray-200 dark:border-gray-800 pt-6">
                     
                     <!-- 1. Shipping Method Selection -->
                     <div class="mb-5">
@@ -634,16 +634,16 @@ function injectCartModal() {
 
                         <!-- Driver Selection -->
                         <div id="driver-selection" class="hidden mt-4 animate-fade-in-up">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Driver</label>
-                            <select id="driver-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Select Driver</label>
+                            <select id="driver-select" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white outline-none">
                                 <option value="">-- Choose a Driver --</option>
                             </select>
-                            <p class="text-[10px] text-gray-400 mt-1 italic">* Hire fee paid to driver.</p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 italic">* Hire fee paid to driver.</p>
                         </div>
 
                         <div id="courier-area-selection" class="hidden mt-4 animate-fade-in-up">
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Select Delivery Area</label>
-                            <select id="courier-area-select" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none" onchange="handleCourierAreaChange()">
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Select Delivery Area</label>
+                            <select id="courier-area-select" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white outline-none" onchange="handleCourierAreaChange()">
                                 <option value="">-- Select Area --</option>
                                 <option value="colombo">Nuwaraeliya & Suburbs</option>
                                 <option value="outstation">Outstation (Other Areas)</option>
@@ -653,10 +653,10 @@ function injectCartModal() {
                         <!-- Address Form -->
                         <div id="address-form" class="mt-4 space-y-3 animate-fade-in-up">
                             <div>
-                                <textarea id="addr-text" rows="2" placeholder="Address (House No, Street, City)" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none">${savedAddress}</textarea>
+                                <textarea id="addr-text" rows="2" placeholder="Address (House No, Street, City)" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent outline-none transition-all resize-none">${savedAddress}</textarea>
                             </div>
                             <div>
-                                <input type="tel" id="addr-phone" placeholder="Contact Number *" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all">
+                                <input type="tel" id="addr-phone" placeholder="Contact Number *" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent outline-none transition-all">
                             </div>
                         </div>
                     </div>
@@ -705,24 +705,24 @@ function injectCartModal() {
                     </div>
 
                     <!-- Totals -->
-                    <div class="flex flex-col gap-2 mb-4 border-t border-dashed border-gray-200 pt-3">
-                        <div class="flex justify-between items-center text-sm text-gray-500">
+                    <div class="flex flex-col gap-2 mb-4 border-t border-dashed border-gray-200 dark:border-gray-700 pt-3">
+                        <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                             <span>Items Total</span>
                             <span id="cart-item-total">Rs. 0.00</span>
                         </div>
-                        <div class="flex justify-between items-center text-sm text-gray-500 hidden" id="cart-shipping-row">
+                        <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 hidden" id="cart-shipping-row">
                             <span>Shipping Fee</span>
                             <span id="cart-shipping-fee">Rs. 0.00</span>
                         </div>
-                        <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                            <span class="text-gray-900 font-bold">Grand Total</span>
-                            <span id="cart-total" class="text-2xl font-bold font-heading">Rs. 0.00</span>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-800">
+                            <span class="text-gray-900 dark:text-white font-bold">Grand Total</span>
+                            <span id="cart-total" class="text-2xl font-bold font-heading text-black dark:text-white">Rs. 0.00</span>
                         </div>
                     </div>
 
                     <!-- Checkout Button (Now Inside Scrollable Area) -->
                     <div class="mt-4">
-                        <button onclick="checkout()" class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-transform active:scale-95 shadow-lg">
+                        <button onclick="checkout()" class="w-full bg-black dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors active:scale-95 shadow-lg">
                             Checkout & Place Order
                         </button>
                     </div>

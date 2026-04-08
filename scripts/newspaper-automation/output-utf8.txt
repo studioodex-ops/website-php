@@ -1,0 +1,32 @@
+﻿=== Starting Multi-Source Newspaper Automation ===
+Fetching RSS for Gossip Lanka...
+Successfully fetched 5 news items from Gossip Lanka.
+Fetching RSS for Dinamina...
+Successfully fetched 5 news items from Dinamina.
+Fetching RSS for Divaina...
+Successfully fetched 5 news items from Divaina.
+Scraping HTML for Mihira (Kids)...
+Scraping HTML for Sathara Publications...
+node : Error scraping Mihira 
+(Kids): Request failed with 
+status code 404
+At line:1 char:1
++ node index.js > output.txt 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~
+    + CategoryInfo          : 
+    NotSpecified: (Error scr  
+  aping ...status code 404:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+Error scraping Sathara 
+Publications: Request failed 
+with status code 404
+
+Preparing to upload 15 total items to Firestore...
+Γ£à Successfully uploaded to Firestore!
+=== Automation Cycle Complete ===

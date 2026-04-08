@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Imported Products | Buddika Stores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4a5d23',
+                        secondary: '#5a7a2d',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white p-8 rounded-2xl shadow-xl mb-6">
+            <h1 class="text-2xl font-bold mb-2 text-gray-800">🔧 Fix Imported Products</h1>
+            <p class="text-gray-500 mb-6 text-sm">This tool checks all products in Firestore and fixes common data issues from Excel import.</p>
+
+            <!-- Login Section -->
+            <div id="login-section" class="mb-6 pb-6 border-b border-gray-100">
+                <h2 class="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Admin Login</h2>
+                <div class="space-y-3">
+                    <input type="email" id="email" value="studioodex@gmail.com" placeholder="Admin Email"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                    <input type="password" id="password" value="admin123" placeholder="Password"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                    <button onclick="login()"
+                        class="w-full bg-primary hover:bg-[#324018] text-white font-bold py-2 rounded-lg text-sm transition-colors">Login</button>
+                </div>
+            </div>
+
+            <!-- Tools Section -->
+            <div id="tools-section" class="space-y-4 opacity-50 pointer-events-none">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="scanProducts()" class="bg-primary hover:bg-[#324018] text-white font-bold py-4 px-6 rounded-xl text-sm">
+                        🔍 Step 1: Scan All Products
+                    </button>
+                    <button onclick="fixAllProducts()" id="fix-btn" disabled class="bg-secondary hover:bg-[#7cb342] text-white font-bold py-4 px-6 rounded-xl text-sm disabled:opacity-50">
+                        ✅ Step 2: Fix All Issues
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div id="stats" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    <div class="bg-blue-50 p-4 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-blue-700" id="stat-total">0</div>
+                        <div class="text-xs text-blue-500">Total Products</div>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-red-700" id="stat-no-active">0</div>
+                        <div class="text-xs text-red-500">Missing 'active'</div>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-orange-700" id="stat-price-num">0</div>
+                        <div class="text-xs text-orange-500">Price as Number</div>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-yellow-700" id="stat-no-desc">0</div>
+                        <div class="text-xs text-yellow-500">Missing 'desc'</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Output -->
+            <div class="mt-8 border-t border-gray-100 pt-4">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Log</h3>
+                <div id="log-area" class="bg-gray-900 text-green-400 font-mono text-xs p-4 rounded-lg h-80 overflow-y-auto">
+                    <p class="opacity-50">Waiting for login...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, doc, updateDoc, query, orderBy, auth, signInWithEmailAndPassword, onAuthStateChanged } from './assets/js/firebase-config.js';
+
+        const logArea = document.getElementById('log-area');
+        const loginSection = document.getElementById('login-section');
+        const toolsSection = document.getElementById('tools-section');
+
+        let productsToFix = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                log('✅ Authenticated as: ' + user.email, 'success');
+                loginSection.style.display = 'none';
+                toolsSection.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        });
+
+        window.login = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                log('✅ Login successful!', 'success');
+            } catch (e) {
+                log('❌ Login failed: ' + e.message, 'error');
+            }
+        };
+
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.innerText = `> ${msg}`;
+            if (type === 'error') div.classList.add('text-red-400');
+            if (type === 'success') div.classList.add('text-green-400');
+            if (type === 'warn') div.classList.add('text-yellow-400');
+            logArea.appendChild(div);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        window.scanProducts = async () => {
+            log('🔍 Scanning all products in Firestore...');
+            productsToFix = [];
+
+            try {
+                const snapshot = await getDocs(query(collection(db, 'products')));
+                log(`Found ${snapshot.size} total products.`);
+
+                let noActive = 0, priceNum = 0, noDesc = 0, noCreated = 0;
+                const issues = [];
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const fixes = {};
+                    let hasIssue = false;
+
+                    // Check: missing 'active' field
+                    if (data.active === undefined || data.active === null) {
+                        fixes.active = true;
+                        noActive++;
+                        hasIssue = true;
+                    }
+
+                    // Check: price is a number instead of string
+                    if (typeof data.price === 'number') {
+                        fixes.price = String(data.price);
+                        priceNum++;
+                        hasIssue = true;
+                    }
+
+                    // Check: cost is a number instead of string
+                    if (typeof data.cost === 'number') {
+                        fixes.cost = String(data.cost);
+                        hasIssue = true;
+                    }
+
+                    // Check: missing 'desc' field
+                    if (data.desc === undefined || data.desc === null) {
+                        fixes.desc = '';
+                        noDesc++;
+                        hasIssue = true;
+                    }
+
+                    // Check: missing 'createdAt'
+                    if (!data.createdAt) {
+                        fixes.createdAt = new Date().toISOString();
+                        noCreated++;
+                        hasIssue = true;
+                    }
+
+                    if (hasIssue) {
+                        productsToFix.push({ id, name: data.name, fixes });
+                        log(`⚠️ ${data.name || id}: ${Object.keys(fixes).join(', ')}`, 'warn');
+                    }
+                });
+
+                // Update stats
+                document.getElementById('stats').classList.remove('hidden');
+                document.getElementById('stat-total').innerText = snapshot.size;
+                document.getElementById('stat-no-active').innerText = noActive;
+                document.getElementById('stat-price-num').innerText = priceNum;
+                document.getElementById('stat-no-desc').innerText = noDesc;
+
+                log('-----------------------------------');
+                log(`SCAN COMPLETE: ${productsToFix.length} products need fixing`, productsToFix.length > 0 ? 'warn' : 'success');
+
+                if (productsToFix.length > 0) {
+                    document.getElementById('fix-btn').disabled = false;
+                    log(`Click "Fix All Issues" to repair ${productsToFix.length} products.`, 'info');
+                } else {
+                    log('✅ All products look healthy! No fixes needed.', 'success');
+                }
+
+            } catch (e) {
+                log('❌ Scan failed: ' + e.message, 'error');
+                console.error(e);
+            }
+        };
+
+        window.fixAllProducts = async () => {
+            if (productsToFix.length === 0) {
+                log('Nothing to fix!', 'info');
+                return;
+            }
+
+            document.getElementById('fix-btn').disabled = true;
+            document.getElementById('fix-btn').innerText = 'Fixing...';
+
+            let success = 0, errors = 0;
+
+            for (const item of productsToFix) {
+                try {
+                    await updateDoc(doc(db, 'products', item.id), item.fixes);
+                    log(`✅ Fixed: ${item.name}`, 'success');
+                    success++;
+                } catch (e) {
+                    log(`❌ Error fixing ${item.name}: ${e.message}`, 'error');
+                    errors++;
+                }
+                // Small delay to avoid rate limiting
+                await new Promise(r => setTimeout(r, 50));
+            }
+
+            log('-----------------------------------');
+            log(`DONE! Fixed: ${success}, Errors: ${errors}`, 'success');
+            log('🌐 Now refresh the live website with Ctrl+Shift+R to see changes!', 'success');
+
+            document.getElementById('fix-btn').innerText = '✅ Fix Complete!';
+            productsToFix = [];
+        };
+    </script>
+</body>
+</html>

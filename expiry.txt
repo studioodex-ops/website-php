@@ -1,0 +1,31 @@
+                                </path>
+                            </svg>
+                        </div>
+                        <div id="low-stock-list" class="space-y-2 overflow-y-auto max-h-[120px]">
+                            <div class="text-center text-xs text-gray-400 py-4">Checking...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Reports Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Expiry Alerts -->
+                    <div class="bg-orange-50 p-6 rounded-2xl shadow-sm border border-orange-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs font-bold text-orange-600 uppercase tracking-widest">⏰ Expiry Alerts
+                            </div>
+                            <button onclick="fetchExpiryAlerts()"
+                                class="text-xs font-bold text-orange-600 hover:text-orange-800">Refresh</button>
+                        </div>
+                        <div id="expiry-alerts-list" class="space-y-2 overflow-y-auto max-h-[200px]">
+                            <div class="text-center text-xs text-gray-400 py-4">Loading...</div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Movement Summary -->
+                    <div class="bg-blue-50 p-6 rounded-2xl shadow-sm border border-blue-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">📦 Recent Stock
+                                Changes</div>
+                            <button onclick="fetchStockMovements()"
+                                class="text-xs font-bold text-blue-600 hover:text-blue-800">Refresh</button>

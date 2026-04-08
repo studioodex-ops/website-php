@@ -15,9 +15,11 @@ function initTheme() {
     // Apply theme immediately
     if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
         htmlElement.setAttribute('data-theme', 'dark');
+        htmlElement.classList.add('dark');
         if (iconPath) iconPath.setAttribute('d', sunIcon);
     } else {
         htmlElement.removeAttribute('data-theme');
+        htmlElement.classList.remove('dark');
         if (iconPath) iconPath.setAttribute('d', moonIcon);
     }
 
@@ -31,10 +33,12 @@ function initTheme() {
 
             if (currentTheme === 'dark') {
                 htmlElement.removeAttribute('data-theme');
+                htmlElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
                 if (iconPath) iconPath.setAttribute('d', moonIcon);
             } else {
                 htmlElement.setAttribute('data-theme', 'dark');
+                htmlElement.classList.add('dark');
                 localStorage.setItem('theme', 'dark');
                 if (iconPath) iconPath.setAttribute('d', sunIcon);
             }

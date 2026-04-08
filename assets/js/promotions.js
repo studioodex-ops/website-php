@@ -84,30 +84,30 @@ function createPromoCard(promo) {
     const isSoldOut = promo.status === 'soldout';
 
     return `
-    <div class="group relative bg-card border border-glass p-6 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-500 fade-in-up ${isSoldOut ? 'opacity-75 grayscale' : ''}">
-        ${badgeHTML ? `<div class="absolute top-4 right-4 bg-black dark:bg-white text-white dark:text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-10">${escapeHtml(promo.badge)}</div>` : ''}
-        ${isSoldOut ? `<div class="absolute top-12 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-10">SOLD OUT</div>` : ''}
+    <div class="group relative bg-white border border-gray-200 p-6 rounded-2xl hover:shadow-lg hover:border-red-300 transition-all duration-300 fade-in-up ${isSoldOut ? 'opacity-75 grayscale' : ''}">
+        ${badgeHTML ? `<div class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-10">${escapeHtml(promo.badge)}</div>` : ''}
+        ${isSoldOut ? `<div class="absolute top-12 right-4 bg-gray-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-10">SOLD OUT</div>` : ''}
         
-        <div class="h-48 bg-gray-100 dark:bg-white/5 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden">
-            <img src="${image}" alt="${escapeHtml(promo.title)}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+        <div class="h-48 bg-gray-50 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden">
+            <img src="${image}" alt="${escapeHtml(promo.title)}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
         </div>
-        <h3 class="text-xl font-bold mb-2 font-heading text-primary">${escapeHtml(promo.title)}</h3>
-        <p class="text-secondary text-sm mb-4 line-clamp-2">${escapeHtml(promo.description)}</p>
-        <div class="flex justify-between items-center">
+        <h3 class="text-xl font-bold mb-2 text-gray-900">${escapeHtml(promo.title)}</h3>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">${escapeHtml(promo.description)}</p>
+        <div class="flex justify-between items-center mt-auto">
             <div>
                 ${promo.price ? `
-                    ${promo.oldPrice ? `<span class="text-secondary line-through text-sm">${escapeHtml(promo.oldPrice)}</span>` : ''}
-                    <span class="text-primary font-bold text-lg ml-2">${escapeHtml(promo.price)}</span>
-                ` : `<span class="text-primary font-bold text-lg">Check Details</span>`}
+                    ${promo.oldPrice ? `<span class="text-gray-400 line-through text-sm">${escapeHtml(promo.oldPrice)}</span>` : ''}
+                    <span class="text-red-600 font-bold text-lg ml-2">${escapeHtml(promo.price)}</span>
+                ` : `<span class="text-gray-900 font-bold text-lg">Check Details</span>`}
             </div>
             
             ${isSoldOut ? `
-                <button disabled class="bg-gray-400 text-white w-24 h-8 rounded-full flex items-center justify-center text-xs font-bold cursor-not-allowed">
+                <button disabled class="bg-gray-200 text-gray-500 w-24 h-8 rounded-full flex items-center justify-center text-xs font-bold cursor-not-allowed hidden">
                     Sold Out
                 </button>
             ` : `
-                <button onclick="addToCart('${escapeJs(promo.title)}', '${escapeJs(promo.price || '0')}')" class="bg-black dark:bg-white text-white dark:text-black w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity shadow-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="addToCart('${escapeJs(promo.title)}', '${escapeJs(promo.price || '0')}')" class="bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors shadow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                 </button>

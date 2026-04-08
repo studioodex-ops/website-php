@@ -1,0 +1,240 @@
+diff --git a/products.html b/products.html
+index a87f04b..0510b0a 100644
+--- a/products.html
++++ b/products.html
+@@ -90,23 +90,13 @@
+ 
+     <script>
+         tailwind.config = {
+-            darkMode: ['class', '[data-theme="dark"]'],
+             theme: {
+                 extend: {
+                     colors: {
+-                        black: '#0c0c0c',
+-                        gray: {
+-                            50: '#fcfcfc',
+-                            100: '#f4f4f5',
+-                            900: '#18181b',
+-                        },
+-                        // Map to style.css CSS Variables
+-                        'accent-color': 'var(--accent-color)',
+-                        'body': 'var(--bg-body)',
+-                        'card': 'var(--bg-card)',
+-                        'primary': 'var(--text-primary)',
+-                        'secondary': 'var(--text-secondary)',
+-                        'glass': 'var(--border-glass)',
++                        primary: '#4a5d23', // Keells Forest Green
++                        secondary: '#5a7a2d', // Keells Light Green
++                        accent: '#ff9800',
++                        body: '#ffffff',
+                     },
+                     fontFamily: {
+                         sans: ['Inter', 'sans-serif'],
+@@ -166,7 +156,7 @@
+                     <div class="flex flex-wrap justify-center items-center gap-4 mb-12 w-full max-w-4xl mx-auto">
+                         <!-- All -->
+                         <button onclick="filterByCategory('all')"
+-                            class="filter-btn active px-6 py-2.5 rounded-full border border-gray-200 bg-black text-white hover:bg-gray-800 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
++                            class="filter-btn active px-6 py-2.5 rounded-full border border-primary bg-primary text-white hover:bg-primary/90 transition-all text-sm font-bold flex items-center gap-2 shadow-sm"
+                             data-filter="all">
+                             <span>All Categories</span>
+                         </button>
+@@ -345,33 +335,50 @@
+                                 </svg>
+                             </button>
+ 
+-                            <!-- Simple Dropdown -->
++                            <!-- Newspapers Mega Menu Dropdown -->
+                             <div
+-                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2 text-left top-full overflow-hidden">
+-                                <ul class="text-sm text-gray-600">
+-                                    <li><a href="#"
+-                                            onclick="event.preventDefault(); filterBySubCategory('Daily Papers')"
+-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Daily
+-                                            Papers</a></li>
+-                                    <li><a href="#"
+-                                            onclick="event.preventDefault(); filterBySubCategory('Sunday Papers')"
+-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Sunday
+-                                            Papers</a></li>
+-                                    <li><a href="#"
+-                                            onclick="event.preventDefault(); filterBySubCategory('Women Papers')"
+-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Women
+-                                            Papers</a></li>
+-                                    <li><a href="#"
+-                                            onclick="event.preventDefault(); filterBySubCategory('English Papers')"
+-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">English
+-                                            Papers</a></li>
+-                                </ul>
++                                class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[90vw] md:w-[500px] bg-white border border-gray-200 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 p-6 text-left top-full overflow-hidden">
++                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
++                                    <!-- Col 1: General Newspapers -->
++                                    <div>
++                                        <h4 class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">General Newspapers</h4>
++                                        <ul class="space-y-2 text-sm text-gray-600">
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Daily Papers')" class="hover:text-black hover:underline block">Daily Papers</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Sunday Papers')" class="hover:text-black hover:underline block">Sunday Papers</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Women Papers')" class="hover:text-black hover:underline block">Women Papers</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('English Papers')" class="hover:text-black hover:underline block">English Papers</a></li>
++                                        </ul>
++                                    </div>
++                                    <!-- Col 2: Educational Papers -->
++                                    <div>
++                                        <h4 class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">Educational Papers</h4>
++                                        <ul class="space-y-2 text-sm text-gray-600">
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Montessori & Preschool')" class="hover:text-black hover:underline block">Montessori & Preschool</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 1')" class="hover:text-black hover:underline block">Grade 1</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 2')" class="hover:text-black hover:underline block">Grade 2</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 3')" class="hover:text-black hover:underline block">Grade 3</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 4')" class="hover:text-black hover:underline block">Grade 4</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 5')" class="hover:text-black hover:underline block">Grade 5</a></li>
++                                        </ul>
++                                    </div>
++                                    <!-- Col 3: More Grades -->
++                                    <div>
++                                        <h4 class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider text-transparent select-none">.</h4>
++                                        <ul class="space-y-2 text-sm text-gray-600">
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 6')" class="hover:text-black hover:underline block">Grade 6</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 7')" class="hover:text-black hover:underline block">Grade 7</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 8')" class="hover:text-black hover:underline block">Grade 8</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 9')" class="hover:text-black hover:underline block">Grade 9</a></li>
++                                            <li><a href="#" onclick="event.preventDefault(); filterBySubCategory('Grade 10')" class="hover:text-black hover:underline block">Grade 10</a></li>
++                                        </ul>
++                                    </div>
++                                </div>
+                             </div>
+                         </div>
+ 
+                         <!-- Sort Dropdown -->
+                         <select id="sort-select"
+-                            class="px-6 py-2.5 rounded-full border border-glass bg-card text-primary text-sm font-bold focus:border-accent-color focus:ring-0 outline-none cursor-pointer hover:bg-white/5 shadow-sm ml-2">
++                            class="px-6 py-2.5 rounded-full border border-gray-300 bg-white text-primary text-sm font-bold focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer hover:bg-gray-50 shadow-sm ml-2">
+                             <option value="default">Sort By</option>
+                             <option value="price-asc">Price: Low to High</option>
+                             <option value="price-desc">Price: High to Low</option>
+@@ -441,21 +448,25 @@
+             let currentSubCategory = null; // New State for Subcategory Filters
+             let currentSearchTerm = urlSearch ? urlSearch.toLowerCase() : '';
+ 
++            // Newspaper subcategories for parent detection
++            const newspaperSubcategories = ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers', 'Montessori & Preschool', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
++
+             // Expose subcategory filter function to global window scope so HTML onclicks work
+             window.filterBySubCategory = (subCat) => {
+                 console.log(`Filtering by subcategory: ${subCat}`);
+ 
+-                // Set main category to stationery if not already
+-                if (currentCategory !== 'Stationery') {
++                // Detect which parent category this subcategory belongs to
++                const parentCategory = newspaperSubcategories.includes(subCat) ? 'Newspapers' : 'Stationery';
++
++                if (currentCategory !== parentCategory) {
+                     // Update main buttons UI
+-                    updateFilterButtons('Stationery');
+-                    currentCategory = 'Stationery';
++                    updateFilterButtons(parentCategory);
++                    currentCategory = parentCategory;
+                 }
+ 
+                 currentSubCategory = subCat;
+ 
+-                // Optional: Update UI to show selected subcategory (maybe a breadcrumb or tag?)
+-                // For now, just reload products
++                // Reload products with the correct category + subcategory
+                 allProducts = [];
+                 lastVisible = null;
+                 noMoreProducts = false;
+@@ -562,7 +573,11 @@
+                             currentCategory.toUpperCase(),
+                             currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1).toLowerCase()
+                         ];
+-                        // Remove duplicates
++                        // Add 'news' variant for Newspapers category (some items stored as 'news')
++                        if (currentCategory.toLowerCase() === 'newspapers') {
++                            searchCats.push('news', 'News');
++                        }
++                        // Remove duplicates (Firestore 'in' supports max 30 values)
+                         const uniqueCats = [...new Set(searchCats)];
+ 
+                         let constraints = [where("category", "in", uniqueCats)];
+@@ -665,9 +680,9 @@
+                 filtered = [...filtered];
+ 
+                 if (sortValue === 'price-asc') {
+-                    filtered.sort((a, b) => parseFloat(a.price.replace(/Rs\.|,/g, '')) - parseFloat(b.price.replace(/Rs\.|,/g, '')));
++                    filtered.sort((a, b) => parseFloat(String(a.price).replace(/Rs\.|,/g, '')) - parseFloat(String(b.price).replace(/Rs\.|,/g, '')));
+                 } else if (sortValue === 'price-desc') {
+-                    filtered.sort((a, b) => parseFloat(b.price.replace(/Rs\.|,/g, '')) - parseFloat(a.price.replace(/Rs\.|,/g, '')));
++                    filtered.sort((a, b) => parseFloat(String(b.price).replace(/Rs\.|,/g, '')) - parseFloat(String(a.price).replace(/Rs\.|,/g, '')));
+                 } else if (sortValue === 'name') {
+                     filtered.sort((a, b) => a.name.localeCompare(b.name));
+                 }
+@@ -711,7 +726,7 @@
+                         actionAreaHTML = `
+                             <div class="mt-auto">
+                                 <div class="flex justify-between items-center mb-4">
+-                                    <span class="font-bold text-lg text-primary">${escapeHtml(p.price)} <span class="text-xs text-secondary font-normal">/ ${escapeHtml(unit)}</span></span>
++                                    <span class="font-bold text-lg text-primary">${escapeHtml(String(p.price))} <span class="text-xs text-secondary font-normal">/ ${escapeHtml(unit)}</span></span>
+                                 </div>
+                                 <div class="flex flex-col md:flex-row items-center gap-2 bg-white/5 border border-glass rounded-lg p-2">
+                                     <div class="flex items-center justify-center w-full md:w-auto justify-between md:justify-start gap-4 md:gap-0">
+@@ -730,26 +745,45 @@
+                     }
+ 
+                     return `
+-                        <div id="product-${p.id}" class="product-card group relative bg-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-glass animate-fade-in flex flex-col h-full ${isOutOfStock && !isNews ? 'opacity-75 grayscale' : ''} ${p.isDeepLink ? 'ring-2 ring-accent-color transform scale-105 z-10 shadow-purple-500/20' : ''}">
+-                            ${isOutOfStock && !isNews ? '<div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">Out of Stock</div>' : ''}
++                        <div id="product-${p.id}" class="product-card group relative bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full ${isOutOfStock && !isNews ? 'opacity-75 grayscale' : ''}">
++                            ${isOutOfStock && !isNews ? '<div class="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">OUT OF STOCK</div>' : ''}
++                            ${p.discount ? `<div class="absolute top-3 left-3 bg-secondary text-primary text-[10px] font-bold px-2 py-1 rounded z-10">${p.discount}% OFF</div>` : ''}
+                             
+-                            <button onclick="shareProduct('${escapeJs(p.id)}')" class="absolute top-3 left-3 bg-black/20 hover:bg-black/50 backdrop-blur-md text-white p-2 rounded-full z-10 transition-colors opacity-0 group-hover:opacity-100" title="Copy Link">
+-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+-                                </svg>
+-                            </button>
+-
+-                            <a href="${productUrl}" ${isNews ? 'target="_blank"' : ''} class="block aspect-w-1 aspect-h-1 bg-white/5 flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} h-64 overflow-hidden relative cursor-pointer">
++                            <a href="${productUrl}" ${isNews ? 'target="_blank"' : ''} class="block aspect-square bg-gray-50 flex items-center justify-center ${p.image && p.image.startsWith('emoji:') ? 'p-8' : ''} overflow-hidden relative cursor-pointer">
+                                 ${imageHTML}
+                             </a>
+ 
+-                            <div class="p-3 md:p-6 flex flex-col flex-grow">
+-                                <span class="text-xs font-bold text-secondary uppercase tracking-widest mb-2 block">${escapeHtml(p.category)} ${p.subcategory ? '• ' + escapeHtml(p.subcategory) : ''}</span>
+-                                <a href="${productUrl}" ${isNews ? 'target="_blank"' : ''} class="hover:underline decoration-primary">
+-                                    <h3 class="text-lg font-bold font-heading mb-2 leading-tight text-primary">${escapeHtml(p.name)}</h3>
++                            <div class="p-4 flex flex-col flex-grow">
++                                <span class="text-[10px] font-bold text-secondary uppercase tracking-wider mb-1 block">${escapeHtml(p.category)}</span>
++                                <a href="${productUrl}" ${isNews ? 'target="_blank"' : ''} class="hover:text-primary transition-colors">
++                                    <h3 class="text-sm font-bold font-heading mb-2 leading-tight text-gray-800 line-clamp-2 min-h-[2.5rem]">${escapeHtml(p.name)}</h3>
+                                 </a>
+-                                <p class="text-secondary text-sm mb-4 line-clamp-1">${escapeHtml(p.desc)}</p>
+-                                ${actionAreaHTML}
++                                
++                                <div class="mt-auto">
++                                    <div class="flex items-baseline gap-2 mb-4">
++                                        <span class="font-black text-lg text-primary">Rs. ${escapeHtml(String(p.price))}</span>
++                                        <span class="text-[10px] text-gray-400 font-normal">/ ${escapeHtml(unit)}</span>
++                                    </div>
++
++                                    ${isNews ? `
++                                        <a href="${p.link}" target="_blank" class="w-full text-center bg-primary text-white py-2 rounded-lg font-bold text-xs hover:bg-primary/90 transition-all block">
++                                            READ ARTICLE
++                                        </a>
++                                    ` : `
++                                        <div class="flex items-center gap-2">
++                                            <div class="flex items-center bg-gray-100 rounded-lg overflow-hidden h-9">
++                                                <button onclick="window.adjustQty('${escapeJs(p.id)}', -${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="px-3 text-gray-500 hover:bg-gray-200 transition-colors font-bold text-lg">-</button>
++                                                <span id="qty-${escapeHtml(p.id)}" class="w-8 text-center font-bold text-xs text-gray-800">${initialQty}</span>
++                                                <button onclick="window.adjustQty('${escapeJs(p.id)}', ${step}, ${min})" ${isOutOfStock ? 'disabled' : ''} class="px-3 text-gray-500 hover:bg-gray-200 transition-colors font-bold text-lg">+</button>
++                                            </div>
++                                            <button onclick="window.addToCartWithQty('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', '${escapeJs(unit)}')"
++                                                ${isOutOfStock ? 'disabled' : ''}
++                                                class="flex-1 bg-primary text-white h-9 rounded-lg font-bold text-xs hover:bg-primary/90 shadow-md transition-all flex items-center justify-center gap-1 disabled:bg-gray-300">
++                                                ${isOutOfStock ? 'SOLD OUT' : 'ADD'}
++                                            </button>
++                                        </div>
++                                    `}
++                                </div>
+                             </div>
+                         </div>
+                         `;

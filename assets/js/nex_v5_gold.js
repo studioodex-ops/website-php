@@ -255,21 +255,39 @@ async function callGeminiFlash(key, prompt) {
     const promotions = await getPromotionsData();
     const finalPrompt = `${SHOP_CONTEXT}\n\n=== ACTIVE PROMOTIONS ===\n${promotions}\n\n=== PRODUCT DATA ===\n${products}\n============\nUser: ${prompt}\nAnswer:`;
 
-    // LIST OF MODELS TO TRY (Fallback Strategy)
-    const models = [
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-001',
-        'gemini-1.5-flash-latest',
-        'gemini-pro',
-        'gemini-1.0-pro'
-    ];
+    // DYNAMIC MODEL RESOLUTION
+    // Fetch all available valid models for this exact API Key to avoid blind 404/503 errors
+    let availableModels = [];
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+        if (response.ok) {
+            const data = await response.json();
+            availableModels = data.models
+                .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
+                .filter(m => m.name.includes('gemini'));
+            
+            // Sort to prioritize flash over pro, and latest versions
+            availableModels.sort((a, b) => {
+                const isFlashA = a.name.includes('flash') ? 1 : 0;
+                const isFlashB = b.name.includes('flash') ? 1 : 0;
+                return isFlashB - isFlashA;
+            });
+        }
+    } catch (e) {
+        console.warn("Nex: Failed to fetch available models", e);
+    }
 
-    let lastError = null;
+    // Fallback static list just in case ListModels fails completely
+    const hardcoded = ['models/gemini-1.5-flash', 'models/gemini-2.0-flash', 'models/gemini-1.5-pro'];
+    const modelsToTry = availableModels.length > 0 ? availableModels.map(m => m.name) : hardcoded;
 
-    for (const model of models) {
+    let errors = [];
+
+    for (const model of modelsToTry) {
         console.log(`Nex: Trying model ${model}...`);
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+            // "model" string here is already formatted like "models/gemini-1.5-flash"
+            const url = `https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${key}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -278,8 +296,7 @@ async function callGeminiFlash(key, prompt) {
 
             if (!response.ok) {
                 const err = await response.json().catch(() => ({}));
-                // If model not found (404) or invalid arg (400), throw to try next
-                throw new Error(err.error?.message || response.statusText);
+                throw new Error(err.error?.message || response.statusText || 'Unknown API Error');
             }
 
             const data = await response.json();
@@ -287,51 +304,17 @@ async function callGeminiFlash(key, prompt) {
 
         } catch (e) {
             console.warn(`Nex: Model ${model} failed:`, e.message);
-            lastError = e;
-            // Continue to next model
+            errors.push(`[${model.replace('models/','')}] ${e.message}`);
         }
     }
 
-    // If all hardcoded models failed, try Auto-Discovery
-    console.warn("Nex: All hardcoded models failed. Attempting Auto-Discovery...");
-    try {
-        const autoModel = await findActiveModel(key);
-        if (autoModel) {
-            console.log(`Nex: Auto-discovered model: ${autoModel}`);
-            const url = `https://generativelanguage.googleapis.com/v1beta/${autoModel}:generateContent?key=${key}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: finalPrompt }] }] })
-            });
-            if (response.ok) {
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
-            }
-        }
-    } catch (discoveryErr) {
-        console.error("Nex: Auto-discovery failed", discoveryErr);
-    }
-
-    // If discovery also failed or no model found
-    throw lastError || new Error("All models failed and auto-discovery didn't work.");
+    // If everything fails, throw the combined detailed error
+    throw new Error("All models failed. Errors: " + errors.join(' | '));
 }
 
-// Helper: Auto-discover models
-async function findActiveModel(key) {
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
-        if (!response.ok) return null;
-        const data = await response.json();
-        const validModel = data.models?.find(m =>
-            m.supportedGenerationMethods?.includes('generateContent') &&
-            (m.name.includes('gemini') || m.name.includes('flash'))
-        );
-        return validModel ? validModel.name : null;
-    } catch (e) {
-        return null;
-    }
-}
+// NOTE: old auto-discover helper removed
+
+
 
 async function getPromotionsData() {
     try {

@@ -1,0 +1,12 @@
+0a83bde Update UI for news articles and fix image extraction
+9073b9b Link Morning Update widget to Sinhala news category
+395963e Switch to Sinhala RSS feeds and remove secrets
+19d6674 Add Sinhala news RSs feeds (Divaina, Dinamina) and Gossip Lanka, remove English sources
+e26c5fc Fix: news.js bugs - fetch real newspaper data from products collection, remove mock override, add brand labels and article links
+028f21e Add newspaper automation and search features
+a31e5f4 Fix: grammar errors and broken links - shipping to shopping, removed View All News
+9fe0897 Implement Mega-Menu for Stationery and Dropdown for Newspapers subcategories
+fe42f4b Add POS PWA manifest, Finance module, and WhatsApp receipt feature
+55d0d19 Implement Movement History: Add logging to POS and Admin, update Admin UI
+c1a6785 fix: syntax error in cart.js - await in non-async then callback
+5167eac Final POS System Update with Sinhala Support

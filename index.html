@@ -193,9 +193,9 @@
     <!-- Project CSS -->
     <link rel="stylesheet" href="assets/css/style.css?v=2">
 
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="assets/js/background-3d.js"></script>
+    <!-- Icons & Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="assets/js/theme-switch.js"></script>
 </head>
 
@@ -365,286 +365,68 @@
     </div>
     <!-- Main Content -->
     <main class="relative z-10 pt-20">
-        <!-- Hero Section - CAPTIVATING DESIGN -->
-        <section class="min-h-screen flex items-center relative overflow-hidden bg-body transition-colors duration-500">
-
-            <!-- Three.js 3D Canvas - Fixed Visibility -->
-            <div id="canvas-container" class="absolute inset-0 z-0 pointer-events-none" bis_skin_checked="1"></div>
-
-            <!-- Animated Particle Background (Behind Canvas) -->
-            <div class="absolute inset-0 z-0 opacity-50" bis_skin_checked="1">
-                <!-- Large Animated Orbs -->
-                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-purple-500/30 to-pink-500/20 rounded-full blur-3xl float-animation"
-                    bis_skin_checked="1">
-                </div>
-                <div class="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-blue-500/30 to-cyan-500/20 rounded-full blur-3xl float-animation-delayed"
-                    bis_skin_checked="1">
-                </div>
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-violet-500/20 to-fuchsia-500/10 rounded-full blur-3xl"
-                    style="animation: blobMove 12s ease-in-out infinite;" bis_skin_checked="1"></div>
-
-                <!-- Grid Pattern Overlay -->
-                <div class="absolute inset-0 opacity-10"
-                    style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px;"
-                    bis_skin_checked="1">
-                </div>
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10" bis_skin_checked="1">
-                <div class="max-w-4xl mx-auto text-center" bis_skin_checked="1">
-
-                    <!-- Floating Live Badge (Verified Style) -->
-                    <div class="inline-flex items-center gap-2 glass-panel px-5 py-2 mb-8 rounded-full animate-wiggle"
-                        bis_skin_checked="1">
-                        <svg class="w-5 h-5 text-blue-500 animate-tick" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-gray-600 dark:text-gray-300 text-sm font-medium tracking-wide">Verified Local
-                            Business • Est. 1985</span>
-                    </div>
-
-                    <!-- Main Headline -->
-                    <h1
-                        class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[0.95] font-heading">
-                        <span class="text-gray-900 dark:text-white block mb-2">Your One-Stop</span>
-                        <span class="apple-gradient-text text-6xl md:text-8xl lg:text-9xl">Neighborhood
-                            Store</span>
-                    </h1>
-
-                    <!-- Subtitle -->
-                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto"
-                        style="animation-delay: 0.3s;">
-                        Groceries, Stationery, Newspapers &amp; More — All under one roof.
-                        Experience the convenience of quality shopping in Walapane.
-                    </p>
-
-                    <!-- CTA Buttons (Pill Shapes) -->
-                    <div
-                        class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-200">
-                        <a href="products.html"
-                            class="btn-glass-glow bg-blue-600 text-white px-8 py-4 font-bold text-lg flex items-center gap-2 group">
-                            <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                            </svg>
-                            START SHOPPING
-                        </a>
-                        <a href="https://wa.me/94775192756"
-                            class="btn-glass-glow bg-green-500 text-white px-8 py-4 font-bold text-lg flex items-center gap-2 group">
-                            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-                            </svg>
-                            WHATSAPP ORDER
-                        </a>
-                    </div>
-
-                    <!-- Daily Essentials Retention Widget - DYNAMIC -->
-                    <div class="mt-12 flex justify-center perspective-1000" bis_skin_checked="1">
-                        <div class="glass-panel p-4 flex items-center gap-4 max-w-sm cursor-pointer hover:scale-105 transition-transform duration-300 md:w-96 w-full mx-4"
-                            id="morning-update-widget"
-                            onclick="window.location.href='products.html?category=Newspapers'">
-                            <div
-                                class="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl shadow-inner dashed-border-anim">
-                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div class="text-left flex-1">
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white" id="morning-update-title">
-                                    Morning Update</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400" id="morning-update-message">Latest
-                                    Sinhala news updates are here.</p>
-                            </div>
-                            <div>
-                                <span id="morning-update-badge"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                    AVAILABLE
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Stats Bar -->
-                    <div class="mt-8 flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500 dark:text-gray-400"
-                        style="animation-delay: 0.7s;" bis_skin_checked="1">
-                        <div class="text-center" bis_skin_checked="1">
-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
-                                bis_skin_checked="1">1000+</div>
-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Happy Customers</div>
-                        </div>
-                        <div class="text-center" bis_skin_checked="1">
-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
-                                bis_skin_checked="1">5000+</div>
-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Products</div>
-                        </div>
-                        <div class="text-center" bis_skin_checked="1">
-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
-                                bis_skin_checked="1">40+</div>
-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Years</div>
-                        </div>
+        <!-- Hero Banner Section (Supermarket Style) -->
+        <section class="bg-white pb-8">
+            <div class="w-full relative bg-gray-100 overflow-hidden" style="height: 400px;">
+                <!-- Main Promo Banner -->
+                <img src="assets/img/hero-banner.png" alt="Groceries, Stationery, and Newspapers Supermarket Deals" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20 flex items-center">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                        <span class="inline-block px-3 py-1 bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-md mb-4">Special Offers</span>
+                        <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 shadow-sm">Your Neighborhood<br>Supermarket</h1>
+                        <p class="text-lg text-white/90 mb-8 max-w-lg">Groceries, Stationery, Newspapers & More — All under one roof.</p>
+                        <a href="products.html" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold transition-colors inline-block shadow-lg">START SHOPPING</a>
                     </div>
                 </div>
             </div>
-
-            <!-- Animated Scroll Indicator -->
-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2" bis_skin_checked="1">
-                <div class="flex flex-col items-center gap-2 text-white/60 cursor-pointer hover:text-white/90 transition-colors"
-                    bis_skin_checked="1">
-                    <span class="text-xs uppercase tracking-widest">Explore</span>
-                    <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-2"
-                        bis_skin_checked="1">
-                        <div class="w-1.5 h-1.5 bg-white rounded-full arrow-bounce" bis_skin_checked="1"></div>
-                    </div>
+            
+            <!-- Features Strip -->
+            <div class="border-b border-gray-200 bg-white">
+                <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-center gap-8 md:gap-16 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    <div class="flex items-center gap-2">🛒 5000+ Products</div>
+                    <div class="flex items-center gap-2">🚚 Island-wide Delivery</div>
+                    <div class="flex items-center gap-2">✔️ Fresh Quality</div>
+                    <div class="flex items-center gap-2">💳 Secure Payments</div>
                 </div>
             </div>
         </section>
-        <!-- Categories Section - Adaptive -->
-        <section class="py-24 bg-body relative overflow-hidden transition-colors duration-500">
-            <!-- Background decorative elements -->
-            <div class="absolute top-20 right-0 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
-                bis_skin_checked="1">
-            </div>
-            <div class="absolute bottom-20 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl"
-                bis_skin_checked="1">
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
-                <div class="text-center max-w-2xl mx-auto mb-16" bis_skin_checked="1">
-                    <span
-                        class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl border border-white/20 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                        ✨ What We Offer
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-primary">Our
-                        Services</h2>
-                    <p class="text-secondary text-lg">Premium products tailored for your daily needs with exceptional
-                        quality.</p>
+        <!-- Shop by Category Section (Circular Grid) -->
+        <section class="py-16 bg-white border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Shop by Category</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" bis_skin_checked="1">
-                    <!-- Service 1 - Newspapers -->
-                    <a href="products.html?category=news"
-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
-                        <div class="apple-icon-container mb-6 text-orange-400" bis_skin_checked="1">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
-                                </path>
-                            </svg>
+                <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+                    <!-- Category 1 -->
+                    <a href="products.html?category=Grocery" class="group flex flex-col items-center cursor-pointer w-24">
+                        <div class="w-24 h-24 rounded-full border border-gray-200 overflow-hidden bg-white hover:shadow-lg hover:border-red-500 transition-all mb-3 flex items-center justify-center p-4">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3724/3724788.png" alt="Grocery" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
                         </div>
-                        <h3
-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-orange-300 transition-colors">
-                            Newspapers</h3>
-                        <p class="text-sm text-secondary leading-relaxed">Daily and weekly newspapers from Wijeya,
-                            Lakehouse, and Upali publishers.</p>
-                        <div class="mt-6 flex items-center gap-2 text-orange-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                            bis_skin_checked="1">
-                            <span>Browse</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
+                        <span class="text-sm font-semibold text-gray-700 text-center leading-tight group-hover:text-red-600">Grocery</span>
+                    </a>
+                    <!-- Category 2 -->
+                    <a href="products.html?category=Stationery" class="group flex flex-col items-center cursor-pointer w-24">
+                        <div class="w-24 h-24 rounded-full border border-gray-200 overflow-hidden bg-white hover:shadow-lg hover:border-red-500 transition-all mb-3 flex items-center justify-center p-4">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2809/2809051.png" alt="Stationery" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
                         </div>
+                        <span class="text-sm font-semibold text-gray-700 text-center leading-tight group-hover:text-red-600">Stationery</span>
                     </a>
 
-                    <!-- Service 2 - Grocery -->
-                    <a href="products.html?category=grocery"
-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
-                        <div class="apple-icon-container mb-6 text-cyan-400" bis_skin_checked="1">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                                </path>
-                            </svg>
+                    <!-- Category 6 -->
+                    <a href="products.html?category=Newspapers" class="group flex flex-col items-center cursor-pointer w-24">
+                        <div class="w-24 h-24 rounded-full border border-gray-200 overflow-hidden bg-white hover:shadow-lg hover:border-red-500 transition-all mb-3 flex items-center justify-center p-4">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" alt="Newspapers" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
                         </div>
-                        <h3
-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-cyan-300 transition-colors">
-                            Grocery</h3>
-                        <p class="text-sm text-secondary leading-relaxed">Fresh items, household essentials, packed
-                            foods
-                            and beverages.</p>
-                        <div class="mt-6 flex items-center gap-2 text-cyan-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                            bis_skin_checked="1">
-                            <span>Browse</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </div>
-                    </a>
-
-                    <!-- Service 3 - Stationery -->
-                    <a href="products.html?category=stationery"
-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
-                        <div class="apple-icon-container mb-6 text-purple-400" bis_skin_checked="1">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3
-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-purple-300 transition-colors">
-                            Stationery</h3>
-                        <p class="text-sm text-secondary leading-relaxed">School and office stationery - books, pens,
-                            and
-                            drawing instruments.</p>
-                        <div class="mt-6 flex items-center gap-2 text-purple-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                            bis_skin_checked="1">
-                            <span>Browse</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </div>
-                    </a>
-
-                    <!-- Service 4 - Retail -->
-                    <a href="products.html?category=all"
-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
-                        <div class="apple-icon-container mb-6 text-green-400" bis_skin_checked="1">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                            </svg>
-                        </div>
-                        <h3
-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-green-300 transition-colors">
-                            Retail Items</h3>
-                        <p class="text-sm text-secondary leading-relaxed">General retail goods for everyday convenience
-                            at fair prices.</p>
-                        <div class="mt-6 flex items-center gap-2 text-green-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                            bis_skin_checked="1">
-                            <span>Browse</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </div>
+                        <span class="text-sm font-semibold text-gray-700 text-center leading-tight group-hover:text-red-600">Newspapers</span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- Special Offers Section - Adaptive -->
-        <section class="py-24 bg-body text-primary overflow-hidden relative transition-colors duration-500"
-            id="promotions">
-            <!-- Background Elements -->
-            <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-3xl -mr-20 -mt-20"
-                bis_skin_checked="1">
-            </div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl -ml-20 -mb-20"
-                bis_skin_checked="1">
-            </div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+        <!-- Special Offers Section - Light Theme -->
+        <section class="py-16 bg-gray-50 text-gray-900 border-b border-gray-100" id="promotions">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16" bis_skin_checked="1">
                     <div bis_skin_checked="1">
                         <span
@@ -668,24 +450,16 @@
                 </div>
             </div>
         </section>
-        <!-- Book List Package Offer Banner - Adaptive -->
-        <section class="py-16 bg-body relative overflow-hidden transition-colors duration-500" id="book-list-offer">
-            <!-- Background Elements -->
-            <div class="absolute top-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl -mr-20 -mt-20 animate-pulse"
-                bis_skin_checked="1">
-            </div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -ml-20 -mb-20"
-                bis_skin_checked="1"></div>
-
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+        <!-- Book List Package Offer Banner - Light Theme -->
+        <section class="py-16 bg-white border-b border-gray-100 relative overflow-hidden" id="book-list-offer">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="fomo-timer" bis_skin_checked="1">
                     <div class="fomo-expired" bis_skin_checked="1">⚠️ This offer has ended!</div>
                 </div>
-                <div class="glass-card shadow-2xl overflow-hidden hover:shadow-purple-500/20 transition-all duration-300"
-                    bis_skin_checked="1">
-                    <div class="grid md:grid-cols-2 gap-0" bis_skin_checked="1">
+                <div class="bg-gray-50 border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+                    <div class="grid md:grid-cols-2 gap-0">
                         <!-- Left: Content -->
-                        <div class="p-8 md:p-12 flex flex-col justify-center" bis_skin_checked="1">
+                        <div class="p-8 md:p-12 flex flex-col justify-center">
                             <span
                                 class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full text-xs font-bold w-fit mb-4">
                                 🎒 Back to School
@@ -697,40 +471,29 @@
                                 ඔයාගේ පොත් ලිස්ට් එක අපිට WhatsApp කරන්න, <br>
                                 අපි ඔක්කොම ලෑස්ති කරලා තියන්නම්!
                             </p>
-                            <div class="space-y-4 mb-8" bis_skin_checked="1">
-                                <div class="flex items-center gap-3" bis_skin_checked="1">
-                                    <span
-                                        class="bg-green-500/20 text-green-300 border border-green-500/30 px-3 py-1 rounded-full text-sm font-bold">10%
-                                        OFF</span>
-                                    <span class="text-white/60 text-sm">සම්පූර්ණ ලිස්ට් එකෙන්</span>
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">10% OFF</span>
+                                    <span class="text-gray-600 text-sm">සම්පූර්ණ ලිස්ට් එකෙන්</span>
                                 </div>
-                                <div class="flex items-center gap-3" bis_skin_checked="1">
-                                    <span
-                                        class="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-bold">OLD
-                                        PRICE</span>
-                                    <span class="text-white/60 text-sm">*පරණ මිලටම පොත් ගන්න</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">OLD PRICE</span>
+                                    <span class="text-gray-600 text-sm">*පරණ මිලටම පොත් ගන්න</span>
                                 </div>
                             </div>
                             <a href="https://wa.me/94775192756?text=Hi!%20I%20want%20to%20submit%20my%20book%20list%20for%20the%20Back%20to%20School%20offer."
                                 target="_blank"
-                                class="btn-apple-success text-center justify-center pointer-events-auto">
+                                class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center transition-colors">
                                 <span class="text-xl mr-2">📱</span> WhatsApp: 077-5192756
                             </a>
-                            <p class="text-xs text-white/30 mt-4">*Conditions apply for old prices</p>
+                            <p class="text-xs text-gray-500 mt-4">*Conditions apply for old prices</p>
                         </div>
                         <!-- Right: Visual -->
-                        <div class="relative bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-8 flex items-center justify-center overflow-hidden"
-                            bis_skin_checked="1">
-                            <div class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-transparent blur-2xl"
-                                bis_skin_checked="1">
-                            </div>
-                            <div class="text-center relative z-10 transform hover:scale-105 transition-transform duration-500"
-                                bis_skin_checked="1">
-                                <div class="text-8xl mb-6 relative drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
-                                    bis_skin_checked="1">📚
-                                </div>
-                                <p class="text-xl font-bold text-white mb-2">ලිස්ට් එක දෙන්න</p>
-                                <p class="text-white/50">අපි හොයලා දෙන්නම්!</p>
+                        <div class="relative bg-gray-100 p-8 flex items-center justify-center overflow-hidden">
+                            <div class="text-center relative z-10 transform hover:scale-105 transition-transform duration-500">
+                                <div class="text-8xl mb-6 relative">📚</div>
+                                <p class="text-xl font-bold text-gray-800 mb-2">ලිස්ට් එක දෙන්න</p>
+                                <p class="text-gray-600">අපි හොයලා දෙන්නම්!</p>
                             </div>
                         </div>
                     </div>
@@ -738,86 +501,64 @@
             </div>
         </section>
 
-        <!-- Smart Bundles Section - Adaptive -->
-        <section class="py-24 bg-body relative transition-colors duration-500" id="bundles">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
-                <div class="fomo-timer" bis_skin_checked="1">
-                    <div class="fomo-expired" bis_skin_checked="1">⚠️ This offer has ended!</div>
-                </div>
-                <div class="text-center max-w-2xl mx-auto mb-16" bis_skin_checked="1">
-                    <span
-                        class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
-                        📦 Save More
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-primary">
-                        Smart Bundles
-                    </h2>
-                    <p class="text-secondary text-lg">Buy together, save together! Special discounts on curated product
-                        bundles.</p>
+        <!-- Smart Bundles Section - Supermarket Theme -->
+        <section class="py-16 bg-gray-50 border-b border-gray-100" id="bundles">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center md:flex md:justify-between md:items-end mb-10">
+                    <div class="text-left">
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Value Bundles</h2>
+                        <p class="text-gray-600 text-sm">Buy together, save together! Special discounts.</p>
+                    </div>
                 </div>
 
-                <div id="bundles-display-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    bis_skin_checked="1">
+                <div id="bundles-display-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Dynamic Bundles will load here -->
                 </div>
             </div>
         </section>
-        <!-- Testimonials Section - Adaptive -->
-        <section class="py-24 bg-body border-t border-glass relative overflow-hidden transition-colors duration-500">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
-                <div class="text-center max-w-2xl mx-auto mb-16" bis_skin_checked="1">
-                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-primary">
+        <!-- Testimonials Section - Light Theme -->
+        <section class="py-16 bg-white border-t border-gray-100 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
                         What Our Customers Say
                     </h2>
-                    <p class="text-secondary">Trusted by over 1,000+ happy customers in the community.</p>
+                    <p class="text-gray-600">Trusted by over 1,000+ happy customers in the community.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" bis_skin_checked="1">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Review 1 -->
-                    <div class="bg-card backdrop-blur-xl border border-glass p-8 rounded-3xl hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300"
-                        bis_skin_checked="1">
-                        <div class="flex text-amber-400 mb-4 text-sm" bis_skin_checked="1">★★★★★</div>
-                        <p class="text-secondary mb-6 leading-relaxed italic">"Great service! I buy my newspapers and
-                            stationeries here every morning. Very friendly staff."</p>
-                        <div class="flex items-center" bis_skin_checked="1">
-                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center font-bold text-white shadow-lg"
-                                bis_skin_checked="1">
-                                S</div>
-                            <div class="ml-3" bis_skin_checked="1">
-                                <h4 class="font-bold text-sm text-primary">Saman Kumara</h4>
-                                <p class="text-xs text-secondary">Regular Customer</p>
+                    <div class="bg-gray-50 border border-gray-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex text-amber-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-gray-700 mb-6 leading-relaxed italic">"Great service! I buy my newspapers and stationeries here every morning. Very friendly staff."</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center font-bold text-white shadow-sm">S</div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-sm text-gray-900">Saman Kumara</h4>
+                                <p class="text-xs text-gray-500">Regular Customer</p>
                             </div>
                         </div>
                     </div>
                     <!-- Review 2 -->
-                    <div class="bg-card backdrop-blur-xl border border-glass p-8 rounded-3xl hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300"
-                        bis_skin_checked="1">
-                        <div class="flex text-amber-400 mb-4 text-sm" bis_skin_checked="1">★★★★★</div>
-                        <p class="text-secondary mb-6 leading-relaxed italic">"The grocery items are always fresh. I
-                            love
-                            the new delivery service. Highly recommended!"</p>
-                        <div class="flex items-center" bis_skin_checked="1">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center font-bold text-white shadow-lg"
-                                bis_skin_checked="1">
-                                N</div>
-                            <div class="ml-3" bis_skin_checked="1">
-                                <h4 class="font-bold text-sm text-primary">Nimali Perera</h4>
-                                <p class="text-xs text-secondary">Verified Buyer</p>
+                    <div class="bg-gray-50 border border-gray-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex text-amber-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-gray-700 mb-6 leading-relaxed italic">"The grocery items are always fresh. I love the new delivery service. Highly recommended!"</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white shadow-sm">N</div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-sm text-gray-900">Nimali Perera</h4>
+                                <p class="text-xs text-gray-500">Verified Buyer</p>
                             </div>
                         </div>
                     </div>
                     <!-- Review 3 -->
-                    <div class="bg-card backdrop-blur-xl border border-glass p-8 rounded-3xl hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300"
-                        bis_skin_checked="1">
-                        <div class="flex text-amber-400 mb-4 text-sm" bis_skin_checked="1">★★★★★</div>
-                        <p class="text-secondary mb-6 leading-relaxed italic">"Best place in Walapane for school books.
-                            Prices are very reasonable compared to others."</p>
-                        <div class="flex items-center" bis_skin_checked="1">
-                            <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center font-bold text-white shadow-lg"
-                                bis_skin_checked="1">
-                                K</div>
-                            <div class="ml-3" bis_skin_checked="1">
-                                <h4 class="font-bold text-sm text-primary">Kasun Disanayaka</h4>
-                                <p class="text-xs text-secondary">Student</p>
+                    <div class="bg-gray-50 border border-gray-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex text-amber-500 mb-4 text-sm">★★★★★</div>
+                        <p class="text-gray-700 mb-6 leading-relaxed italic">"Best place in Walapane for school books. Prices are very reasonable compared to others."</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center font-bold text-white shadow-sm">K</div>
+                            <div class="ml-3">
+                                <h4 class="font-bold text-sm text-gray-900">Kasun Disanayaka</h4>
+                                <p class="text-xs text-gray-500">Student</p>
                             </div>
                         </div>
                     </div>
@@ -825,42 +566,39 @@
             </div>
         </section>
 
-        <!-- Blog/News Section - Modern Dark -->
-        <section class="py-24 bg-gradient-to-b from-slate-900 to-black text-white border-t border-white/5">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" bis_skin_checked="1">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12" bis_skin_checked="1">
-                    <div bis_skin_checked="1">
-                        <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-white">Latest
-                            News</h2>
-                        <p class="text-white/60 max-w-md">Updates from our community, new arrivals, and special
-                            announcements.</p>
+        <!-- Blog/News Section - Light Theme -->
+        <section class="py-16 bg-gray-50 border-t border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Latest News</h2>
+                        <p class="text-gray-600 max-w-md">Updates from our community, new arrivals, and special announcements.</p>
                     </div>
-
                 </div>
 
-                <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8" bis_skin_checked="1">
+                <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Dynamic News will load here -->
                 </div>
             </div>
         </section>
 
         <!-- Newsletter Section - Adaptive -->
-        <section class="py-24 bg-body text-primary relative overflow-hidden transition-colors duration-500">
+        <section class="py-24 bg-white text-gray-900 relative overflow-hidden transition-colors duration-500">
             <!-- Decor -->
-            <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl opacity-50 pointer-events-none"
+            <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl opacity-50 pointer-events-none"
                 bis_skin_checked="1">
             </div>
-            <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl opacity-50 pointer-events-none"
+            <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none"
                 bis_skin_checked="1">
             </div>
 
             <div class="max-w-4xl mx-auto px-4 relative z-10 text-center" bis_skin_checked="1">
                 <span
-                    class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                    class="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
                     📨 Stay Connected
                 </span>
                 <h2 class="text-3xl md:text-5xl font-bold font-heading mb-6 tracking-tight">Join Our Newsletter</h2>
-                <p class="text-secondary mb-10 max-w-lg mx-auto text-lg leading-relaxed">
+                <p class="text-gray-600 mb-10 max-w-lg mx-auto text-lg leading-relaxed">
                     Get the latest updates on new products, exclusive deals, and community news delivered straight to
                     your inbox.
                 </p>
@@ -871,9 +609,9 @@
                             bis_skin_checked="1">
                         </div>
                         <input type="email" placeholder="Your email address"
-                            class="relative w-full bg-black border border-white/10 rounded-lg px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all">
+                            class="relative w-full bg-white border border-gray-300 rounded-lg px-6 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all">
                     </div>
-                    <button type="button" class="btn-apple-primary whitespace-nowrap px-8 py-4 !rounded-lg h-[58px]">
+                    <button type="button" class="bg-black text-white whitespace-nowrap px-8 py-4 !rounded-lg h-[58px] hover:bg-gray-800 transition-colors">
                         Subscribe
                     </button>
                 </form>
@@ -881,36 +619,19 @@
             </div>
         </section>
 
-        <!-- CTA Section - Adaptive -->
-        <section class="py-24 bg-body border-t border-glass transition-colors duration-500">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" bis_skin_checked="1">
-                <div class="relative rounded-[2.5rem] p-12 md:p-24 overflow-hidden group" bis_skin_checked="1">
-                    <!-- Dynamic Background -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-900 to-purple-900 opacity-50"
-                        bis_skin_checked="1"></div>
-                    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"
-                        bis_skin_checked="1">
-                    </div>
-
-                    <!-- Decorative Orbs -->
-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500/30 blur-3xl animate-pulse"
-                        bis_skin_checked="1">
-                    </div>
-                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 rounded-full bg-purple-500/30 blur-3xl animate-pulse delay-1000"
-                        bis_skin_checked="1">
-                    </div>
-
-                    <div class="relative z-10 text-center max-w-3xl mx-auto" bis_skin_checked="1">
-                        <h2
-                            class="text-4xl md:text-6xl font-bold font-heading mb-6 tracking-tight text-white drop-shadow-xl">
+        <!-- CTA Section - Supermarket Theme -->
+        <section class="py-16 bg-gray-50 border-t border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative bg-red-600 rounded-3xl p-10 md:p-16 overflow-hidden text-center flex flex-col items-center justify-center text-white shadow-xl">
+                    <div class="relative z-10 max-w-2xl mx-auto">
+                        <h2 class="text-3xl md:text-5xl font-bold mb-4 drop-shadow-md">
                             Visit Buddika Stores Today
                         </h2>
-                        <p class="text-white/70 mb-10 text-xl leading-relaxed">
-                            Experience the best shopping experience in your town. High quality products with excellent
-                            customer service.
+                        <p class="text-white/90 mb-8 text-lg">
+                            Experience the best shopping experience in your town. High quality products with excellent customer service.
                         </p>
                         <a href="contact.html"
-                            class="btn-apple-primary text-lg !px-12 !py-5 shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform transition-all duration-300 btn-directions">
+                            class="bg-white text-red-600 font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-gray-50 hover:scale-105 transform transition-all duration-300 inline-block">
                             Get Directions
                         </a>
                     </div>
@@ -1059,7 +780,7 @@
     <script type="module">
         console.log("Nex: Attempting to load...");
         try {
-            const module = await import('./assets/js/nex_v5_gold.js?v=3.1');
+            const module = await import('./assets/js/nex_v5_gold.js?v=4.3');
             console.log("Nex: Module loaded successfully");
             if (typeof module.initNex === 'function') {
                 module.initNex();

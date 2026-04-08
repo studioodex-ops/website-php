@@ -1,0 +1,31 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	assets/img/hero-grocery.png
+	diff.txt
+	diff_news.txt
+	diff_products.txt
+	fix-imports.html
+	gitlog.txt
+	gitstatus.txt
+	gitstatus_after.txt
+	scripts/newspaper-automation/catch-index.js
+	scripts/newspaper-automation/check-news.js
+	scripts/newspaper-automation/check-query.js
+	scripts/newspaper-automation/check-rss.js
+	scripts/newspaper-automation/clear-news.js
+	scripts/newspaper-automation/error.txt
+	scripts/newspaper-automation/firebase-debug.log
+	scripts/newspaper-automation/fix-images.js
+	scripts/newspaper-automation/fix-papers.js
+	scripts/newspaper-automation/output-utf8.txt
+	scripts/newspaper-automation/output.txt
+	scripts/newspaper-automation/test-images.js
+	scripts/newspaper-automation/test-rss-2.js
+	scripts/newspaper-automation/test-rss.js
+	scripts/newspaper-automation/upload-stationery.js
+	scripts/newspaper-automation/upload-stationery.mjs
+
+nothing added to commit but untracked files present (use "git add" to track)

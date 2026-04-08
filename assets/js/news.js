@@ -74,7 +74,7 @@ async function fetchNews() {
                             <img src="${p.image}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
                         </div>
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">${escapeHtml(p.date)}</span>
-                        <h3 class="text-xl font-bold mb-3 group-hover:text-gray-600 transition-colors font-heading text-white">${escapeHtml(p.title)}</h3>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-gray-600 transition-colors font-heading text-gray-900">${escapeHtml(p.title)}</h3>
                         <p class="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2">${escapeHtml(p.content)}</p>
                         <span class="text-xs font-bold underline">Read Article</span>
                     </article>

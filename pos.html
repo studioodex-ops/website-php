@@ -132,6 +132,14 @@
                                 </path>
                             </svg>
                         </button>
+                        <!-- Custom Item Button -->
+                        <button onclick="openCustomItemModal()"
+                            class="absolute right-12 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-800 transition-colors"
+                            title="Add Custom Item" style="margin-right: 8px;">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
                     </div>
                     <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
                         <button onclick="filterByCategory('all')"
@@ -300,6 +308,38 @@
                         class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors">
                         Add to Cart
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Item Modal -->
+    <div id="custom-item-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-bold">Add Custom Item</h3>
+                <button onclick="closeCustomItemModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Item/Service Name</label>
+                    <input type="text" id="custom-item-name" placeholder="E.g. Print service, Delivery fee..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-black outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Price (Rs.)</label>
+                    <input type="number" id="custom-item-price" min="0" step="0.01" placeholder="0.00" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-black outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Quantity</label>
+                    <input type="number" id="custom-item-qty" min="1" step="0.1" value="1" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-black outline-none">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeCustomItemModal()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">Cancel</button>
+                    <button onclick="addCustomItemToCart()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition-colors">Add to Cart</button>
                 </div>
             </div>
         </div>
@@ -616,6 +656,49 @@
                 return;
             }
             handleBarcodeResult(barcode);
+        };
+
+        // Custom Item Functions
+        window.openCustomItemModal = () => {
+            document.getElementById('custom-item-modal').classList.remove('hidden');
+            document.getElementById('custom-item-name').value = '';
+            document.getElementById('custom-item-price').value = '';
+            document.getElementById('custom-item-qty').value = '1';
+        };
+
+        window.closeCustomItemModal = () => {
+            document.getElementById('custom-item-modal').classList.add('hidden');
+        };
+
+        window.addCustomItemToCart = () => {
+            const name = document.getElementById('custom-item-name').value.trim();
+            const price = parseFloat(document.getElementById('custom-item-price').value);
+            const qty = parseFloat(document.getElementById('custom-item-qty').value);
+
+            if (!name) {
+                showToast('Please enter an item name', 'error');
+                return;
+            }
+            if (isNaN(price) || price < 0) {
+                showToast('Please enter a valid price', 'error');
+                return;
+            }
+            if (isNaN(qty) || qty <= 0) {
+                showToast('Please enter a valid quantity', 'error');
+                return;
+            }
+
+            const customProduct = {
+                id: 'custom-' + Date.now(),
+                name: name,
+                price: price,
+                stock: 99999, // Infinite stock for custom items
+                unit: 'unit',
+                cost: 0 // Optional: allow user to input cost if profit tracking is strictly needed
+            };
+
+            addItemToCart(customProduct, qty);
+            closeCustomItemModal();
         };
 
         // Enter key on manual input
@@ -1415,10 +1498,13 @@
 
                     // Update product stock & Log Movement
                     for (const item of cart) {
-                        const productRef = doc(db, 'products', item.id);
-                        await updateDoc(productRef, {
-                            stock: increment(-item.qty)
-                        });
+                        // Skip stock modification for custom items
+                        if (!item.id.startsWith('custom-')) {
+                            const productRef = doc(db, 'products', item.id);
+                            await updateDoc(productRef, {
+                                stock: increment(-item.qty)
+                            });
+                        }
 
                         // Log Movement
                         try {
@@ -1456,9 +1542,11 @@
 
                 // Update local products (both online and offline)
                 cart.forEach(item => {
-                    const product = allProducts.find(p => p.id === item.id);
-                    if (product) {
-                        product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                    if (!item.id.startsWith('custom-')) {
+                        const product = allProducts.find(p => p.id === item.id);
+                        if (product) {
+                            product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                        }
                     }
                 });
 
@@ -1518,9 +1606,11 @@
 
                         // Update local products
                         cart.forEach(item => {
-                            const product = allProducts.find(p => p.id === item.id);
-                            if (product) {
-                                product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                            if (!item.id.startsWith('custom-')) {
+                                const product = allProducts.find(p => p.id === item.id);
+                                if (product) {
+                                    product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                                }
                             }
                         });
 

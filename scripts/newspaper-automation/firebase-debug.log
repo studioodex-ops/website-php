@@ -1,0 +1,16 @@
+[debug] [2026-03-07T02:17:40.107Z] ----------------------------------------------------------------------
+[debug] [2026-03-07T02:17:40.109Z] Command:       D:\Program Files\nodejs\node.exe C:\Users\tmayu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login --reauth
+[debug] [2026-03-07T02:17:40.109Z] CLI Version:   15.5.1
+[debug] [2026-03-07T02:17:40.110Z] Platform:      win32
+[debug] [2026-03-07T02:17:40.110Z] Node Version:  v24.12.0
+[debug] [2026-03-07T02:17:40.110Z] Time:          Sat Mar 07 2026 10:17:40 GMT+0800 (Singapore Standard Time)
+[debug] [2026-03-07T02:17:40.110Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-07T02:17:40.112Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=488467038&redirect_uri=http%3A%2F%2Flocalhost%3A9005&login_hint=tmayuranga1928%40gmail.com
+[info] 
+[info] Waiting for authentication...
+[debug] [2026-03-07T02:17:40.884Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-03-07T02:17:40.884Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}

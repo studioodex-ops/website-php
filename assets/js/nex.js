@@ -212,10 +212,11 @@ Answer:`;
 
     // 6c. Robust Fetch Loop
     const modelsToTry = [
+        { name: 'gemini-2.0-flash', version: 'v1beta' },
         { name: 'gemini-1.5-flash', version: 'v1beta' },
+        { name: 'gemini-1.5-flash-latest', version: 'v1beta' },
         { name: 'gemini-1.5-pro', version: 'v1beta' },
-        { name: 'gemini-pro', version: 'v1' },        // Stable legacy
-        { name: 'gemini-1.0-pro', version: 'v1beta' }
+        { name: 'gemini-pro', version: 'v1beta' }
     ];
 
     let lastError = null;

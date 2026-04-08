@@ -1,0 +1,1096 @@
+diff --git a/index.html b/index.html
+index 7ad08f5..5d44f28 100644
+--- a/index.html
++++ b/index.html
+@@ -170,16 +170,13 @@
+     <script src="https://cdn.tailwindcss.com"></script>
+     <script>
+         tailwind.config = {
+-            darkMode: ['class', '[data-theme="dark"]'],
+             theme: {
+                 extend: {
+                     colors: {
+-                        black: '#0c0c0c',
+-                        gray: {
+-                            50: '#fcfcfc',
+-                            100: '#f4f4f5',
+-                            900: '#18181b',
+-                        }
++                        primary: '#4a5d23', // Keells Forest Green
++                        secondary: '#5a7a2d', // Keells Light Green
++                        accent: '#ff9800',
++                        body: '#ffffff',
+                     },
+                     fontFamily: {
+                         sans: ['Inter', 'sans-serif'],
+@@ -191,546 +188,215 @@
+     </script>
+ 
+     <!-- Project CSS -->
+-    <link rel="stylesheet" href="assets/css/style.css?v=2">
+-
+-    <!-- Three.js -->
+-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+-    <script src="assets/js/background-3d.js"></script>
++    <link rel="stylesheet" href="assets/css/style.css?v=3">
+     <script src="assets/js/theme-switch.js"></script>
+ </head>
+ 
+ <body class="antialiased selection:bg-black selection:text-white page-transition">
+-    <!-- Dynamic Header -->
+-    <div id="header-container" bis_skin_checked="1">
+-        <nav class="glass-nav sticky top-0 z-[100] transition-shadow duration-300" id="navbar">
+-            <div class="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between" bis_skin_checked="1">
+-                <a href="index.html"
+-                    class="text-2xl font-bold font-heading tracking-tighter flex items-center gap-2 group">
+-                    <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300"
+-                        bis_skin_checked="1">
+-                        <span class="text-white text-lg">B</span>
+-                    </div>
+-                    <span>Buddika Stores</span>
+-                </a>
++    <div id="header-container"></div>
+ 
+-                <!-- Desktop Menu -->
+-                <div class="hidden md:flex space-x-8" bis_skin_checked="1">
+-                    <a href="index.html"
+-                        class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Home</a>
+-                    <a href="products.html"
+-                        class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Shop</a>
+-                    <a href="about.html"
+-                        class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">About</a>
+-                    <a href="contact.html"
+-                        class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black transition-colors relative">Contact</a>
+-                </div>
+-
+-                <!-- Icons -->
+-                <div class="flex items-center space-x-4">
+-                    <!-- Search Bar -->
+-                    <div class="relative hidden lg:block group mr-2">
+-                        <input type="text" onkeypress="handleSearch(event)" placeholder="Search items..."
+-                            class="bg-gray-50 border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-black/5 w-48 transition-all group-hover:w-64">
+-                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+-                        </svg>
+-                    </div>
+-
+-                    <!-- Theme Toggle -->
+-                    <button id="theme-toggle" class="icon-glass-btn group" aria-label="Toggle Theme">
+-                        <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" fill="none"
+-                            stroke="currentColor" viewBox="0 0 24 24">
+-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+-                            </path>
+-                        </svg>
+-                    </button>
+-
+-                    <!-- Cart -->
+-                    <button onclick="openCart()" class="relative group">
+-                        <div class="icon-glass-btn group-hover:bg-primary group-hover:text-white transition-colors">
+-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+-                            </svg>
+-                        </div>
+-                        <span id="cart-count"
+-                            class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border-2 border-white dark:border-black">0</span>
+-                    </button>
+-
+-                    <!-- Auth Section (Dynamic) -->
+-                    <div id="auth-section" class="relative">
+-                        <div class="relative group cursor-pointer">
+-                            <div onclick="toggleProfileDropdown()" class="flex items-center gap-2">
+-                                <img id="user-avatar" src="" alt="User"
+-                                    class="w-10 h-10 rounded-full border-2 border-gray-100 hidden">
+-                                <div id="user-avatar-placeholder" class="icon-glass-btn">
+-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+-                                        </path>
+-                                    </svg>
+-                                </div>
+-                            </div>
+-
+-                            <!-- Dropdown -->
+-                            <div id="profile-dropdown"
+-                                class="absolute right-0 top-full mt-2 w-48 bg-white shadow-xl rounded-xl py-2 hidden group-hover:block border border-gray-100 animate-fade-in-up">
+-                                <div class="px-4 py-2 border-b border-gray-50">
+-                                    <p id="user-display-name" class="text-xs font-bold text-gray-900 truncate">Guest</p>
+-                                    <p id="user-email" class="text-[10px] text-gray-500 truncate">Not signed in</p>
+-                                </div>
+-                                <a href="login.html" id="login-link"
+-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Sign In</a>
+-                                <a href="profile.html" id="profile-link"
+-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hidden">My
+-                                    Profile</a>
+-                                <a href="profile.html#orders" id="orders-link"
+-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hidden">My Orders</a>
+-                                <button onclick="handleLogout()" id="logout-btn"
+-                                    class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 font-bold border-t border-gray-50 hidden">Log
+-                                    Out</button>
+-                            </div>
+-                        </div>
+-                    </div>
+-
+-                    <!-- Mobile Menu Button -->
+-                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                d="M4 6h16M4 12h16m-7 6h7"></path>
+-                        </svg>
+-                    </button>
+-                </div>
+-            </div>
+-
+-            <!-- Mobile Menu -->
+-            <div id="mobile-menu"
+-                class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-20 shadow-xl"
+-                bis_skin_checked="1">
+-                <a href="index.html"
+-                    class="block py-4 px-6 text-sm font-bold text-black border-b border-gray-50 hover:bg-gray-50">HOME</a>
+-                <a href="products.html"
+-                    class="block py-4 px-6 text-sm font-bold text-black border-b border-gray-50 hover:bg-gray-50">PRODUCTS</a>
+-                <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-black hover:bg-gray-50">CONTACT</a>
+-            </div>
+-        </nav>
+-
+-        <!-- Mobile Bottom Nav -->
+-        <div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 flex justify-around items-center shadow-[0_-5px_15px_rgba(0,0,0,0.05)]"
+-            bis_skin_checked="1">
+-            <a href="index.html"
+-                class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+-                    </path>
+-                </svg>
+-                <span class="text-[10px] font-bold uppercase tracking-wide">Home</span>
+-            </a>
+-            <a href="products.html"
+-                class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+-                </svg>
+-                <span class="text-[10px] font-bold uppercase tracking-wide">Shop</span>
+-            </a>
+-            <button onclick="openCart()"
+-                class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full relative">
+-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+-                    </path>
+-                </svg>
+-                <span class="text-[10px] font-bold uppercase tracking-wide">Cart</span>
+-                <span id="mobile-cart-count"
+-                    class="absolute top-2 right-6 bg-red-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+-            </button>
+-            <a href="profile.html"
+-                class="flex flex-col items-center justify-center text-gray-500 hover:text-black w-full h-full">
+-                <div class="w-6 h-6 rounded-full overflow-hidden mb-1 border border-gray-300">
+-                    <img id="mobile-user-avatar" src="" alt="User" class="w-full h-full object-cover hidden">
+-                    <svg id="mobile-user-placeholder" class="w-full h-full p-0.5 text-gray-400" fill="none"
+-                        stroke="currentColor" viewBox="0 0 24 24">
+-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+-                    </svg>
+-                </div>
+-                <span class="text-[10px] font-bold uppercase tracking-wide">Me</span>
+-            </a>
+-        </div>
+-    </div>
+     <!-- Main Content -->
+-    <main class="relative z-10 pt-20">
+-        <!-- Hero Section - CAPTIVATING DESIGN -->
+-        <section class="min-h-screen flex items-center relative overflow-hidden bg-body transition-colors duration-500">
+-
+-            <!-- Three.js 3D Canvas - Fixed Visibility -->
+-            <div id="canvas-container" class="absolute inset-0 z-0 pointer-events-none" bis_skin_checked="1"></div>
+-
+-            <!-- Animated Particle Background (Behind Canvas) -->
+-            <div class="absolute inset-0 z-0 opacity-50" bis_skin_checked="1">
+-                <!-- Large Animated Orbs -->
+-                <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-purple-500/30 to-pink-500/20 rounded-full blur-3xl float-animation"
+-                    bis_skin_checked="1">
+-                </div>
+-                <div class="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-blue-500/30 to-cyan-500/20 rounded-full blur-3xl float-animation-delayed"
+-                    bis_skin_checked="1">
+-                </div>
+-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-violet-500/20 to-fuchsia-500/10 rounded-full blur-3xl"
+-                    style="animation: blobMove 12s ease-in-out infinite;" bis_skin_checked="1"></div>
+-
+-                <!-- Grid Pattern Overlay -->
+-                <div class="absolute inset-0 opacity-10"
+-                    style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px;"
+-                    bis_skin_checked="1">
+-                </div>
+-            </div>
+-
+-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10" bis_skin_checked="1">
+-                <div class="max-w-4xl mx-auto text-center" bis_skin_checked="1">
+-
+-                    <!-- Floating Live Badge (Verified Style) -->
+-                    <div class="inline-flex items-center gap-2 glass-panel px-5 py-2 mb-8 rounded-full animate-wiggle"
+-                        bis_skin_checked="1">
+-                        <svg class="w-5 h-5 text-blue-500 animate-tick" fill="currentColor" viewBox="0 0 20 20">
+-                            <path fill-rule="evenodd"
+-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+-                                clip-rule="evenodd"></path>
+-                        </svg>
+-                        <span class="text-gray-600 dark:text-gray-300 text-sm font-medium tracking-wide">Verified Local
+-                            Business • Est. 1985</span>
+-                    </div>
+-
+-                    <!-- Main Headline -->
+-                    <h1
+-                        class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[0.95] font-heading">
+-                        <span class="text-gray-900 dark:text-white block mb-2">Your One-Stop</span>
+-                        <span class="apple-gradient-text text-6xl md:text-8xl lg:text-9xl">Neighborhood
+-                            Store</span>
+-                    </h1>
+-
+-                    <!-- Subtitle -->
+-                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto"
+-                        style="animation-delay: 0.3s;">
+-                        Groceries, Stationery, Newspapers &amp; More — All under one roof.
+-                        Experience the convenience of quality shopping in Walapane.
+-                    </p>
+-
+-                    <!-- CTA Buttons (Pill Shapes) -->
+-                    <div
+-                        class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-200">
+-                        <a href="products.html"
+-                            class="btn-glass-glow bg-blue-600 text-white px-8 py-4 font-bold text-lg flex items-center gap-2 group">
+-                            <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none"
+-                                stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+-                            </svg>
+-                            START SHOPPING
+-                        </a>
+-                        <a href="https://wa.me/94775192756"
+-                            class="btn-glass-glow bg-green-500 text-white px-8 py-4 font-bold text-lg flex items-center gap-2 group">
+-                            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor"
+-                                viewBox="0 0 24 24">
+-                                <path
+-                                    d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+-                            </svg>
+-                            WHATSAPP ORDER
+-                        </a>
++    <main class="relative z-10">
++        <!-- Keells-Style Promo Banners Slider -->
++        <section class="py-8 bg-white overflow-hidden" id="promos-slider">
++            <div class="container mx-auto px-4 max-w-[1400px]">
++                <div class="flex gap-4 overflow-x-auto pb-6 snap-x hide-scrollbar">
++                    <!-- Banner 1 (Orange) -->
++                    <div class="relative min-w-[280px] md:min-w-[340px] h-[400px] rounded-[20px] bg-[#eb6121] snap-center overflow-hidden flex-shrink-0 group cursor-pointer p-6 flex flex-col">
++                        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 10% 20%, #fff 2px, transparent 2px); background-size: 30px 30px;"></div>
++                        <h2 class="text-white text-[28px] font-bold font-heading leading-tight relative mt-2 text-center w-full">Save more every day</h2>
++                        <img src="https://images.unsplash.com/photo-1604719312566-8fa206ba8a47?auto=format&fit=crop&q=80&w=400&h=400" alt="Groceries bag" class="absolute bottom-16 right-0 left-0 mx-auto w-[65%] object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl drop-shadow-xl border-2 border-white/20">
++                        <div class="absolute bottom-6 right-6">
++                            <span class="bg-[#128637] text-white text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1 group-hover:bg-white group-hover:text-[#128637] transition-colors">Shop Now ❯</span>
++                        </div>
+                     </div>
+-
+-                    <!-- Daily Essentials Retention Widget - DYNAMIC -->
+-                    <div class="mt-12 flex justify-center perspective-1000" bis_skin_checked="1">
+-                        <div class="glass-panel p-4 flex items-center gap-4 max-w-sm cursor-pointer hover:scale-105 transition-transform duration-300 md:w-96 w-full mx-4"
+-                            id="morning-update-widget"
+-                            onclick="window.location.href='products.html?category=Newspapers'">
+-                            <div
+-                                class="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl shadow-inner dashed-border-anim">
+-                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+-                                    viewBox="0 0 24 24">
+-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+-                                    </path>
+-                                </svg>
+-                            </div>
+-                            <div class="text-left flex-1">
+-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white" id="morning-update-title">
+-                                    Morning Update</h3>
+-                                <p class="text-xs text-gray-500 dark:text-gray-400" id="morning-update-message">Latest
+-                                    Sinhala news updates are here.</p>
+-                            </div>
+-                            <div>
+-                                <span id="morning-update-badge"
+-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+-                                    AVAILABLE
+-                                </span>
++                    
++                    <!-- Banner 2 (Light Green) -->
++                    <div class="relative min-w-[300px] md:min-w-[380px] h-[400px] rounded-[20px] bg-[#6bc356] snap-center overflow-hidden flex-shrink-0 group cursor-pointer p-6 flex flex-col">
++                        <div class="flex justify-between items-start">
++                            <h2 class="text-white text-[28px] font-bold font-heading leading-tight relative mt-2">More Deals, <br><span class="text-[20px] font-medium opacity-90">more Savings</span></h2>
++                            <div class="text-white font-bold text-center rotate-[-10deg] mt-2 mr-4 border-2 border-white rounded-full w-16 h-16 flex flex-col justify-center items-center">
++                                <span class="text-[10px] leading-none">Up to</span>
++                                <span class="text-xl leading-none">30%</span><span class="text-[10px] leading-none">off</span>
+                             </div>
+                         </div>
++                        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400&h=400" alt="Basket" class="absolute bottom-14 right-[-20%] md:right-0 left-0 md:left-auto w-[90%] md:w-[70%] object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl drop-shadow-xl">
++                        <div class="absolute bottom-6 right-6">
++                            <span class="bg-white text-[#128637] text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1 group-hover:bg-[#128637] group-hover:text-white transition-colors">Shop Now ❯</span>
++                        </div>
+                     </div>
+ 
+-                    <!-- Stats Bar -->
+-                    <div class="mt-8 flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500 dark:text-gray-400"
+-                        style="animation-delay: 0.7s;" bis_skin_checked="1">
+-                        <div class="text-center" bis_skin_checked="1">
+-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
+-                                bis_skin_checked="1">1000+</div>
+-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Happy Customers</div>
+-                        </div>
+-                        <div class="text-center" bis_skin_checked="1">
+-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
+-                                bis_skin_checked="1">5000+</div>
+-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Products</div>
+-                        </div>
+-                        <div class="text-center" bis_skin_checked="1">
+-                            <div class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white"
+-                                bis_skin_checked="1">40+</div>
+-                            <div class="text-xs uppercase tracking-wider" bis_skin_checked="1">Years</div>
++                    <!-- Banner 3 (Middle Wide Green) -->
++                    <div class="relative min-w-[320px] md:min-w-[480px] h-[400px] rounded-[20px] bg-[#62b947] snap-center overflow-hidden flex-shrink-0 group cursor-pointer p-8 flex flex-col">
++                        <h2 class="text-white text-5xl md:text-6xl font-bold font-heading leading-tight relative text-right mr-4 mt-4 drop-shadow-md">Avurudu <br>Specials</h2>
++                        <img src="https://images.unsplash.com/photo-1596646879857-effb3310f845?auto=format&fit=crop&q=80&w=800&h=400" alt="Avurudu Sweets" class="absolute bottom-4 left-4 w-[60%] md:w-[50%] object-cover object-bottom group-hover:scale-105 transition-transform duration-500 rounded-xl shadow-lg border border-white/20">
++                        <div class="absolute bottom-6 right-6 lg:right-10">
++                            <span class="bg-white text-[#128637] text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1 group-hover:bg-[#128637] group-hover:text-white transition-colors">Shop Now ❯</span>
+                         </div>
+                     </div>
+-                </div>
+-            </div>
+ 
+-            <!-- Animated Scroll Indicator -->
+-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2" bis_skin_checked="1">
+-                <div class="flex flex-col items-center gap-2 text-white/60 cursor-pointer hover:text-white/90 transition-colors"
+-                    bis_skin_checked="1">
+-                    <span class="text-xs uppercase tracking-widest">Explore</span>
+-                    <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-2"
+-                        bis_skin_checked="1">
+-                        <div class="w-1.5 h-1.5 bg-white rounded-full arrow-bounce" bis_skin_checked="1"></div>
++                    <!-- Banner 4 (Teal) -->
++                    <div class="relative min-w-[280px] md:min-w-[340px] h-[400px] rounded-[20px] bg-[#68c1ae] snap-center overflow-hidden flex-shrink-0 group cursor-pointer p-6 flex flex-col">
++                         <h2 class="text-white text-[28px] font-bold font-heading leading-tight relative mt-2">All your household<br><span class="text-[20px] font-normal opacity-90">needs in one place</span></h2>
++                        <img src="https://images.unsplash.com/photo-1583947215259-38e31be8751f?auto=format&fit=crop&q=80&w=400&h=400" alt="Supplies" class="absolute bottom-16 right-0 left-0 mx-auto w-[75%] object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl drop-shadow-xl border border-white/20">
++                        <div class="absolute bottom-6 left-1/2 -translate-x-1/2">
++                           <span class="bg-[#128637] text-white text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1 group-hover:bg-white group-hover:text-[#128637] transition-colors">Shop Now ❯</span>
++                        </div>
+                     </div>
+                 </div>
+             </div>
++            <style>
++                .hide-scrollbar::-webkit-scrollbar { display: none; }
++                .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
++            </style>
+         </section>
+-        <!-- Categories Section - Adaptive -->
+-        <section class="py-24 bg-body relative overflow-hidden transition-colors duration-500">
+-            <!-- Background decorative elements -->
+-            <div class="absolute top-20 right-0 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
+-                bis_skin_checked="1">
+-            </div>
+-            <div class="absolute bottom-20 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl"
+-                bis_skin_checked="1">
+-            </div>
+ 
+-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+-                <div class="text-center max-w-2xl mx-auto mb-16" bis_skin_checked="1">
+-                    <span
+-                        class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl border border-white/20 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-6">
+-                        ✨ What We Offer
+-                    </span>
+-                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-primary">Our
+-                        Services</h2>
+-                    <p class="text-secondary text-lg">Premium products tailored for your daily needs with exceptional
+-                        quality.</p>
+-                </div>
++        <!-- Shop By Category (Keells Icon Grid) -->
++        <section class="pb-16 bg-white">
++            <div class="container mx-auto px-4 max-w-6xl">
++                <h2 class="text-center text-xl md:text-2xl font-bold text-[#2a2a2a] mb-8">Shop By Category</h2>
+ 
+-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" bis_skin_checked="1">
+-                    <!-- Service 1 - Newspapers -->
+-                    <a href="products.html?category=news"
+-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
+-                        <div class="apple-icon-container mb-6 text-orange-400" bis_skin_checked="1">
+-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+-                                </path>
+-                            </svg>
+-                        </div>
+-                        <h3
+-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-orange-300 transition-colors">
+-                            Newspapers</h3>
+-                        <p class="text-sm text-secondary leading-relaxed">Daily and weekly newspapers from Wijeya,
+-                            Lakehouse, and Upali publishers.</p>
+-                        <div class="mt-6 flex items-center gap-2 text-orange-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+-                            bis_skin_checked="1">
+-                            <span>Browse</span>
+-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+-                            </svg>
+-                        </div>
++                <div class="grid grid-cols-3 md:grid-cols-6 border-t border-l border-gray-100">
++                    <!-- Category Icon 1 -->
++                    <a href="products.html?category=grocery" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                        <img src="https://cdn-icons-png.flaticon.com/512/3724/3724720.png" alt="Grocery" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Desserts</p>
+                     </a>
+-
+-                    <!-- Service 2 - Grocery -->
+-                    <a href="products.html?category=grocery"
+-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
+-                        <div class="apple-icon-container mb-6 text-cyan-400" bis_skin_checked="1">
+-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+-                                </path>
+-                            </svg>
+-                        </div>
+-                        <h3
+-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-cyan-300 transition-colors">
+-                            Grocery</h3>
+-                        <p class="text-sm text-secondary leading-relaxed">Fresh items, household essentials, packed
+-                            foods
+-                            and beverages.</p>
+-                        <div class="mt-6 flex items-center gap-2 text-cyan-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+-                            bis_skin_checked="1">
+-                            <span>Browse</span>
+-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+-                            </svg>
+-                        </div>
++                    <!-- Category Icon 2 -->
++                    <a href="products.html?category=stationery" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Stationery" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Biscuits</p>
+                     </a>
+-
+-                    <!-- Service 3 - Stationery -->
+-                    <a href="products.html?category=stationery"
+-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
+-                        <div class="apple-icon-container mb-6 text-purple-400" bis_skin_checked="1">
+-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+-                                </path>
+-                            </svg>
+-                        </div>
+-                        <h3
+-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-purple-300 transition-colors">
+-                            Stationery</h3>
+-                        <p class="text-sm text-secondary leading-relaxed">School and office stationery - books, pens,
+-                            and
+-                            drawing instruments.</p>
+-                        <div class="mt-6 flex items-center gap-2 text-purple-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+-                            bis_skin_checked="1">
+-                            <span>Browse</span>
+-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+-                            </svg>
+-                        </div>
++                    <!-- Category Icon 3 -->
++                    <a href="products.html?category=newspapers" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                         <img src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" alt="Coffee" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Coffee</p>
+                     </a>
+-
+-                    <!-- Service 4 - Retail -->
+-                    <a href="products.html?category=all"
+-                        class="group cursor-pointer block glass-card p-8 hover:transform hover:-translate-y-2">
+-                        <div class="apple-icon-container mb-6 text-green-400" bis_skin_checked="1">
+-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+-                            </svg>
+-                        </div>
+-                        <h3
+-                            class="text-xl font-bold mb-3 font-heading text-primary group-hover:text-green-300 transition-colors">
+-                            Retail Items</h3>
+-                        <p class="text-sm text-secondary leading-relaxed">General retail goods for everyday convenience
+-                            at fair prices.</p>
+-                        <div class="mt-6 flex items-center gap-2 text-green-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+-                            bis_skin_checked="1">
+-                            <span>Browse</span>
+-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+-                            </svg>
+-                        </div>
++                    <!-- Category Icon 4 -->
++                    <a href="products.html?category=household" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                         <img src="https://cdn-icons-png.flaticon.com/512/2553/2553642.png" alt="Household" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Eggs</p>
++                    </a>
++                    <!-- Category Icon 5 -->
++                    <a href="products.html?category=beverages" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                         <img src="https://cdn-icons-png.flaticon.com/512/3050/3050130.png" alt="Bakery" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Bakery</p>
++                    </a>
++                    <!-- Category Icon 6 -->
++                    <a href="products.html?category=snacks" class="group flex flex-col items-center justify-start pt-6 pb-4 px-2 border-b border-r border-gray-100 hover:bg-gray-50 transition-colors h-[140px]">
++                        <img src="https://cdn-icons-png.flaticon.com/512/2515/2515150.png" alt="Refreshments" class="w-14 md:w-16 h-auto mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
++                        <p class="text-[13px] font-medium text-gray-700 text-center leading-tight">Refreshments</p>
+                     </a>
+                 </div>
+             </div>
+         </section>
+ 
+-        <!-- Special Offers Section - Adaptive -->
+-        <section class="py-24 bg-body text-primary overflow-hidden relative transition-colors duration-500"
+-            id="promotions">
+-            <!-- Background Elements -->
+-            <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-3xl -mr-20 -mt-20"
+-                bis_skin_checked="1">
+-            </div>
+-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl -ml-20 -mb-20"
+-                bis_skin_checked="1">
++        <!-- Fresh from Farm (Keells Colored Cards) -->
++        <section class="py-12 bg-white">
++            <div class="container mx-auto px-4 max-w-6xl">
++                <h2 class="text-center text-xl md:text-2xl font-bold text-[#2a2a2a] mb-8">Fresh from Farm</h2>
++                <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
++                    <!-- Veggies -->
++                    <a href="products.html?category=vegetables" class="block relative h-[200px] bg-[#689f5c] rounded-[16px] overflow-hidden group hover:shadow-lg transition-all pt-6">
++                        <h3 class="text-white text-center font-bold text-[18px] z-10 relative">Vegetables</h3>
++                        <img src="https://images.unsplash.com/photo-1566842600175-97dca489844f?auto=format&fit=crop&q=80&w=300&h=300" class="absolute bottom-0 left-0 right-0 mx-auto w-[80%] object-cover group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" alt="Vegetables" style="mix-blend-mode: multiply;">
++                    </a>
++                    <!-- Poultry -->
++                    <a href="products.html?category=poultry" class="block relative h-[200px] bg-[#51509a] rounded-[16px] overflow-hidden group hover:shadow-lg transition-all pt-6">
++                        <h3 class="text-white text-center font-bold text-[18px] z-10 relative">Poultry</h3>
++                        <img src="https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&q=80&w=300&h=300" class="absolute bottom-[-10px] left-0 right-0 mx-auto w-[90%] object-cover group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" alt="Poultry" style="mix-blend-mode: hard-light;">
++                    </a>
++                    <!-- Seafood -->
++                    <a href="products.html?category=seafood" class="block relative h-[200px] bg-[#5e9e9f] rounded-[16px] overflow-hidden group hover:shadow-lg transition-all pt-6">
++                        <h3 class="text-white text-center font-bold text-[18px] z-10 relative">Seafood</h3>
++                        <img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&q=80&w=300&h=300" class="absolute bottom-[-10px] left-0 right-0 mx-auto w-[90%] object-cover group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" alt="Seafood">
++                    </a>
++                    <!-- Red Meat -->
++                    <a href="products.html?category=meat" class="block relative h-[200px] bg-[#8c7473] rounded-[16px] overflow-hidden group hover:shadow-lg transition-all pt-6">
++                        <h3 class="text-white text-center font-bold text-[18px] z-10 relative">Red Meat</h3>
++                        <img src="https://images.unsplash.com/photo-1603048297172-c92544798d5e?auto=format&fit=crop&q=80&w=300&h=300" class="absolute bottom-[-10px] left-0 right-0 mx-auto w-[90%] object-cover group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" alt="Red Meat">
++                    </a>
++                    <!-- Fruits -->
++                    <a href="products.html?category=fruits" class="block relative h-[200px] bg-[#efbb42] rounded-[16px] overflow-hidden group hover:shadow-lg transition-all pt-6">
++                        <h3 class="text-white text-center font-bold text-[18px] z-10 relative">Fruits</h3>
++                        <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=300&h=300" class="absolute bottom-[-10px] left-0 right-0 mx-auto w-[90%] object-cover group-hover:scale-110 transition-transform duration-500 drop-shadow-lg" alt="Fruits">
++                    </a>
++                </div>
+             </div>
++        </section>
+ 
+-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+-                <div class="flex flex-col md:flex-row justify-between items-end mb-16" bis_skin_checked="1">
+-                    <div bis_skin_checked="1">
+-                        <span
+-                            class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl border border-white/20 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-4">
+-                            🔥 Limited Time
+-                        </span>
+-                        <h2 class="text-3xl md:text-5xl font-bold font-heading">Exclusive Deals</h2>
++        <!-- Special Offers Section - Fresh Retail -->
++        <section class="py-16 bg-orange-50" id="promotions">
++            <div class="container mx-auto px-4">
++                <div class="flex justify-between items-end mb-10">
++                    <div>
++                        <h2 class="text-3xl font-bold font-heading text-orange-700 flex items-center gap-2">
++                            <span class="text-4xl block translate-y-[-2px]">🔥</span> අවුරුදු Specials
++                        </h2>
++                        <p class="text-gray-600 text-sm mt-1 font-medium">Exclusive new year discounts for our community</p>
+                     </div>
+-                    <a href="products.html"
+-                        class="hidden md:inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-secondary hover:text-primary transition-colors">
+-                        View All Offers
+-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+-                        </svg>
+-                    </a>
++                    <a href="products.html" class="text-primary font-bold text-sm hover:underline">View All Offers</a>
+                 </div>
+ 
+-                <div id="promotions-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8" bis_skin_checked="1">
+-                    <!-- Dynamic Promotions will load here -->
++                <div id="promotions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
++                    <!-- Promotion Card -->
++                    <div class="retail-card overflow-hidden group">
++                        <div class="relative h-56 overflow-hidden">
++                            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800" alt="Special Offer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
++                            <div class="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">SAVE 20%</div>
++                        </div>
++                        <div class="p-6">
++                            <h3 class="text-xl font-bold text-gray-800 mb-2">Fresh Dairy Pack</h3>
++                            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Top quality dairy products at an exclusive price for our local neighbors.</p>
++                            <div class="flex justify-between items-center">
++                                <span class="text-primary font-bold text-sm">Nexus Member Offer</span>
++                                <a href="products.html" class="bg-primary text-white p-2 rounded-full hover:bg-secondary transition-colors">
++                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
++                                    </svg>
++                                </a>
++                            </div>
++                        </div>
++                    </div>
++                    <!-- Add more as needed or let JS load them -->
+                 </div>
+             </div>
+         </section>
+-        <!-- Book List Package Offer Banner - Adaptive -->
+-        <section class="py-16 bg-body relative overflow-hidden transition-colors duration-500" id="book-list-offer">
+-            <!-- Background Elements -->
+-            <div class="absolute top-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl -mr-20 -mt-20 animate-pulse"
+-                bis_skin_checked="1">
+-            </div>
+-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -ml-20 -mb-20"
+-                bis_skin_checked="1"></div>
+-
+-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+-                <div class="fomo-timer" bis_skin_checked="1">
+-                    <div class="fomo-expired" bis_skin_checked="1">⚠️ This offer has ended!</div>
+-                </div>
+-                <div class="glass-card shadow-2xl overflow-hidden hover:shadow-purple-500/20 transition-all duration-300"
+-                    bis_skin_checked="1">
+-                    <div class="grid md:grid-cols-2 gap-0" bis_skin_checked="1">
++        <section class="py-16 bg-gray-50" id="book-list-offer">
++            <div class="container mx-auto px-4">
++                <div class="bg-white rounded-[2rem] shadow-xl overflow-hidden border border-secondary/20">
++                    <div class="grid md:grid-cols-2">
+                         <!-- Left: Content -->
+-                        <div class="p-8 md:p-12 flex flex-col justify-center" bis_skin_checked="1">
+-                            <span
+-                                class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full text-xs font-bold w-fit mb-4">
+-                                🎒 Back to School
+-                            </span>
+-                            <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4 leading-tight font-heading">
++                        <div class="p-10 md:p-14 flex flex-col justify-center">
++                            <span class="inline-block bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-xs font-bold w-fit mb-6">🎒 BACK TO SCHOOL</span>
++                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight font-heading">
+                                 "පොත් ලිස්ට්" පැකේජය
+                             </h2>
+-                            <p class="text-secondary mb-6 leading-relaxed">
++                            <p class="text-gray-600 mb-8 leading-relaxed text-lg">
+                                 ඔයාගේ පොත් ලිස්ට් එක අපිට WhatsApp කරන්න, <br>
+                                 අපි ඔක්කොම ලෑස්ති කරලා තියන්නම්!
+                             </p>
+-                            <div class="space-y-4 mb-8" bis_skin_checked="1">
+-                                <div class="flex items-center gap-3" bis_skin_checked="1">
+-                                    <span
+-                                        class="bg-green-500/20 text-green-300 border border-green-500/30 px-3 py-1 rounded-full text-sm font-bold">10%
+-                                        OFF</span>
+-                                    <span class="text-white/60 text-sm">සම්පූර්ණ ලිස්ට් එකෙන්</span>
++                            <div class="flex flex-wrap gap-4 mb-10">
++                                <div class="flex items-center gap-3 bg-green-50 px-4 py-2 rounded-xl border border-green-100">
++                                    <span class="text-green-700 font-bold">10% OFF</span>
++                                    <span class="text-gray-500 text-xs">Full List</span>
+                                 </div>
+-                                <div class="flex items-center gap-3" bis_skin_checked="1">
+-                                    <span
+-                                        class="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-bold">OLD
+-                                        PRICE</span>
+-                                    <span class="text-white/60 text-sm">*පරණ මිලටම පොත් ගන්න</span>
++                                <div class="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-xl border border-blue-100">
++                                    <span class="text-blue-700 font-bold">OLD PRICE</span>
++                                    <span class="text-gray-500 text-xs">Limited Stock</span>
+                                 </div>
+                             </div>
+-                            <a href="https://wa.me/94775192756?text=Hi!%20I%20want%20to%20submit%20my%20book%20list%20for%20the%20Back%20to%20School%20offer."
+-                                target="_blank"
+-                                class="btn-apple-success text-center justify-center pointer-events-auto">
+-                                <span class="text-xl mr-2">📱</span> WhatsApp: 077-5192756
++                            <a href="https://wa.me/94775192756" class="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold text-center hover:shadow-lg transition-all flex items-center justify-center gap-3">
++                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.038 3.069l-.594 2.171 2.223-.583c.772.417 1.83.673 3.101.673 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.766-5.768-5.766zM15.48 14.364c-.114.32-.656.634-1.121.73-.399.082-.924.148-2.618-.552-1.637-.674-2.693-2.338-2.775-2.447-.082-.11-.663-.882-.663-1.678 0-.796.417-1.187.564-1.352.148-.166.32-.208.428-.208.11 0 .221.001.317.005.101.004.238-.039.373.284.137.327.471 1.144.512 1.226.041.082.068.178.013.287-.054.11-.082.178-.164.273s-.173.21-.247.284c-.082.082-.169.173-.073.336s.422.697.905 1.127c.621.554 1.144.726 1.307.808.163.082.259.071.355-.039.096-.11.41-.478.52-.642s.221-.137.373-.082c.153.055.97.458 1.137.54s.279.123.32.193c.041.07.041.405-.073.725z"/></svg>
++                                SEND LIST VIA WHATSAPP
+                             </a>
+-                            <p class="text-xs text-white/30 mt-4">*Conditions apply for old prices</p>
+                         </div>
+                         <!-- Right: Visual -->
+-                        <div class="relative bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-8 flex items-center justify-center overflow-hidden"
+-                            bis_skin_checked="1">
+-                            <div class="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-transparent blur-2xl"
+-                                bis_skin_checked="1">
+-                            </div>
+-                            <div class="text-center relative z-10 transform hover:scale-105 transition-transform duration-500"
+-                                bis_skin_checked="1">
+-                                <div class="text-8xl mb-6 relative drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+-                                    bis_skin_checked="1">📚
+-                                </div>
+-                                <p class="text-xl font-bold text-white mb-2">ලිස්ට් එක දෙන්න</p>
+-                                <p class="text-white/50">අපි හොයලා දෙන්නම්!</p>
++                        <div class="bg-primary/5 p-12 flex items-center justify-center">
++                            <div class="text-center">
++                                <span class="text-[10rem] block mb-4 drop-shadow-2xl">📚</span>
++                                <p class="text-2xl font-bold text-primary mb-2">ලිස්ට් එක දෙන්න</p>
++                                <p class="text-gray-400">අපි හොයලා දෙන්නම්!</p>
+                             </div>
+                         </div>
+                     </div>
+@@ -738,27 +404,66 @@
+             </div>
+         </section>
+ 
+-        <!-- Smart Bundles Section - Adaptive -->
+-        <section class="py-24 bg-body relative transition-colors duration-500" id="bundles">
+-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" bis_skin_checked="1">
+-                <div class="fomo-timer" bis_skin_checked="1">
+-                    <div class="fomo-expired" bis_skin_checked="1">⚠️ This offer has ended!</div>
+-                </div>
+-                <div class="text-center max-w-2xl mx-auto mb-16" bis_skin_checked="1">
+-                    <span
+-                        class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
+-                        📦 Save More
+-                    </span>
+-                    <h2 class="text-3xl md:text-5xl font-bold tracking-tighter mb-4 font-heading text-primary">
+-                        Smart Bundles
+-                    </h2>
+-                    <p class="text-secondary text-lg">Buy together, save together! Special discounts on curated product
+-                        bundles.</p>
+-                </div>
++        <!-- Best Sellers (Keells Style) -->
++        <section class="py-16 bg-white border-t border-gray-100" id="bundles">
++            <div class="container mx-auto px-4 max-w-[1400px]">
++                <h2 class="text-center text-xl md:text-2xl font-bold text-[#2a2a2a] mb-12">Best Sellers</h2>
+ 
+-                <div id="bundles-display-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+-                    bis_skin_checked="1">
+-                    <!-- Dynamic Bundles will load here -->
++                <div class="flex gap-4 overflow-x-auto pb-6 snap-x hide-scrollbar">
++                    <!-- Product 1 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1620574387735-3624d75b2dbc?auto=format&fit=crop&q=80&w=200&h=200" alt="Big Onions" class="h-full object-contain">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 220.00 / KG</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">Big Onions</h3>
++                    </div>
++                    <!-- Product 2 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1581456495146-65a71b2c8e52?auto=format&fit=crop&q=80&w=200&h=200" alt="Sugar" class="h-full object-contain" style="filter: brightness(1.1);">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 215.00 / KG</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">White Sugar Bulk Kg</h3>
++                    </div>
++                     <!-- Product 3 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1615485925600-91c6e149f1de?auto=format&fit=crop&q=80&w=200&h=200" alt="Coconut" class="h-full object-contain">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 155.00 / Unit</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">Coconut</h3>
++                    </div>
++                    <!-- Product 4 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&q=80&w=200&h=200" alt="Potatoes" class="h-full object-contain">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 320.00 / KG</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">Potatoes</h3>
++                    </div>
++                    <!-- Product 5 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1596591606975-97ee5cef3a1e?auto=format&fit=crop&q=80&w=200&h=200" alt="Rice" class="h-full object-contain">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 200.00 / KG</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">Rice Red Kekulu Bulk Kg</h3>
++                    </div>
++                     <!-- Product 6 -->
++                    <div class="min-w-[200px] bg-white p-4 snap-center flex flex-col hover:shadow-lg transition-shadow border border-transparent rounded-lg">
++                        <div class="h-40 flex items-center justify-center mb-4">
++                            <img src="https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&q=80&w=200&h=200" alt="Papaya" class="h-full object-contain">
++                        </div>
++                        <button class="border border-gray-300 rounded text-gray-500 text-xs py-1 px-3 w-fit mb-3 hover:bg-gray-50">+ Add</button>
++                        <div class="text-[#128637] text-[11px] font-bold mb-1">Rs 340.00 / KG</div>
++                        <h3 class="text-[#2a2a2a] text-[13px] leading-tight flex-1">Papaya</h3>
++                    </div>
+                 </div>
+             </div>
+         </section>
+@@ -773,18 +478,14 @@
+                 </div>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8" bis_skin_checked="1">
+                     <!-- Review 1 -->
+-                    <div class="bg-card backdrop-blur-xl border border-glass p-8 rounded-3xl hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300"
+-                        bis_skin_checked="1">
+-                        <div class="flex text-amber-400 mb-4 text-sm" bis_skin_checked="1">★★★★★</div>
+-                        <p class="text-secondary mb-6 leading-relaxed italic">"Great service! I buy my newspapers and
+-                            stationeries here every morning. Very friendly staff."</p>
+-                        <div class="flex items-center" bis_skin_checked="1">
+-                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center font-bold text-white shadow-lg"
+-                                bis_skin_checked="1">
+-                                S</div>
+-                            <div class="ml-3" bis_skin_checked="1">
+-                                <h4 class="font-bold text-sm text-primary">Saman Kumara</h4>
+-                                <p class="text-xs text-secondary">Regular Customer</p>
++                    <div class="bg-white border p-8 rounded-3xl hover:shadow-lg transition-all duration-300">
++                        <div class="flex text-orange-400 mb-4 text-sm">★★★★★</div>
++                        <p class="text-gray-600 mb-6 leading-relaxed italic">"Great service! I buy my newspapers and stationeries here every morning. Very friendly staff."</p>
++                        <div class="flex items-center">
++                            <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold">S</div>
++                            <div class="ml-3">
++                                <h4 class="font-bold text-sm text-gray-900">Saman Kumara</h4>
++                                <p class="text-xs text-gray-500">Regular Customer</p>
+                             </div>
+                         </div>
+                     </div>
+@@ -844,75 +545,29 @@
+             </div>
+         </section>
+ 
+-        <!-- Newsletter Section - Adaptive -->
+-        <section class="py-24 bg-body text-primary relative overflow-hidden transition-colors duration-500">
+-            <!-- Decor -->
+-            <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl opacity-50 pointer-events-none"
+-                bis_skin_checked="1">
+-            </div>
+-            <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl opacity-50 pointer-events-none"
+-                bis_skin_checked="1">
+-            </div>
+-
+-            <div class="max-w-4xl mx-auto px-4 relative z-10 text-center" bis_skin_checked="1">
+-                <span
+-                    class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 px-4 py-2 rounded-full text-sm font-medium mb-6">
+-                    📨 Stay Connected
+-                </span>
+-                <h2 class="text-3xl md:text-5xl font-bold font-heading mb-6 tracking-tight">Join Our Newsletter</h2>
+-                <p class="text-secondary mb-10 max-w-lg mx-auto text-lg leading-relaxed">
+-                    Get the latest updates on new products, exclusive deals, and community news delivered straight to
+-                    your inbox.
+-                </p>
+-
+-                <form class="max-w-md mx-auto flex flex-col md:flex-row gap-4">
+-                    <div class="flex-1 relative group" bis_skin_checked="1">
+-                        <div class="absolute -inset-0.5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
+-                            bis_skin_checked="1">
+-                        </div>
+-                        <input type="email" placeholder="Your email address"
+-                            class="relative w-full bg-black border border-white/10 rounded-lg px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all">
+-                    </div>
+-                    <button type="button" class="btn-apple-primary whitespace-nowrap px-8 py-4 !rounded-lg h-[58px]">
+-                        Subscribe
+-                    </button>
+-                </form>
+-                <p class="text-xs text-gray-500 mt-6">No spam. Unsubscribe at any time.</p>
+-            </div>
+-        </section>
+-
+-        <!-- CTA Section - Adaptive -->
+-        <section class="py-24 bg-body border-t border-glass transition-colors duration-500">
+-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" bis_skin_checked="1">
+-                <div class="relative rounded-[2.5rem] p-12 md:p-24 overflow-hidden group" bis_skin_checked="1">
+-                    <!-- Dynamic Background -->
+-                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-900 to-purple-900 opacity-50"
+-                        bis_skin_checked="1"></div>
+-                    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"
+-                        bis_skin_checked="1">
+-                    </div>
+-
+-                    <!-- Decorative Orbs -->
+-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-500/30 blur-3xl animate-pulse"
+-                        bis_skin_checked="1">
+-                    </div>
+-                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 rounded-full bg-purple-500/30 blur-3xl animate-pulse delay-1000"
+-                        bis_skin_checked="1">
++        <!-- Newsletter & CTA (Keells Style) -->
++        <section class="py-20 bg-primary text-white">
++            <div class="container mx-auto px-4">
++                <div class="grid md:grid-cols-2 gap-12 items-center">
++                    <div>
++                        <h2 class="text-4xl font-bold font-heading mb-4">Stay Clean & Connected</h2>
++                        <p class="text-white/80 text-lg mb-8">Join our community newsletter for exclusive weekly offers and updates from Buddika Stores.</p>
++                        <form class="flex gap-2 max-w-md">
++                            <input type="email" placeholder="Your Email Address" class="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-secondary">
++                            <button type="submit" class="bg-secondary text-primary font-bold px-8 py-4 rounded-full hover:bg-white transition-all">JOIN</button>
++                        </form>
+                     </div>
+-
+-                    <div class="relative z-10 text-center max-w-3xl mx-auto" bis_skin_checked="1">
+-                        <h2
+-                            class="text-4xl md:text-6xl font-bold font-heading mb-6 tracking-tight text-white drop-shadow-xl">
+-                            Visit Buddika Stores Today
+-                        </h2>
+-                        <p class="text-white/70 mb-10 text-xl leading-relaxed">
+-                            Experience the best shopping experience in your town. High quality products with excellent
+-                            customer service.
+-                        </p>
+-                        <a href="contact.html"
+-                            class="btn-apple-primary text-lg !px-12 !py-5 shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform transition-all duration-300 btn-directions">
+-                            Get Directions
+-                        </a>
++                    <div class="text-center md:text-right">
++                        <h3 class="text-3xl font-bold font-heading mb-6">Need assistance?</h3>
++                        <div class="flex flex-col md:items-end gap-4">
++                            <a href="contact.html" class="bg-white text-primary px-10 py-5 rounded-full font-bold hover:bg-secondary hover:text-white transition-all inline-flex items-center gap-2 shadow-xl">
++                                GET DIRECTIONS
++                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
++                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A2 2 0 013 15.483V4a2 2 0 012.724-1.847L12 5l6.276-2.847A2 2 0 0121 4v11.483a2 2 0 01-1.553 1.943L14 20l-5 2z"></path>
++                                </svg>
++                            </a>
++                            <p class="text-white/60 text-sm">Located at No 48, Kandy Road, Walapane</p>
++                        </div>
+                     </div>
+                 </div>
+             </div>
+@@ -920,126 +575,38 @@
+     </main>
+     <!-- Dynamic Footer -->
+     <div id="footer-container" bis_skin_checked="1">
+-        <footer class="bg-black text-white pt-20 pb-10 relative overflow-hidden border-t border-white/10">
+-            <!-- Background Elements -->
+-            <div class="absolute top-0 left-1/4 w-96 h-96 bg-purple-900/20 rounded-full blur-3xl opacity-30 pointer-events-none"
+-                bis_skin_checked="1"></div>
+-            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl opacity-30 pointer-events-none"
+-                bis_skin_checked="1"></div>
+-
+-            <div class="container mx-auto px-4 md:px-6 relative z-10" bis_skin_checked="1">
+-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12" bis_skin_checked="1">
+-                    <div class="col-span-1 md:col-span-2" bis_skin_checked="1">
+-                        <div class="flex items-center gap-2 mb-6" bis_skin_checked="1">
+-                            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center transform rotate-12 shadow-lg shadow-purple-500/20"
+-                                bis_skin_checked="1">
+-                                <span class="text-white font-bold text-lg">B</span>
+-                            </div>
+-                            <h3
+-                                class="text-2xl font-bold tracking-tighter font-heading bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+-                                BUDDIKA STORES</h3>
+-                        </div>
+-                        <p class="text-gray-400 text-sm leading-relaxed max-w-sm mb-8">
+-                            Your trusted local partner for retail, grocery, stationery, and daily news. Serving the
+-                            community with quality and dedication.
++        <footer class="bg-gray-900 text-white pt-20 pb-10">
++            <div class="container mx-auto px-4">
++                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
++                    <div class="md:col-span-2">
++                        <h3 class="text-2xl font-bold font-heading mb-6 text-secondary">BUDDIKA STORES</h3>
++                        <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
++                            Your trusted local partner for retail, grocery, stationery, and daily news in Walapane, Sri Lanka. Serving the community since 1985.
+                         </p>
+-                        <div class="flex gap-4" bis_skin_checked="1">
+-                            <a href="#"
+-                                class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-300 group">
+-                                <svg class="w-5 h-5 text-gray-400 group-hover:text-white" fill="currentColor"
+-                                    viewBox="0 0 24 24">
+-                                    <path
+-                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z">
+-                                    </path>
+-                                </svg>
+-                            </a>
+-                            <a href="#"
+-                                class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-300 group">
+-                                <svg class="w-5 h-5 text-gray-400 group-hover:text-white" fill="currentColor"
+-                                    viewBox="0 0 24 24">
+-                                    <path
+-                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069-3.204 0-3.584-.012-4.849-.069-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z">
+-                                    </path>
+-                                </svg>
+-                            </a>
+-                        </div>
+                     </div>
+-                    <div bis_skin_checked="1">
+-                        <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Explore</h4>
++                    <div>
++                        <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Quick Links</h4>
+                         <ul class="space-y-3">
+-                            <li><a href="index.html"
+-                                    class="text-sm text-gray-400 hover:text-white hover:translate-x-1 transition-all inline-block">Home</a>
+-                            </li>
+-                            <li><a href="about.html"
+-                                    class="text-sm text-gray-400 hover:text-white hover:translate-x-1 transition-all inline-block">About
+-                                    Us</a></li>
+-                            <li><a href="products.html"
+-                                    class="text-sm text-gray-400 hover:text-white hover:translate-x-1 transition-all inline-block">Products</a>
+-                            </li>
+-                            <li><a href="contact.html"
+-                                    class="text-sm text-gray-400 hover:text-white hover:translate-x-1 transition-all inline-block">Contact</a>
+-                            </li>
++                            <li><a href="index.html" class="text-sm text-gray-400 hover:text-white transition-all">Home</a></li>
++                            <li><a href="products.html" class="text-sm text-gray-400 hover:text-white transition-all">Shop Online</a></li>
++                            <li><a href="about.html" class="text-sm text-gray-400 hover:text-white transition-all">Our Story</a></li>
++                            <li><a href="contact.html" class="text-sm text-gray-400 hover:text-white transition-all">Contact Us</a></li>
+                         </ul>
+                     </div>
+-                    <div bis_skin_checked="1">
+-                        <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Contact</h4>
+-                        <ul class="space-y-4">
+-                            <li class="flex items-start gap-3">
+-                                <span class="bg-white/10 p-2 rounded-lg text-white">
+-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+-                                        </path>
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+-                                    </svg>
+-                                </span>
+-                                <span class="text-sm text-gray-400 leading-relaxed pt-1">Buddika stores, No 48,<br>Kandy
+-                                    Road, Walapane</span>
+-                            </li>
+-                            <li class="flex items-center gap-3">
+-                                <span class="bg-white/10 p-2 rounded-lg text-white">
+-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+-                                        </path>
+-                                    </svg>
+-                                </span>
+-                                <a href="tel:0522279101"
+-                                    class="text-sm text-gray-400 hover:text-white transition-colors">052-2279101</a>
+-                            </li>
+-                            <li class="flex items-center gap-3">
+-                                <span class="bg-white/10 p-2 rounded-lg text-white">
+-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z">
+-                                        </path>
+-                                    </svg>
+-                                </span>
+-                                <a href="tel:0775192756"
+-                                    class="text-sm text-gray-400 hover:text-white transition-colors">077-5192756</a>
+-                            </li>
+-                            <li class="flex items-center gap-3">
+-                                <span class="bg-white/10 p-2 rounded-lg text-white">
+-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+-                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+-                                        </path>
+-                                    </svg>
+-                                </span>
+-                                <a href="mailto:info@buddikastores.com"
+-                                    class="text-sm text-gray-400 hover:text-white transition-colors">info@buddikastores.com</a>
+-                            </li>
++                    <div>
++                        <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-6">Contact Us</h4>
++                        <ul class="space-y-3 text-sm text-gray-400">
++                            <li>No 48, Kandy Road, Walapane</li>
++                            <li>Hotline: 052-2279101</li>
++                            <li>WhatsApp: 077-5192756</li>
+                         </ul>
+                     </div>
+                 </div>
+-                <div class="border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center"
+-                    bis_skin_checked="1">
+-                    <p class="text-xs text-gray-600">© 2026 Buddika Stores. All rights reserved.</p>
+-                    <div class="flex gap-6 mt-4 md:mt-0" bis_skin_checked="1">
+-                        <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Privacy Policy</a>
+-                        <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Terms of
+-                            Service</a>
++                <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
++                    <p>© 2026 Buddika Stores. All rights reserved.</p>
++                    <div class="flex gap-6 mt-4 md:mt-0">
++                        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
++                        <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                     </div>
+                 </div>
+             </div>
