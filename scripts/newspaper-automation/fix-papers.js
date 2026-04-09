@@ -23,31 +23,29 @@ async function renamePastPapers() {
 
         for (const doc of snapshot.docs) {
             const data = doc.data();
+            let renamed = false;
+            let updateData = {};
 
-            if (data.name && data.name.startsWith('Suhada Past Papers')) {
-                const newName = data.name.replace('Suhada Past Papers', 'Sathara Past Papers');
-                const newNameSi = data.nameSi ? data.nameSi.replace('සුහද පසුගිය ප්‍රශ්න පත්‍ර', 'සතර පසුගිය ප්‍රශ්න පත්‍ර') : data.nameSi;
-
-                await db.collection('products').doc(doc.id).update({
-                    name: newName,
-                    nameSi: newNameSi,
-                    subcategory: 'Sathara Publications'
-                });
-                updateCount++;
-                console.log(`Updated: ${newName}`);
+            if (data.name && data.name.includes('Suhada')) {
+                updateData.name = data.name.replace(/Suhada/g, 'Sathara');
+                renamed = true;
             }
 
-            if (data.name && data.name.includes('Suhada Grade 5 Scholarship Past Papers')) {
-                const newName = 'Sathara Grade 5 Scholarship Past Papers';
-                const newNameSi = 'සතර 5 වසර ශිෂ්‍යත්ව පෙරහුරු ප්‍රශ්න';
+            if (data.nameSi && data.nameSi.includes('සුහද')) {
+                updateData.nameSi = data.nameSi.replace(/සුහද/g, 'සතර');
+                renamed = true;
+            }
 
-                await db.collection('products').doc(doc.id).update({
-                    name: newName,
-                    nameSi: newNameSi,
-                    subcategory: 'Sathara Publications'
-                });
+            if (data.subcategory && data.subcategory.includes('Suhada')) {
+                updateData.subcategory = data.subcategory.replace(/Suhada/g, 'Sathara')
+                                                         .replace(/Books/g, 'Publications');
+                renamed = true;
+            }
+
+            if (renamed) {
+                await db.collection('products').doc(doc.id).update(updateData);
                 updateCount++;
-                console.log(`Updated: ${newName}`);
+                console.log(`Updated: ${updateData.name || data.name}`);
             }
             count++;
         }

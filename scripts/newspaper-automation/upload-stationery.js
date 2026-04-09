@@ -99,8 +99,8 @@ for (let g = 6; g <= 11; g++) {
     addProduct(`Master Guide Grade ${g} - Science (English Medium)`, `මාස්ටර් ගයිඩ් ${g} ශ්‍රේණිය - විද්‍යාව (English Medium)`, "Master Guide", gradeTag);
 }
 
-// 2. Suhada Prakashana - Workbooks & Books
-const suhadaWorkbooks = [
+// 2. Sathara Prakashana - Workbooks & Books
+const satharaWorkbooks = [
     "1 අකුරු හැඩ රූ (A5)",
     "1 අකුරු හුරුව (A5)",
     "1 අකුරු හුරුව I",
@@ -127,9 +127,9 @@ const suhadaWorkbooks = [
     "(HK) Shapes Activities",
     "(HK) Writing and Colouring"
 ];
-suhadaWorkbooks.forEach(w => addProduct(`Suhada - ${w}`, `සුහද - ${w}`, "Suhada Books", "Workbooks"));
+satharaWorkbooks.forEach(w => addProduct(`Sathara - ${w}`, `සතර - ${w}`, "Sathara Books", "Workbooks"));
 
-const suhadaStories = [
+const satharaStories = [
     "ටොම්", "ටිම් ටිම්", "ගාර්ෆීල්ඩ්", "සමනළයා",
     "හා පැංචිව ගංවතුරට අහුවෙලා",
     "තාරකාවේ යාළුවෝ",
@@ -139,20 +139,20 @@ const suhadaStories = [
     "True Friends Story",
     "The Grasshopper and the Ant"
 ];
-suhadaStories.forEach(s => addProduct(`Suhada Story - ${s}`, `සුහද කතා - ${s}`, "Suhada Books", "Story Books"));
+satharaStories.forEach(s => addProduct(`Sathara Story - ${s}`, `සතර කතා - ${s}`, "Sathara Books", "Story Books"));
 
-// Suhada Past Papers Grade 1-5
+// Sathara Past Papers Grade 1-5
 for (let g = 1; g <= 5; g++) {
-    addProduct(`Suhada Grade ${g} Workbook`, `සුහද ${g} වසර වැඩපොත`, "Suhada Books", `Grade ${g}`);
-    addProduct(`Suhada Grade ${g} Mathematics`, `සුහද ${g} වසර ගණිතය`, "Suhada Books", `Grade ${g}`);
-    addProduct(`Suhada Grade ${g} Sinhala`, `සුහද ${g} වසර සිංහල`, "Suhada Books", `Grade ${g}`);
-    addProduct(`Suhada Grade ${g} Environment`, `සුහද ${g} වසර පරිසරය`, "Suhada Books", `Grade ${g}`);
+    addProduct(`Sathara Grade ${g} Workbook`, `සතර ${g} වසර වැඩපොත`, "Sathara Books", `Grade ${g}`);
+    addProduct(`Sathara Grade ${g} Mathematics`, `සතර ${g} වසර ගණිතය`, "Sathara Books", `Grade ${g}`);
+    addProduct(`Sathara Grade ${g} Sinhala`, `සතර ${g} වසර සිංහල`, "Sathara Books", `Grade ${g}`);
+    addProduct(`Sathara Grade ${g} Environment`, `සතර ${g} වසර පරිසරය`, "Sathara Books", `Grade ${g}`);
     if (g === 5) {
-        addProduct(`Suhada Grade 5 Scholarship Past Papers`, `සුහද 5 වසර ශිෂ්‍යත්ව පෙරහුරු ප්‍රශ්න`, "Suhada Books", `Grade 5`);
+        addProduct(`Sathara Grade 5 Scholarship Past Papers`, `සතර 5 වසර ශිෂ්‍යත්ව පෙරහුරු ප්‍රශ්න`, "Sathara Books", `Grade 5`);
     }
 }
 
-// Suhada Past Papers O/L & A/L
+// Sathara Past Papers O/L & A/L
 const oLA_LPapers = [
     "සාමාන්‍ය පෙළ ගණිතය (O/L Maths)",
     "සාමාන්‍ය පෙළ විද්‍යාව (O/L Science)",
@@ -166,7 +166,7 @@ const oLA_LPapers = [
     "උසස් පෙළ කෘෂි විද්‍යාව (A/L Agri)"
 ];
 
-oLA_LPapers.forEach(paper => addProduct(`Suhada Past Papers - ${paper}`, `සුහද පසුගිය ප්‍රශ්න පත්‍ර - ${paper}`, "Suhada Books", "Past Papers"));
+oLA_LPapers.forEach(paper => addProduct(`Sathara Past Papers - ${paper}`, `සතර පසුගිය ප්‍රශ්න පත්‍ර - ${paper}`, "Sathara Books", "Past Papers"));
 
 console.log(`Prepared ${products.length} products. Uploading to Firestore...`);
 
