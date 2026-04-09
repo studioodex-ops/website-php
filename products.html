@@ -415,7 +415,7 @@
 
     <!-- Main Logic -->
     <script type="module">
-        import { db, collection, getDocs, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
+        import { db, collection, getDocs, getDoc, doc, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
         import { escapeHtml, escapeJs } from './assets/js/utils.js';
         import { addToCart } from './assets/js/cart.js'; // Explicit Import
 
@@ -829,9 +829,18 @@
                 }
                 initSearchIndex();
 
-                function renderAutocomplete(results) {
+                function renderAutocomplete(results, val) {
                     if (!results.length) {
-                        autocompleteResults.style.display = 'none';
+                        if (val && val.length >= 1) {
+                            autocompleteResults.innerHTML = `
+                                <div class="p-4 text-center text-secondary text-xs italic">
+                                    No suggestions for "${escapeHtml(val)}"
+                                </div>
+                            `;
+                            autocompleteResults.style.display = 'block';
+                        } else {
+                            autocompleteResults.style.display = 'none';
+                        }
                         return;
                     }
                     
@@ -902,20 +911,20 @@
 
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
-                        if (val.length >= 2) {
+                        if (val.length >= 1) {
                             const matches = searchIndex.filter(p => 
                                 p.name.toLowerCase().includes(val.toLowerCase()) || 
                                 p.category.toLowerCase().includes(val.toLowerCase())
                             );
                             selectedIndex = -1;
-                            renderAutocomplete(matches);
+                            renderAutocomplete(matches, val);
                         } else {
                             autocompleteResults.style.display = 'none';
                         }
                         
                         // Traditional Search Trigger
                         triggerSearch(val);
-                    }, 400); 
+                    }, 300); 
                 });
 
                 // Hide autocomplete when clicking outside
@@ -1046,7 +1055,7 @@
 
                             // Scroll to View
                             setTimeout(() => {
-                                const el = document.getElementById(`product - ${id}`);
+                                const el = document.getElementById(`product-${id}`);
                                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             }, 500);
                         }, 1000); // Wait for initial fetch
