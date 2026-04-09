@@ -49,7 +49,7 @@ async function loadHeader() {
                     <input type="text" 
                         onkeypress="handleSearch(event)"
                         placeholder="Search items..." 
-                        class="bg-gray-100 dark:bg-white/10 border border-transparent dark:border-white/10 rounded-full py-2 px-4 pl-10 text-sm text-primary placeholder-gray-500 focus:ring-2 focus:ring-black/5 dark:focus:ring-white/20 w-48 transition-all group-hover:w-64">
+                        class="bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-full py-2 px-4 pl-10 text-sm text-primary placeholder-gray-500 focus:ring-2 focus:ring-black/5 dark:focus:ring-white/10 w-48 transition-all group-hover:w-64">
                     <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
 
@@ -86,10 +86,10 @@ async function loadHeader() {
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-[#0d0221]/95 backdrop-blur-xl border-t border-white/10 absolute w-full left-0 top-20 shadow-xl">
-            <a href="index.html" class="block py-4 px-6 text-sm font-bold text-white border-b border-white/5 hover:bg-white/5">HOME</a>
-            <a href="products.html" class="block py-4 px-6 text-sm font-bold text-white border-b border-white/5 hover:bg-white/5">PRODUCTS</a>
-            <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-white hover:bg-white/5">CONTACT</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-black backdrop-blur-xl border-t border-gray-100 dark:border-white/10 absolute w-full left-0 top-20 shadow-xl">
+            <a href="index.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">HOME</a>
+            <a href="products.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">PRODUCTS</a>
+            <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5">CONTACT</a>
         </div>
     </nav>
     `;
@@ -97,7 +97,7 @@ async function loadHeader() {
     // Append to container
     headerContainer.innerHTML = headerHTML + `
     <!-- Mobile Bottom Nav -->
-    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-[#0d0221]/90 backdrop-blur-lg border-t border-white/10 flex justify-around items-center shadow-[0_-5px_15px_rgba(0,0,0,0.2)]">
+    <div class="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white dark:bg-black backdrop-blur-lg border-t border-gray-100 dark:border-white/10 flex justify-around items-center shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
         <a href="index.html" class="flex flex-col items-center justify-center text-gray-400 hover:text-white w-full h-full">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span class="text-[10px] font-bold uppercase tracking-wide">Home</span>
@@ -132,14 +132,14 @@ async function loadHeader() {
                         </div>
                         
                         <!-- Dropdown -->
-                        <div id="profile-dropdown" class="absolute right-0 top-full mt-2 w-48 bg-white shadow-xl rounded-xl py-2 hidden group-hover:block border border-gray-100 animate-fade-in-up">
-                            <div class="px-4 py-2 border-b border-gray-50">
-                                <p class="text-xs font-bold text-gray-900 truncate">${escapeHtml(user.displayName) || 'My Account'}</p>
-                                <p class="text-[10px] text-gray-500 truncate">${escapeHtml(user.email)}</p>
+                        <div id="profile-dropdown" class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1c1c1e] shadow-xl rounded-xl py-2 hidden group-hover:block border border-gray-100 dark:border-white/10 animate-fade-in-up">
+                            <div class="px-4 py-2 border-b border-gray-50 dark:border-white/5">
+                                <p class="text-xs font-bold text-gray-900 dark:text-white truncate">${escapeHtml(user.displayName) || 'My Account'}</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate">${escapeHtml(user.email)}</p>
                             </div>
-                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">My Profile</a>
-                            <a href="profile.html#orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">My Orders</a>
-                            <button onclick="handleLogout()" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 font-bold border-t border-gray-50">Log Out</button>
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5">My Profile</a>
+                            <a href="profile.html#orders" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5">My Orders</a>
+                            <button onclick="handleLogout()" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold border-t border-gray-50 dark:border-white/5">Log Out</button>
                         </div>
                     </div>
                 `;

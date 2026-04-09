@@ -172,18 +172,18 @@ export function renderRecommendations(containerId, products) {
     container.classList.remove('hidden');
 
     const html = `
-        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-primary">
             <span>✨</span> You May Also Like
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             ${products.map(p => `
-                <div class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="bg-white dark:bg-[#1c1c1e] rounded-xl border border-gray-100 dark:border-white/10 overflow-hidden hover:shadow-lg transition-shadow">
                     <div class="aspect-square bg-gray-50 flex items-center justify-center text-4xl">
                         ${p.image ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover">` : (p.emoji || '📦')}
                     </div>
                     <div class="p-3">
-                        <h4 class="font-semibold text-sm truncate">${escapeHtml(p.name)}</h4>
-                        <p class="text-xs text-gray-500">${escapeHtml(p.price)} / ${p.unit || 'unit'}</p>
+                        <h4 class="font-semibold text-sm truncate text-gray-900 dark:text-white">${escapeHtml(p.name)}</h4>
+                        <p class="text-xs text-secondary">${escapeHtml(p.price)} / ${p.unit || 'unit'}</p>
                         <button onclick="window.addToCart('${escapeJs(p.id)}', '${escapeJs(p.name)}', '${escapeJs(p.price)}', 1, '${p.unit || 'unit'}', ${p.stock || 999})"
                             class="w-full mt-2 bg-black text-white text-xs py-2 rounded-lg hover:bg-gray-800 transition-colors">
                             Add to Cart

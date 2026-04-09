@@ -66,24 +66,24 @@ async function fetchAndDisplayBundles() {
         const productNames = bundle.products;
 
         html += `
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-sm border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                     <div class="bg-red-600 text-white p-4 text-center">
                         <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-xl mb-1 text-gray-900">${escapeHtml(bundle.name)}</h3>
+                        <h3 class="font-bold text-xl mb-1 text-gray-900 dark:text-white">${escapeHtml(bundle.name)}</h3>
                         ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
                         
-                        <div class="space-y-1 text-sm text-gray-600 mb-4 max-h-24 overflow-y-auto">
+                        <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4 max-h-24 overflow-y-auto">
                             ${productNames.map(name => `<div class="flex items-center gap-2"><span class="text-green-500">✓</span> ${escapeHtml(name)}</div>`).join('')}
                         </div>
                         
                         <div class="border-t border-gray-100 pt-4">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
-                                <span class="text-green-600 font-bold text-xs bg-green-50 px-2 py-1 rounded">Save Rs. ${savings.toFixed(0)}</span>
+                                <span class="text-green-600 dark:text-green-400 font-bold text-xs bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">Save Rs. ${savings.toFixed(0)}</span>
                             </div>
-                            <div class="text-2xl font-bold text-gray-900 mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
+                            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
                             
                             <button onclick="alert('Added mock bundle to cart!')" 
                                 class="w-full bg-red-600 text-white font-bold py-3 rounded-xl transition-colors hover:bg-red-700 flex items-center justify-center gap-2 shadow hover:shadow-lg">
@@ -156,24 +156,24 @@ async function fetchAndDisplayBundles() {
             const savings = totalPrice - discountedPrice;
 
             html += `
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-lg border border-gray-100 dark:border-white/10 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                     <div class="bg-purple-600 text-white p-4 text-center">
                         <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-bold text-xl mb-1">${escapeHtml(bundle.name)}</h3>
+                        <h3 class="font-bold text-xl mb-1 text-gray-900 dark:text-white">${escapeHtml(bundle.name)}</h3>
                         ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
                         
-                        <div class="space-y-1 text-sm text-gray-600 mb-4 max-h-24 overflow-y-auto">
+                        <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4 max-h-24 overflow-y-auto">
                             ${productNames.map(name => `<div class="flex items-center gap-2"><span>✓</span> ${escapeHtml(name)}</div>`).join('')}
                         </div>
                         
                         <div class="border-t pt-4">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
-                                <span class="text-green-600 text-xs font-bold">Save Rs. ${savings.toFixed(0)}</span>
+                                <span class="text-green-600 dark:text-green-400 text-xs font-bold">Save Rs. ${savings.toFixed(0)}</span>
                             </div>
-                            <div class="text-2xl font-bold text-black mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
+                            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
                             
                             <button onclick="addBundleToCart('${bundleDoc.id}')" 
                                 class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
