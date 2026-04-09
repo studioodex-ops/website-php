@@ -693,7 +693,7 @@
                     const initialQty = min;
 
                     const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.active === false;
-                    const isNews = p.category === 'Newspapers';
+                    const isNews = p.category === 'Newspapers' || p.category === 'News' || p.automated === true;
 
                     // Updated Link: Now wraps the image and title area
                     const productUrl = isNews ? p.link : `product.html?id=${p.id}`;

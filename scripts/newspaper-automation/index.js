@@ -50,13 +50,15 @@ const EDU_TARGETS = [
         name: "Mihira (Kids)",
         brand: "Mihira",
         url: "https://www.lakehouse.lk/mihira", // Example Lakehouse page for Mihira
-        type: "cheerio"
+        type: "cheerio",
+        category: "News" 
     },
     {
         name: "Sathara Publications",
         brand: "Sathara",
         url: "https://satharabooks.lk/product-category/past-papers/", // Example Target
-        type: "cheerio"
+        type: "cheerio",
+        category: "News"
     }
 ];
 
@@ -90,7 +92,7 @@ async function fetchRSS(target) {
                 name: item.title,
                 desc: (item.contentSnippet || item.content || "").substring(0, 200) + "...",
                 price: 0,
-                category: "Newspapers",
+                category: target.category || "News",
                 subcategory: "Daily News",
                 brand: target.brand,
                 image: imageUrl,
@@ -130,7 +132,7 @@ async function scrapeEducational(target) {
                         name: title,
                         desc: `Educational Material from ${target.brand}`,
                         price: 0,
-                        category: "Newspapers",
+                        category: target.category || "News",
                         subcategory: "Educational Papers",
                         brand: target.brand,
                         image: img,

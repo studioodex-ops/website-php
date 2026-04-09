@@ -55,7 +55,7 @@ async function fetchNews() {
         // Fetch from "products" collection where automation uploads newspaper data
         const q = query(
             collection(db, "products"),
-            where("category", "==", "Newspapers"),
+            where("category", "==", "News"),
             orderBy('createdAt', 'desc'),
             limit(3)
         );

@@ -2045,9 +2045,10 @@ Hello! We have exciting news for you!
                             class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Category</label>
                         <select id="p-category" onchange="updateSubcategoryOptions()"
                             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
-                            <option value="grocery">Grocery</option>
-                            <option value="stationery">Stationery</option>
-                            <option value="news">Newspapers</option>
+                            <option value="Grocery">Grocery</option>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Newspapers">Newspapers (Physical)</option>
+                            <option value="News">News (Articles)</option>
                         </select>
                     </div>
                     <div>
@@ -2440,13 +2441,21 @@ Hello! We have exciting news for you!
 
         // Subcategory data structure (mirrors POS)
         const adminSubcategories = {
-            'stationery': {
+            'Grocery': {
+                'Food': ['Rice', 'Sugar', 'Flour', 'Oil', 'Spices', 'Canned Food'],
+                'Household': ['Soap', 'Detergent', 'Cleaning', 'Tissue'],
+                'Beverages': ['Tea', 'Coffee', 'Milk Powder', 'Soft Drinks']
+            },
+            'Stationery': {
                 'Sathara Publications': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Story Books', 'Monthly Magazines'],
                 'CR Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule Books', 'Notebooks'],
                 'Other': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
             },
-            'news': {
-                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers']
+            'Newspapers': { 
+                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers'] 
+            },
+            'News': {
+                'Articles': ['Daily News', 'Educational Papers', 'Other']
             }
         };
 
