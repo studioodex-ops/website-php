@@ -366,3 +366,90 @@ select {
 #nex-input {
     color: #000000 !important;
 }
+
+/* --- SEARCH AUTOCOMPLETE STYLES --- */
+#autocomplete-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    margin-top: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    padding: 8px;
+    animation: slideDownFade 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.suggestion-item:hover, .suggestion-item.selected {
+    background: rgba(var(--accent-color), 0.1);
+    background: var(--accent-color);
+    color: white;
+}
+
+.suggestion-item .item-emoji {
+    font-size: 1.25rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.suggestion-item .item-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion-item .item-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.suggestion-item .item-meta {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar for Dropdown */
+#autocomplete-results::-webkit-scrollbar {
+    width: 6px;
+}
+#autocomplete-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+#autocomplete-results::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 10px;
+}

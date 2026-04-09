@@ -159,6 +159,8 @@
                                         d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </button>
+                            <!-- Autocomplete Results -->
+                            <div id="autocomplete-results" class="glass-panel"></div>
                         </div>
                     </div>
 
@@ -430,6 +432,7 @@
             let PRODUCTS_PER_PAGE = 12;
             let isFetching = false;
             let noMoreProducts = false;
+            let searchIndex = []; // Pre-fetched products for autocomplete
 
             // Handle URL Query Params
             const params = new URLSearchParams(window.location.search);
@@ -805,30 +808,121 @@
                         clearSearchBtn.classList.add('hidden');
                     }
                 });
+                
+                // --- SEARCH AUTOCOMPLETE LOGIC ---
+                const autocompleteResults = document.getElementById('autocomplete-results');
+                let selectedIndex = -1;
+
+                async function initSearchIndex() {
+                    try {
+                        const snap = await getDocs(query(collection(db, "products")));
+                        searchIndex = snap.docs.map(doc => ({
+                            id: doc.id,
+                            name: doc.data().name || '',
+                            category: doc.data().category || '',
+                            image: doc.data().image || 'emoji:📦'
+                        })).filter(p => p.name.length > 0);
+                        console.log(`Autocomplete Index loaded: ${searchIndex.length} items.`);
+                    } catch (e) {
+                        console.warn("Autocomplete load failed:", e);
+                    }
+                }
+                initSearchIndex();
+
+                function renderAutocomplete(results) {
+                    if (!results.length) {
+                        autocompleteResults.style.display = 'none';
+                        return;
+                    }
+                    
+                    autocompleteResults.innerHTML = results.slice(0, 8).map((p, i) => {
+                        let imageHTML = '';
+                        if (p.image && p.image.startsWith('emoji:')) {
+                            imageHTML = `<div class="item-emoji">${p.image.split(':')[1]}</div>`;
+                        } else {
+                            imageHTML = `<img src="${p.image}" class="w-8 h-8 rounded-lg object-cover">`;
+                        }
+
+                        return `
+                            <div class="suggestion-item ${i === selectedIndex ? 'selected' : ''}" 
+                                 onclick="window.selectSuggestion('${escapeJs(p.name)}')"
+                                 data-index="${i}">
+                                ${imageHTML}
+                                <div class="item-details">
+                                    <span class="item-name">${escapeHtml(p.name)}</span>
+                                    <span class="item-meta">${escapeHtml(p.category)}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    autocompleteResults.style.display = 'block';
+                }
+
+                window.selectSuggestion = (name) => {
+                    searchInputEl.value = name;
+                    autocompleteResults.style.display = 'none';
+                    triggerSearch(name);
+                };
+
+                const triggerSearch = (val) => {
+                    const searchVal = val.toLowerCase();
+                    if (searchVal !== currentSearchTerm) {
+                        currentSearchTerm = searchVal;
+                        allProducts = [];
+                        lastVisible = null;
+                        noMoreProducts = false;
+
+                        // Update URL
+                        const url = new URL(window.location);
+                        if (searchVal) url.searchParams.set('search', val);
+                        else url.searchParams.delete('search');
+                        window.history.pushState({}, '', url);
+
+                        fetchProducts(false);
+                    }
+                };
 
                 let searchTimeout;
                 searchInputEl.addEventListener('keyup', (e) => {
+                    const val = e.target.value;
+                    
+                    // Handle Navigation
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                        const items = autocompleteResults.querySelectorAll('.suggestion-item');
+                        if (e.key === 'ArrowDown') selectedIndex = (selectedIndex + 1) % items.length;
+                        if (e.key === 'ArrowUp') selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                        if (e.key === 'Enter' && selectedIndex >= 0) {
+                            const selectedName = items[selectedIndex].querySelector('.item-name').innerText;
+                            window.selectSuggestion(selectedName);
+                            return;
+                        }
+                        renderAutocomplete(searchIndex.filter(p => p.name.toLowerCase().includes(val.toLowerCase())));
+                        return;
+                    }
+
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
-                        const val = e.target.value.toLowerCase();
-                        if (val !== currentSearchTerm) {
-                            currentSearchTerm = val;
-                            allProducts = [];
-                            lastVisible = null;
-                            noMoreProducts = false;
-
-                            // Update URL without reload
-                            const url = new URL(window.location);
-                            if (val) {
-                                url.searchParams.set('search', e.target.value);
-                            } else {
-                                url.searchParams.delete('search');
-                            }
-                            window.history.pushState({}, '', url);
-
-                            fetchProducts(false);
+                        if (val.length >= 2) {
+                            const matches = searchIndex.filter(p => 
+                                p.name.toLowerCase().includes(val.toLowerCase()) || 
+                                p.category.toLowerCase().includes(val.toLowerCase())
+                            );
+                            selectedIndex = -1;
+                            renderAutocomplete(matches);
+                        } else {
+                            autocompleteResults.style.display = 'none';
                         }
-                    }, 500); // 500ms debounce
+                        
+                        // Traditional Search Trigger
+                        triggerSearch(val);
+                    }, 400); 
+                });
+
+                // Hide autocomplete when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!searchInputEl.contains(e.target) && !autocompleteResults.contains(e.target)) {
+                        autocompleteResults.style.display = 'none';
+                    }
                 });
 
                 clearSearchBtn.addEventListener('click', () => {
