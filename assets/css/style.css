@@ -339,18 +339,24 @@ h6,
 
 /* --- ANIMATIONS END --- */
 
-/* GLOBAL INPUT CONTRAST FIX */
+/* GLOBAL INPUT CONTRAST FIX - Ensure visibility across all themes */
 input,
 textarea,
 select {
-    color: var(--text-primary);
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-glass);
+    color: var(--text-primary) !important;
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-glass) !important;
+    transition: all 0.3s ease;
+}
+
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder {
+    color: rgba(245, 245, 247, 0.5) !important;
 }
 
 [data-theme='dark'] select option {
-    background-color: #1c1c1e;
-    color: #f5f5f7;
+    background-color: #1c1c1e !important;
+    color: #f5f5f7 !important;
 }
 
 /* Chatbot Input Specific Fix (Always Black) */
@@ -419,7 +425,8 @@ select {
 
 .suggestion-item .item-meta {
     font-size: 0.75rem;
-    opacity: 0.7;
+    color: var(--text-secondary); /* Use standardized secondary color */
+    opacity: 0.9; /* Higher opacity for readability */
 }
 
 @keyframes slideDownFade {
