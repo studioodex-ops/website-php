@@ -1,8 +1,8 @@
 // Service Worker for Buddika Stores - Offline Mode
 // Handles caching of static assets and provides offline functionality
 
-const CACHE_NAME = 'buddika-stores-v3';
-const DYNAMIC_CACHE = 'buddika-dynamic-v3';
+const CACHE_NAME = 'buddika-stores-v4';
+const DYNAMIC_CACHE = 'buddika-dynamic-v4';
 const IMAGE_CACHE = 'buddika-images-v1';
 
 // Static assets to cache on install

@@ -449,7 +449,8 @@ function checkout() {
         'whatsapp': 'Cash on Delivery / WhatsApp',
         'card': 'Card Payment',
         'bank': 'Bank Transfer',
-        'crypto': 'Crypto Payment'
+        'crypto': 'Crypto Payment',
+        'helapay': 'HelaPay QR Payment'
     };
 
     const paymentMethodName = methodNames[method] || method;
@@ -678,9 +679,9 @@ function injectCartModal() {
                                 </div>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="payment" value="crypto" class="peer hidden" onchange="handlePaymentChange(this.value)">
+                                <input type="radio" name="payment" value="helapay" class="peer hidden" onchange="handlePaymentChange(this.value)">
                                 <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-black peer-checked:bg-black peer-checked:text-white transition-all h-full flex items-center justify-center">
-                                    <span class="text-xs font-bold block">Crypto</span>
+                                    <span class="text-xs font-bold block">HelaPay QR</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -689,6 +690,17 @@ function injectCartModal() {
                                     <span class="text-xs font-bold block">Card</span>
                                 </div>
                             </label>
+                        </div>
+
+                        <!-- Payment Details Section -->
+                        <div id="payment-details-helapay" class="hidden mt-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 animate-fade-in-up">
+                            <h4 class="text-xs font-bold uppercase text-gray-500 mb-2">HelaPay QR Payment</h4>
+                            <div class="text-center">
+                                <p class="text-[10px] text-gray-500 mb-3">Scan this QR to pay and send the receipt screenshot via WhatsApp.</p>
+                                <div class="bg-white p-2 rounded-lg inline-block shadow-sm">
+                                    <img src="assets/img/qr/helapay-qr.jpg" alt="HelaPay QR" class="w-48 h-auto rounded" onerror="this.src='https://placehold.co/400x600?text=Please+Upload+Helapay+QR'">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Payment Details Section -->
@@ -736,11 +748,18 @@ function injectCartModal() {
 
 function handlePaymentChange(value) {
     const bankDetails = document.getElementById('payment-details-bank');
+    const helapayDetails = document.getElementById('payment-details-helapay');
 
-    if (value === 'bank') {
-        bankDetails.classList.remove('hidden');
-    } else {
-        bankDetails.classList.add('hidden');
+    // Toggle Bank Details
+    if (bankDetails) {
+        if (value === 'bank') bankDetails.classList.remove('hidden');
+        else bankDetails.classList.add('hidden');
+    }
+
+    // Toggle HelaPay Details
+    if (helapayDetails) {
+        if (value === 'helapay') helapayDetails.classList.remove('hidden');
+        else helapayDetails.classList.add('hidden');
     }
 }
 
