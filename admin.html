@@ -606,117 +606,7 @@
             </div>
 
             <!-- VIEW: INVENTORY -->
-            <div id="view-inventory" class="hidden max-w-6xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div>
-                        <h2 class="text-3xl font-bold font-heading text-gray-900">Inventory Management</h2>
-                        <p class="text-gray-500 text-sm mt-1">Monitor and adjust stock levels for all products.</p>
-                    </div>
-                    <div class="flex gap-3 flex-wrap">
-                        <button onclick="exportProductsToExcel()"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
-                            📤 Export Excel
-                        </button>
-                        <button onclick="document.getElementById('excel-import-file').click()"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
-                            📥 Import Excel
-                        </button>
-                        <input type="file" id="excel-import-file" accept=".xlsx,.xls" class="hidden"
-                            onchange="importProductsFromExcel(this)">
-                        <button onclick="exportReorderListCSV()"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
-                            📥 CSV
-                        </button>
-                        <button onclick="copyReorderListWhatsApp()"
-                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
-                            📱 WhatsApp
-                        </button>
-                        <button onclick="printStockList()"
-                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
-                            🖨️ Print
-                        </button>
-                        <button onclick="fetchInventory()"
-                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex items-center gap-2 text-sm">
-                            🔄 Refresh
-                        </button>
-                    </div>
-                </div>
 
-                <!-- Filter Tabs -->
-                <div class="bg-white rounded-xl p-2 border border-gray-100 shadow-sm mb-6 flex gap-2 flex-wrap">
-                    <button onclick="filterInventory('all')" id="inv-filter-all"
-                        class="px-4 py-2 rounded-lg font-bold text-sm bg-black text-white transition-colors">
-                        📦 All Products
-                    </button>
-                    <button onclick="filterInventory('low')" id="inv-filter-low"
-                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
-                        ⚠️ Low Stock (&lt;10)
-                    </button>
-                    <button onclick="filterInventory('out')" id="inv-filter-out"
-                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors">
-                        🚫 Out of Stock
-                    </button>
-                </div>
-
-                <!-- Stock Summary Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <span class="text-2xl">📦</span>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase tracking-widest">Total Products</p>
-                                <p class="text-2xl font-bold" id="inv-total-products">--</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                                <span class="text-2xl">⚠️</span>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase tracking-widest">Low Stock</p>
-                                <p class="text-2xl font-bold text-orange-500" id="inv-low-stock">--</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                                <span class="text-2xl">🚫</span>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase tracking-widest">Out of Stock</p>
-                                <p class="text-2xl font-bold text-red-500" id="inv-out-stock">--</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Inventory Table -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
-                                <tr>
-                                    <th class="p-4">Product</th>
-                                    <th class="p-4">Current Stock</th>
-                                    <th class="p-4">Adjust</th>
-                                    <th class="p-4">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="inventory-list" class="text-sm">
-                                <tr>
-                                    <td colspan="4" class="p-12 text-center text-gray-400">Click "Refresh" to load
-                                        inventory...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
             <!-- VIEW: SUPPLIERS -->
             <div id="view-suppliers" class="hidden max-w-6xl mx-auto">
@@ -925,6 +815,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="news-list">
+                </div>
             </div>
 
             <!-- VIEW: EXPIRY -->
@@ -972,26 +863,59 @@
                         <h2 class="text-3xl font-bold font-heading text-gray-900">Inventory Management</h2>
                         <p class="text-gray-500 text-sm mt-1">Monitor and adjust stock levels for all products.</p>
                     </div>
-                    <div class="flex gap-3">
-                        <a href="pos.html"
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
-                                </path>
-                            </svg>
-                            Open POS
-                        </a>
+                    <div class="flex gap-3 flex-wrap">
+                        <button onclick="exportProductsToExcel()"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📤 Export Excel
+                        </button>
+                        <button onclick="document.getElementById('excel-import-file').click()"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📥 Import Excel
+                        </button>
+                        <input type="file" id="excel-import-file" accept=".xlsx,.xls" class="hidden"
+                            onchange="importProductsFromExcel(this)">
+                        <button onclick="exportReorderListCSV()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📥 CSV
+                        </button>
+                        <button onclick="copyReorderListWhatsApp()"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            📱 WhatsApp
+                        </button>
+                        <button onclick="printStockList()"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2 text-sm">
+                            🖨️ Print
+                        </button>
                         <button onclick="fetchInventory()"
-                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors flex items-center gap-2">
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex items-center gap-2 text-sm">
+                            🔄 Refresh
+                        </button>
+                        <button onclick="mergeDuplicateProducts()"
+                            class="bg-amber-100 hover:bg-amber-200 text-amber-700 font-bold py-3 px-4 rounded-xl transition-colors flex items-center gap-2 text-sm">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            Refresh
+                            Merge Duplicates
                         </button>
                     </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="bg-white rounded-xl p-2 border border-gray-100 shadow-sm mb-6 flex gap-2 flex-wrap">
+                    <button onclick="filterInventory('all')" id="inv-filter-all"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-black text-white transition-colors">
+                        📦 All Products
+                    </button>
+                    <button onclick="filterInventory('low')" id="inv-filter-low"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
+                        ⚠️ Low Stock (&lt;10)
+                    </button>
+                    <button onclick="filterInventory('out')" id="inv-filter-out"
+                        class="px-4 py-2 rounded-lg font-bold text-sm bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors">
+                        🚫 Out of Stock
+                    </button>
                 </div>
 
                 <!-- Stock Summary Cards -->
@@ -2093,15 +2017,21 @@ Hello! We have exciting news for you!
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Selling
-                            Price (Rs.)</label>
-                        <input type="text" id="p-price" placeholder="e.g. 1500.00" required
-                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                            Price</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">Rs.</span>
+                            <input type="text" id="p-price" placeholder="1500.00" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Buying Price
-                            / Cost (Rs.)</label>
-                        <input type="text" id="p-cost" placeholder="e.g. 1200.00"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                            / Cost</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">Rs.</span>
+                            <input type="text" id="p-cost" placeholder="1200.00"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Stock
@@ -2244,14 +2174,20 @@ Hello! We have exciting news for you!
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Old
                                 Price</label>
-                            <input type="text" id="pm-old-price" placeholder="e.g. 2500"
-                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">Rs.</span>
+                                <input type="text" id="pm-old-price" placeholder="2500"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Promo
                                 Price</label>
-                            <input type="text" id="pm-price" required placeholder="e.g. 2000"
-                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">Rs.</span>
+                                <input type="text" id="pm-price" required placeholder="2000"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                            </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -2338,7 +2274,7 @@ Hello! We have exciting news for you!
 
     <!-- MAIN LOGIC -->
     <script type="module">
-        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment, addDoc } from './assets/js/firebase-config.js';
+        import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment, addDoc, writeBatch, onSnapshot } from './assets/js/firebase-config.js?v=6';
         import { escapeHtml } from './assets/js/utils.js';
 
         // Initialize Global Objects
@@ -2351,6 +2287,86 @@ Hello! We have exciting news for you!
         window.query = query;
         window.orderBy = orderBy;
         window.getDocs = getDocs;
+        window.onSnapshot = onSnapshot;
+        window.writeBatch = writeBatch;
+
+        // --- GLOBAL LISTENERS & REAL-TIME TRACKING ---
+        window.startGlobalListeners = () => {
+            console.log("[Listeners] Starting Real-time Tracking...");
+            
+            // 1. Listen for New Online Orders
+            const ordersQuery = query(collectionGroup(db, 'orders'), orderBy('createdAt', 'desc'), limit(1));
+            let initialLoad = true;
+            onSnapshot(ordersQuery, (snapshot) => {
+                if (initialLoad) { initialLoad = false; return; }
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const order = change.doc.data();
+                        if (typeof showOrderNotification === 'function') showOrderNotification("New Online Order! 🛒", order);
+                        if (typeof playOrderSound === 'function') playOrderSound();
+                        
+                        // Auto-refresh orders if on the orders tab
+                        const ordersView = document.getElementById('view-orders');
+                        if (ordersView && !ordersView.classList.contains('hidden')) {
+                            if (typeof fetchOrders === 'function') fetchOrders();
+                        }
+                    }
+                });
+            });
+
+            // 2. Listen for POS Sales (HelaPay Notifications)
+            const salesQuery = query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(1));
+            let initialSalesLoad = true;
+            onSnapshot(salesQuery, (snapshot) => {
+                if (initialSalesLoad) { initialSalesLoad = false; return; }
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const sale = change.doc.data();
+                        if (sale.paymentMethod === 'helapay') {
+                            if (typeof showOrderNotification === 'function') showOrderNotification("New HelaPay Sale! 💰", sale);
+                            if (typeof playOrderSound === 'function') playOrderSound();
+                        }
+                    }
+                });
+            });
+        };
+
+        window.updateWholesaleBadge = () => {
+            console.log("[UI] Updating wholesale badges...");
+        };
+
+        window.showOrderNotification = (title, data) => {
+            const toast = document.getElementById('toast');
+            const message = document.getElementById('toast-message');
+            if (!toast || !message) {
+                if (typeof showToast === 'function') showToast(title, 'info');
+                return;
+            }
+            
+            const total = data.total || 0;
+            const method = (data.paymentMethod || 'COD').toUpperCase();
+            
+            message.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-bold">${title}</span>
+                    <span class="text-xs text-gray-400">Total: Rs. ${total.toFixed(2)} • ${method}</span>
+                </div>
+            `;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 8000);
+        };
+
+        window.playOrderSound = () => {
+            try {
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.play();
+            } catch (e) {
+                console.warn("Sound blocked by browser policy.");
+            }
+        };
         window.getDoc = getDoc;
         window.doc = doc;
         window.addDoc = addDoc;
@@ -2419,9 +2435,24 @@ Hello! We have exciting news for you!
                 }
 
                 // Authorized - grant access
-                loginContainer.classList.add('hidden');
-                adminEmail.innerText = user.email;
-                fetchAndRenderProducts();
+                setTimeout(() => {
+                    try {
+                        loginContainer.classList.add('hidden');
+                        
+                        const emailEl = document.getElementById('admin-email');
+                        if (emailEl) emailEl.innerText = user.email;
+
+                        // Initialize Modules
+                        if (typeof fetchAndRenderProducts === 'function') fetchAndRenderProducts();
+                        if (typeof startGlobalListeners === 'function') startGlobalListeners();
+                        if (typeof updateWholesaleBadge === 'function') updateWholesaleBadge();
+                        if (typeof loadMorningUpdate === 'function') loadMorningUpdate();
+                    } catch (err) {
+                        console.error("Dashboard Init Error Details:", err);
+                        loginContainer.classList.add('hidden'); // Ensure they can still see the dashboard
+                        if (typeof showToast === 'function') showToast("Error during initialization: " + err.message, "error");
+                    }
+                }, 100);
             } else {
                 // Show Login
                 loginContainer.classList.remove('hidden');
@@ -2440,7 +2471,89 @@ Hello! We have exciting news for you!
 
         window.handleLogin = () => {
             signInWithPopup(auth, googleProvider).catch(e => alert(e.message));
-        }
+        };
+
+        // --- MORNING UPDATE LOGIC ---
+        const STATUS_BADGES = {
+            'available': { text: 'AVAILABLE', bgClass: 'bg-green-100', textClass: 'text-green-800' },
+            'sold_out': { text: 'SOLD OUT', bgClass: 'bg-red-100', textClass: 'text-red-800' },
+            'coming_soon': { text: 'COMING SOON', bgClass: 'bg-blue-100', textClass: 'text-blue-800' },
+            'new_arrival': { text: 'NEW ARRIVAL', bgClass: 'bg-purple-100', textClass: 'text-purple-800' },
+            'sale': { text: 'SALE', bgClass: 'bg-orange-100', textClass: 'text-orange-800' },
+            'fresh': { text: 'FRESH TODAY', bgClass: 'bg-emerald-100', textClass: 'text-emerald-800' },
+            'delayed': { text: 'DELAYED', bgClass: 'bg-yellow-100', textClass: 'text-yellow-800' },
+            'closed': { text: 'CLOSED', bgClass: 'bg-gray-200', textClass: 'text-gray-800' }
+        };
+
+        window.loadMorningUpdate = async () => {
+            try {
+                const docRef = doc(db, 'settings', 'morning_update');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const titleEl = document.getElementById('mu-title');
+                    const msgEl = document.getElementById('mu-message');
+                    const statusEl = document.getElementById('mu-status');
+                    
+                    if (titleEl) titleEl.value = data.title || 'Morning Update';
+                    if (msgEl) msgEl.value = data.message || '';
+                    if (statusEl) statusEl.value = data.status || 'available';
+                    
+                    window.updateMorningPreview();
+                }
+            } catch (error) {
+                console.error('Error loading morning update:', error);
+            }
+        };
+
+        window.saveMorningUpdate = async () => {
+            const title = document.getElementById('mu-title').value.trim();
+            const message = document.getElementById('mu-message').value.trim();
+            const status = document.getElementById('mu-status').value;
+            
+            if (!title || !message) {
+                showToast('Please fill in both title and message', 'error');
+                return;
+            }
+
+            try {
+                const docRef = doc(db, 'settings', 'morning_update');
+                await setDoc(docRef, {
+                    title, message, status, updatedAt: new Date().toISOString()
+                });
+                showToast('✅ Morning Update saved!', 'success');
+            } catch (error) {
+                console.error('Error saving morning update:', error);
+                showToast('Failed to save update', 'error');
+            }
+        };
+
+        window.updateMorningPreview = () => {
+            const title = document.getElementById('mu-title').value || 'Morning Update';
+            const message = document.getElementById('mu-message').value || 'Daily papers are in stock.';
+            const status = document.getElementById('mu-status').value;
+            
+            const titlePreview = document.getElementById('mu-preview-title');
+            const msgPreview = document.getElementById('mu-preview-message');
+            const badgeEl = document.getElementById('mu-preview-badge');
+            
+            if (titlePreview) titlePreview.innerText = title;
+            if (msgPreview) msgPreview.innerText = message;
+            
+            if (badgeEl) {
+                const badge = STATUS_BADGES[status] || STATUS_BADGES['available'];
+                badgeEl.innerText = badge.text;
+                badgeEl.className = `px-3 py-1 rounded-full text-xs font-bold ${badge.bgClass} ${badge.textClass}`;
+            }
+        };
+
+        window.setQuickMessage = (msg) => {
+            const msgEl = document.getElementById('mu-message');
+            if (msgEl) {
+                msgEl.value = msg;
+                window.updateMorningPreview();
+            }
+        };
 
         window.handleLogout = () => {
             signOut(auth);
@@ -2454,9 +2567,9 @@ Hello! We have exciting news for you!
                 'Beverages': ['Tea', 'Coffee', 'Milk Powder', 'Soft Drinks']
             },
             'Stationery': {
-                'Sathara Publications': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Story Books', 'Monthly Magazines'],
-                'CR Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule Books', 'Notebooks'],
-                'Other': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
+                'Sathara Publications': ['Preschool', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Story Books', 'Monthly Magazines'],
+                'Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule', 'Notebooks', 'Pens & Pencils', 'General Stationery', 'Office Supplies'],
+                'Reading & Stories': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
             },
             'Newspapers': { 
                 'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers'] 
@@ -4124,6 +4237,61 @@ Buddika Stores
             }
         };
 
+        window.mergeDuplicateProducts = async () => {
+            if (!confirm("This will merge all products with the same name into one, summing up their stock levels. This cannot be undone. Proceed?")) return;
+
+            showToast("🔍 Scanning for duplicates...", "info");
+            try {
+                const snapshot = await getDocs(collection(db, 'products'));
+                const groups = {};
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const name = (data.name || '').trim().toLowerCase();
+                    if (!name) return;
+                    if (!groups[name]) groups[name] = [];
+                    groups[name].push({ id: doc.id, ...data });
+                });
+
+                const batch = writeBatch(db);
+                let mergedCount = 0;
+                let totalDeleted = 0;
+
+                for (const name in groups) {
+                    const products = groups[name];
+                    if (products.length > 1) {
+                        // Keep the one with the most data or newest update
+                        products.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+                        const master = products[0];
+                        const others = products.slice(1);
+
+                        let totalStock = (master.stock || 0);
+                        others.forEach(p => {
+                            totalStock += (p.stock || 0);
+                            batch.delete(doc(db, 'products', p.id));
+                            totalDeleted++;
+                        });
+
+                        // Update master stock
+                        batch.update(doc(db, 'products', master.id), { stock: totalStock, updatedAt: new Date().toISOString() });
+                        mergedCount++;
+                    }
+                }
+
+                if (totalDeleted > 0) {
+                    await batch.commit();
+                    showToast(`✅ Successfully merged ${mergedCount} groups. Removed ${totalDeleted} duplicates.`, "success");
+                    fetchInventory();
+                    if (typeof fetchAndRenderProducts === 'function') fetchAndRenderProducts();
+                } else {
+                    showToast("No duplicates found. Your database is clean! ✨", "info");
+                }
+            } catch (e) {
+                console.error("Merge error:", e);
+                showToast("Error merging duplicates: " + e.message, "error");
+            }
+        };
+
         // Fetch Expiry Alerts
         window.fetchExpiryAlerts = async () => {
             const list = document.getElementById('expiry-alerts-list');
@@ -4418,145 +4586,132 @@ Buddika Stores
         window.importProductsFromExcel = async (input) => {
             const file = input.files[0];
             if (!file) return;
-
-            // Reset input so same file can be selected again
             input.value = '';
 
-            showToast('Reading Excel file...', 'info');
-
             try {
+                showToast('📂 Reading Excel file...', 'info');
                 const data = await file.arrayBuffer();
                 const workbook = XLSX.read(data);
                 const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
                 if (jsonData.length === 0) {
                     showToast('Excel file is empty!', 'error');
                     return;
                 }
 
-                // Show import options
                 const choice = prompt(
-                    `Found ${jsonData.length} products in Excel file.\n\n` +
-                    `Choose import mode:\n` +
-                    `1 = Update existing products (Match by ID, SKU, or Exact Name)\n` +
-                    `2 = Add all as new products\n` +
-                    `3 = Cancel\n\n` +
-                    `Enter 1, 2, or 3:`
+                    `Found ${jsonData.length} products.\n\n` +
+                    `1 = Update Existing (Match by SKU or Name)\n` +
+                    `2 = Add All as New\n` +
+                    `3 = Cancel`
                 );
 
-                if (choice === '3' || !choice) {
+                if (choice !== '1' && choice !== '2') {
                     showToast('Import cancelled', 'info');
                     return;
                 }
 
                 const isUpdateMode = choice === '1';
+                showToast('⚡ Preparing database...', 'info');
+
+                // 1. Pre-fetch all products for fast matching
+                const existingProducts = [];
+                const snapshot = await getDocs(collection(db, 'products'));
+                snapshot.forEach(doc => existingProducts.push({ id: doc.id, ...doc.data() }));
+
+                // Create lookup maps
+                const skuMap = new Map();
+                const nameMap = new Map();
+                existingProducts.forEach(p => {
+                    if (p.sku) skuMap.set(String(p.sku).trim().toLowerCase(), p.id);
+                    if (p.name) nameMap.set(String(p.name).trim().toLowerCase(), p.id);
+                });
+
+                let processed = 0;
                 let successCount = 0;
                 let errorCount = 0;
-                const errors = [];
 
-                showToast(`Importing ${jsonData.length} products...`, 'info');
+                // 2. Process in batches of 400 (Firestore limit is 500)
+                const chunks = [];
+                for (let i = 0; i < jsonData.length; i += 400) {
+                    chunks.push(jsonData.slice(i, i + 400));
+                }
 
-                for (const row of jsonData) {
-                    try {
-                        // Map Excel columns to product data
-                        const productData = {
-                            name: row['Product Name'] || '',
-                            nameSi: row['Product Name (Sinhala)'] || '',
-                            category: row['Category'] || 'Grocery',
-                            subcategory: row['Sub Category'] || '',
-                            supplierId: row['Supplier'] || '',
-                            sku: row['SKU / Barcode'] || '',
-                            price: parseFloat(row['Selling Price (Rs.)']) || 0,
-                            cost: parseFloat(row['Buying Price / Cost (Rs.)']) || 0,
-                            stock: parseFloat(row['Stock Qty']) || 0,
-                            unit: row['Unit'] || 'unit',
-                            expiryDate: row['Expiry Date'] || '',
-                            updatedAt: new Date().toISOString()
-                        };
+                for (const chunk of chunks) {
+                    const batch = writeBatch(db);
+                    
+                    for (const row of chunk) {
+                        try {
+                            const name = String(row['Product Name'] || '').trim();
+                            const sku = String(row['SKU / Barcode'] || '').trim();
+                            
+                            if (!name) continue;
 
-                        // Validate required fields
-                        if (!productData.name) {
-                            errors.push(`Row skipped: Missing product name`);
-                            errorCount++;
-                            continue;
-                        }
+                            const productData = {
+                                name: name,
+                                nameSi: row['Product Name (Sinhala)'] || '',
+                                category: row['Category'] || 'Grocery',
+                                subcategory: row['Sub Category'] || '',
+                                supplierId: row['Supplier'] || '',
+                                sku: sku,
+                                price: parseFloat(row['Selling Price (Rs.)']) || 0,
+                                cost: parseFloat(row['Buying Price / Cost (Rs.)']) || 0,
+                                stock: parseFloat(row['Stock Qty']) || 0,
+                                unit: row['Unit'] || 'unit',
+                                expiryDate: row['Expiry Date'] || '',
+                                updatedAt: new Date().toISOString()
+                            };
 
-                        if (isUpdateMode) {
-                            // Try to find existing product by _id or SKU
-                            const existingId = row['_id'];
+                            let targetId = null;
+                            const lowerName = name.toLowerCase();
+                            const lowerSku = sku.toLowerCase();
 
-                            if (existingId) {
-                                // Update by document ID
-                                await setDoc(doc(db, 'products', existingId), productData, { merge: true });
-                                successCount++;
-                            } else if (productData.sku) {
-                                // Try to find by SKU
-                                const skuQuery = query(collection(db, 'products'), where('sku', '==', productData.sku));
-                                const skuSnapshot = await getDocs(skuQuery);
-
-                                if (!skuSnapshot.empty) {
-                                    await setDoc(doc(db, 'products', skuSnapshot.docs[0].id), productData, { merge: true });
-                                    successCount++;
-                                } else {
-                                    // Try to find by Name as last resort to prevent duplicates
-                                    const nameQuery = query(collection(db, 'products'), where('name', '==', productData.name));
-                                    const nameSnapshot = await getDocs(nameQuery);
-                                    
-                                    if (!nameSnapshot.empty) {
-                                        await setDoc(doc(db, 'products', nameSnapshot.docs[0].id), productData, { merge: true });
-                                        successCount++;
-                                    } else {
-                                        // Create new if not found
-                                        productData.createdAt = new Date().toISOString();
-                                        await setDoc(doc(collection(db, 'products')), productData);
-                                        successCount++;
-                                    }
-                                }
-                            } else {
-                                // Try to find by Name as last resort to prevent duplicates
-                                const nameQuery = query(collection(db, 'products'), where('name', '==', productData.name));
-                                const nameSnapshot = await getDocs(nameQuery);
-                                
-                                if (!nameSnapshot.empty) {
-                                    await setDoc(doc(db, 'products', nameSnapshot.docs[0].id), productData, { merge: true });
-                                    successCount++;
-                                } else {
-                                    // Create new if no ID, SKU or Name match
-                                    productData.createdAt = new Date().toISOString();
-                                    await setDoc(doc(collection(db, 'products')), productData);
-                                    successCount++;
-                                }
+                            if (isUpdateMode) {
+                                // Priority 1: Direct ID in Excel
+                                if (row['_id']) targetId = row['_id'];
+                                // Priority 2: SKU Match
+                                if (!targetId && sku) targetId = skuMap.get(lowerSku);
+                                // Priority 3: Name Match
+                                if (!targetId) targetId = nameMap.get(lowerName);
                             }
-                        } else {
-                            // Add as new product
-                            productData.createdAt = new Date().toISOString();
-                            await setDoc(doc(collection(db, 'products')), productData);
+
+                            if (targetId) {
+                                batch.set(doc(db, 'products', targetId), productData, { merge: true });
+                            } else {
+                                // Manual ID generation to update local map immediately
+                                const newDocRef = doc(collection(db, 'products'));
+                                targetId = newDocRef.id;
+                                productData.createdAt = new Date().toISOString();
+                                batch.set(newDocRef, productData);
+
+                                // IMPORTANT: Update the local map so subsequent rows in this same Excel 
+                                // for the same product find this new document ID instead of creating another duplicate.
+                                if (sku) skuMap.set(lowerSku, targetId);
+                                nameMap.set(lowerName, targetId);
+                            }
                             successCount++;
+                        } catch (e) {
+                            errorCount++;
+                            console.error('Row error:', e);
                         }
-
-                    } catch (rowError) {
-                        console.error('Row import error:', rowError);
-                        errors.push(`Error: ${row['Product Name'] || 'Unknown'} - ${rowError.message}`);
-                        errorCount++;
                     }
+
+                    await batch.commit();
+                    processed += chunk.length;
+                    showToast(`⏳ Processed ${processed}/${jsonData.length}...`, 'info');
                 }
 
-                // Show results
-                if (errorCount > 0) {
-                    console.log('Import errors:', errors);
-                    showToast(`Imported ${successCount} products. ${errorCount} errors. Check console for details.`, 'warning');
-                } else {
-                    showToast(`Successfully imported ${successCount} products! ✅`, 'success');
-                }
+                showToast(`✅ Successfully imported ${successCount} products!`, 'success');
+                if (errorCount > 0) showToast(`⚠️ ${errorCount} errors occurred.`, 'warning');
 
-                // Refresh inventory display
-                fetchInventory();
+                // Refresh both views
+                if (typeof fetchInventory === 'function') fetchInventory();
+                if (typeof fetchAndRenderProducts === 'function') fetchAndRenderProducts();
 
             } catch (e) {
-                console.error('Import error:', e);
-                showToast('Import failed: ' + e.message, 'error');
+                console.error('Import failed:', e);
+                showToast('❌ Import failed: ' + e.message, 'error');
             }
         };
 
@@ -4854,8 +5009,8 @@ Buddika Stores
             document.getElementById('edit-id').value = id;
             document.getElementById('p-name').value = p.name;
             document.getElementById('p-name-si').value = p.nameSi || '';
-            document.getElementById('p-price').value = p.price;
-            document.getElementById('p-cost').value = p.cost || ''; // Populate Cost
+            document.getElementById('p-price').value = p.price ? p.price.toString().replace(/Rs\.?\s*/ig, '') : '';
+            document.getElementById('p-cost').value = p.cost ? p.cost.toString().replace(/Rs\.?\s*/ig, '') : ''; // Populate Cost
             document.getElementById('p-category').value = p.category;
 
             // Populate subcategory dropdown based on category, then select the value
@@ -4882,8 +5037,8 @@ Buddika Stores
             const data = {
                 name: document.getElementById('p-name').value,
                 nameSi: document.getElementById('p-name-si').value,
-                price: document.getElementById('p-price').value,
-                cost: document.getElementById('p-cost').value, // Save Cost
+                price: `Rs. ${document.getElementById('p-price').value.trim().replace(/Rs\.?\s*/ig, '')}`,
+                cost: document.getElementById('p-cost').value.trim() ? `Rs. ${document.getElementById('p-cost').value.trim().replace(/Rs\.?\s*/ig, '')}` : '', // Save Cost
                 category: document.getElementById('p-category').value,
                 subcategory: document.getElementById('p-subcategory').value,
                 sku: document.getElementById('p-sku').value,
@@ -5018,8 +5173,8 @@ Buddika Stores
             document.getElementById('promo-edit-id').value = id;
             document.getElementById('pm-title').value = p.title;
             document.getElementById('pm-desc').value = p.description || '';
-            document.getElementById('pm-price').value = p.price;
-            document.getElementById('pm-old-price').value = p.oldPrice || '';
+            document.getElementById('pm-price').value = p.price ? p.price.toString().replace(/Rs\.?\s*/ig, '') : '';
+            document.getElementById('pm-old-price').value = p.oldPrice ? p.oldPrice.toString().replace(/Rs\.?\s*/ig, '') : '';
             document.getElementById('pm-badge').value = p.badge || '';
             document.getElementById('pm-status').value = p.status || 'active';
             document.getElementById('pm-image').value = p.image || '';
@@ -5037,8 +5192,8 @@ Buddika Stores
                 const data = {
                     title: document.getElementById('pm-title').value,
                     description: document.getElementById('pm-desc').value,
-                    price: document.getElementById('pm-price').value,
-                    oldPrice: document.getElementById('pm-old-price').value,
+                    price: `Rs. ${document.getElementById('pm-price').value.trim().replace(/Rs\.?\s*/ig, '')}`,
+                    oldPrice: document.getElementById('pm-old-price').value.trim() ? `Rs. ${document.getElementById('pm-old-price').value.trim().replace(/Rs\.?\s*/ig, '')}` : '',
                     badge: document.getElementById('pm-badge').value,
                     status: 'active', // Default
                     image: document.getElementById('pm-image').value,
@@ -6207,132 +6362,19 @@ Special discounts are now available! Don't miss out on these amazing deals!
 🏷️ Limited time only - Visit today!
 
 📍 Walapane, Nildandahinna
-📞 0767 968 437
-🌐 buddikastores.com`,
-
-                'offer': `🎁 *Special Offer from Buddika Stores!*
-
-Hello!
-
-We have an exclusive offer just for you!
-
-✨ Come visit us to learn more about this special deal.
-
-📍 Walapane, Nildandahinna
-📞 0767 968 437
-🌐 buddikastores.com`,
-
-                'reminder': `⏰ *Reminder from Buddika Stores*
-
-Hello!
-
-Just a friendly reminder that we're here for all your shopping needs!
-
-📚 School supplies
-🛒 Grocery items
-📰 Daily newspapers
-
-📍 Walapane, Nildandahinna
-📞 0767 968 437
-🌐 buddikastores.com`
+📞 0767 968 437`
             };
 
-            messageEl.value = templates[type] || templates['custom'];
-        };
-    </script>
-
-    <!-- Morning Update Manager Script -->
-    <script>
-        // ==================== MORNING UPDATE FUNCTIONS ====================
-        const STATUS_BADGES = {
-            'available': { text: 'AVAILABLE', bgClass: 'bg-green-100', textClass: 'text-green-800' },
-            'sold_out': { text: 'SOLD OUT', bgClass: 'bg-red-100', textClass: 'text-red-800' },
-            'coming_soon': { text: 'COMING SOON', bgClass: 'bg-blue-100', textClass: 'text-blue-800' },
-            'new_arrival': { text: 'NEW ARRIVAL', bgClass: 'bg-purple-100', textClass: 'text-purple-800' },
-            'sale': { text: 'SALE', bgClass: 'bg-orange-100', textClass: 'text-orange-800' },
-            'fresh': { text: 'FRESH TODAY', bgClass: 'bg-emerald-100', textClass: 'text-emerald-800' },
-            'delayed': { text: 'DELAYED', bgClass: 'bg-yellow-100', textClass: 'text-yellow-800' },
-            'closed': { text: 'CLOSED', bgClass: 'bg-gray-200', textClass: 'text-gray-800' }
-        };
-
-        // Load Morning Update from Firebase
-        window.loadMorningUpdate = async function () {
-            try {
-                const docRef = doc(db, 'settings', 'morning_update');
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    document.getElementById('mu-title').value = data.title || 'Morning Update';
-                    document.getElementById('mu-message').value = data.message || 'Daily papers are in stock.';
-                    document.getElementById('mu-status').value = data.status || 'available';
-                    updateMorningPreview();
-                    showToast('Morning Update loaded!', 'success');
-                } else {
-                    showToast('No saved data, using defaults', 'info');
-                }
-            } catch (error) {
-                console.error('Error loading morning update:', error);
-                showToast('Error loading data', 'error');
+            if (templates[type]) {
+                messageEl.value = templates[type];
             }
         };
-
-        // Save Morning Update to Firebase
-        window.saveMorningUpdate = async function () {
-            const title = document.getElementById('mu-title').value.trim();
-            const message = document.getElementById('mu-message').value.trim();
-            const status = document.getElementById('mu-status').value;
-
-            if (!title || !message) {
-                showToast('Please fill in all fields', 'error');
-                return;
-            }
-
-            try {
-                const docRef = doc(db, 'settings', 'morning_update');
-                await setDoc(docRef, {
-                    title: title,
-                    message: message,
-                    status: status,
-                    updatedAt: new Date().toISOString()
-                });
-                showToast('✅ Morning Update saved! Changes are now live.', 'success');
-            } catch (error) {
-                console.error('Error saving morning update:', error);
-                showToast('Error saving data', 'error');
-            }
-        };
-
-        // Update preview in real-time
-        window.updateMorningPreview = function () {
-            const title = document.getElementById('mu-title').value || 'Morning Update';
-            const message = document.getElementById('mu-message').value || 'Daily papers are in stock.';
-            const status = document.getElementById('mu-status').value;
-
-            document.getElementById('mu-preview-title').innerText = title;
-            document.getElementById('mu-preview-message').innerText = message;
-
-            const badge = STATUS_BADGES[status] || STATUS_BADGES['available'];
-            const badgeEl = document.getElementById('mu-preview-badge');
-            badgeEl.innerText = badge.text;
-            badgeEl.className = `px-3 py-1 rounded-full text-xs font-bold ${badge.bgClass} ${badge.textClass}`;
-        };
-
-        // Set quick message
-        window.setQuickMessage = function (msg) {
-            document.getElementById('mu-message').value = msg;
-            updateMorningPreview();
-        };
-
-        // ==================== SETTINGS LOGIC REMOVED (DUPLICATE) ====================
-        // The correct settings logic is already defined in the main script block above (around line 5532).
-        // This block was overwriting it with incorrect IDs (gemini-api-key vs setting-api-key).
-
 
         // Driver Stub (to prevent errors)
         window.addDriver = () => {
             showToast('Driver management coming soon', 'info');
         }
     </script>
+</body>
 
 </html>
