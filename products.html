@@ -207,7 +207,7 @@
                             <!-- Mega Menu Dropdown -->
                             <div
                                 class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[90vw] md:w-[600px] bg-white border border-gray-200 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 p-6 text-left top-full overflow-hidden">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="dynamic-menu-Stationery">
 
                                     <!-- Col 1: Sathara Publications -->
                                     <div>
@@ -358,23 +358,9 @@
                             <!-- Simple Dropdown -->
                             <div
                                 class="absolute left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 mt-2 w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2 text-left top-full overflow-hidden">
-                                <ul class="text-sm text-gray-600">
-                                    <li><a href="#"
-                                            onclick="event.preventDefault(); filterBySubCategory('Daily Papers')"
-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Daily
-                                            Papers</a></li>
-                                    <li><a href="#"
-                                            onclick="event.preventDefault(); filterBySubCategory('Sunday Papers')"
-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Sunday
-                                            Papers</a></li>
-                                    <li><a href="#"
-                                            onclick="event.preventDefault(); filterBySubCategory('Women Papers')"
-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">Women
-                                            Papers</a></li>
-                                    <li><a href="#"
-                                            onclick="event.preventDefault(); filterBySubCategory('English Papers')"
-                                            class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">English
-                                            Papers</a></li>
+                                <ul class="text-sm text-gray-600" id="dynamic-menu-Newspapers">
+                                    <!-- Populated by JS -->
+                                    <li class="px-4 py-2 text-xs text-gray-400">Loading...</li>
                                 </ul>
                             </div>
                         </div>
@@ -423,7 +409,7 @@
 
     <!-- Main Logic -->
     <script type="module">
-        import { db, collection, getDocs, getDoc, doc, query, orderBy, limit, startAfter, where } from './assets/js/firebase-config.js';
+        import { db, collection, getDocs, getDoc, doc, query, orderBy, limit, startAfter, where, onSnapshot } from './assets/js/firebase-config.js';
         import { escapeHtml, escapeJs } from './assets/js/utils.js';
         import { addToCart } from './assets/js/cart.js'; // Explicit Import
 
@@ -452,15 +438,79 @@
             let currentSubCategory = null; // New State for Subcategory Filters
             let currentSearchTerm = urlSearch ? urlSearch.toLowerCase() : '';
 
-            // Expose subcategory filter function to global window scope so HTML onclicks work
-            window.filterBySubCategory = (subCat) => {
-                console.log(`Filtering by subcategory: ${subCat}`);
+            // --- DYNAMIC CATEGORIES ENGINE ---
+            function loadDynamicCategories() {
+                const ref = doc(db, 'settings', 'categories_config');
+                onSnapshot(ref, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const categories = docSnap.data().data || {};
+                        renderStationeryMenu(categories['Stationery'] || {});
+                        renderNewspapersMenu(categories['Newspapers'] || {});
+                    }
+                });
+            }
 
-                // Set main category to stationery if not already
-                if (currentCategory !== 'Stationery') {
+            function renderStationeryMenu(stationeryData) {
+                const container = document.getElementById('dynamic-menu-Stationery');
+                if (!container) return;
+                container.innerHTML = '';
+
+                // Partition groups into 3 columns if possible
+                const groups = Object.entries(stationeryData);
+                groups.forEach(([groupName, subs]) => {
+                    const col = document.createElement('div');
+                    const isSathara = groupName === 'Sathara Publications';
+                    
+                    let subsHtml = subs.map(sub => `
+                        <li><a href="#" 
+                            onclick="event.preventDefault(); filterBySubCategory('${escapeJs(sub)}', 'Stationery')" 
+                            class="hover:text-black hover:underline block">${escapeHtml(sub)}</a></li>
+                    `).join('');
+
+                    col.innerHTML = `
+                        <h4 class="font-bold text-black border-b border-gray-100 pb-2 mb-3 uppercase text-xs tracking-wider">
+                            ${escapeHtml(groupName)}
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-600 ${isSathara ? 'md:columns-2' : ''}">
+                            ${subsHtml}
+                        </ul>
+                    `;
+                    container.appendChild(col);
+                });
+            }
+
+            function renderNewspapersMenu(newsData) {
+                const container = document.getElementById('dynamic-menu-Newspapers');
+                if (!container) return;
+                container.innerHTML = '';
+
+                // Newspapers are usually just a flat list of groups or items
+                // In our schema, it's Category -> Group -> List
+                Object.entries(newsData).forEach(([groupName, subs]) => {
+                    subs.forEach(sub => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <a href="#" onclick="event.preventDefault(); filterBySubCategory('${escapeJs(sub)}', 'Newspapers')" 
+                                class="block px-4 py-2 hover:bg-gray-100 hover:text-black transition-colors">
+                                ${escapeHtml(sub)}
+                            </a>
+                        `;
+                        container.appendChild(li);
+                    });
+                });
+            }
+
+            loadDynamicCategories();
+
+            // Expose subcategory filter function to global window scope so HTML onclicks work
+            window.filterBySubCategory = (subCat, mainCat = 'Stationery') => {
+                console.log(`Filtering by subcategory: ${subCat} in category: ${mainCat}`);
+
+                // Set main category if not already
+                if (currentCategory !== mainCat) {
                     // Update main buttons UI
-                    updateFilterButtons('Stationery');
-                    currentCategory = 'Stationery';
+                    updateFilterButtons(mainCat);
+                    currentCategory = mainCat;
                 }
 
                 currentSubCategory = subCat;

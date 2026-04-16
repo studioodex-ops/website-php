@@ -688,14 +688,20 @@
                         <h2 class="text-3xl font-bold font-heading text-gray-900">Product Management</h2>
                         <p class="text-gray-500 text-sm mt-1">Manage your inventory, prices, and stock.</p>
                     </div>
-                    <button onclick="openModal()"
-                        class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Add New Product
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="openCategoryModal()"
+                            class="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-bold py-3 px-4 rounded-xl shadow-sm flex items-center gap-2 transition-transform active:scale-95">
+                            ⚙️ Manage Categories
+                        </button>
+                        <button onclick="openModal()"
+                            class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-transform active:scale-95 shadow-lg flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add New Product
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Search -->
@@ -2081,6 +2087,44 @@ Hello! We have exciting news for you!
         </div>
     </div>
 
+    <!-- CATEGORY MANAGER MODAL -->
+    <div id="category-modal"
+        class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 flex flex-col max-h-[90vh]"
+            id="category-modal-content">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-bold font-heading">Manage Categories & Subcategories</h3>
+                <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 bg-gray-50/50" id="category-manager-body">
+                <!-- Dynamically rendered list goes here -->
+                <div class="text-center py-10 text-gray-500">Loading categories from database...</div>
+            </div>
+
+            <div class="flex justify-between items-center p-6 border-t border-gray-100 bg-white">
+                <button type="button" onclick="addNewMainCategory()"
+                    class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg> Add New Main Category
+                </button>
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeCategoryModal()"
+                        class="px-6 py-2.5 font-bold text-gray-500 hover:text-black hover:bg-gray-50 rounded-lg transition-colors">Cancel</button>
+                    <button type="button" onclick="saveCategoriesToDB()" id="btn-save-categories"
+                        class="bg-black hover:bg-gray-800 text-white font-bold py-2.5 px-8 rounded-lg shadow-lg transition-transform active:scale-95">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BUNDLE MODAL -->
     <div id="bundle-modal"
         class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm p-4">
@@ -2275,7 +2319,9 @@ Hello! We have exciting news for you!
     <!-- MAIN LOGIC -->
     <script type="module">
         import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, collectionGroup, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, startAt, endAt, limitToLast, endBefore, ref, uploadBytes, getDownloadURL, where, increment, addDoc, writeBatch, onSnapshot } from './assets/js/firebase-config.js?v=6';
-        import { escapeHtml } from './assets/js/utils.js';
+        import { escapeHtml, escapeJs } from './assets/js/utils.js';
+        window.escapeHtml = escapeHtml;
+        window.escapeJs = escapeJs;
 
         // Initialize Global Objects
         window.promoData = {};
@@ -2443,6 +2489,7 @@ Hello! We have exciting news for you!
                         if (emailEl) emailEl.innerText = user.email;
 
                         // Initialize Modules
+                        if (typeof loadCategoriesConfig === 'function') loadCategoriesConfig();
                         if (typeof fetchAndRenderProducts === 'function') fetchAndRenderProducts();
                         if (typeof startGlobalListeners === 'function') startGlobalListeners();
                         if (typeof updateWholesaleBadge === 'function') updateWholesaleBadge();
@@ -2560,23 +2607,21 @@ Hello! We have exciting news for you!
         }
 
         // Subcategory data structure (mirrors POS)
-        const adminSubcategories = {
-            'Grocery': {
-                'Food': ['Rice', 'Sugar', 'Flour', 'Oil', 'Spices', 'Canned Food'],
-                'Household': ['Soap', 'Detergent', 'Cleaning', 'Tissue'],
-                'Beverages': ['Tea', 'Coffee', 'Milk Powder', 'Soft Drinks']
-            },
-            'Stationery': {
-                'Sathara Publications': ['Preschool', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Story Books', 'Monthly Magazines'],
-                'Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule', 'Notebooks', 'Pens & Pencils', 'General Stationery', 'Office Supplies'],
-                'Reading & Stories': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
-            },
-            'Newspapers': { 
-                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers'] 
-            },
-            'News': {
-                'Articles': ['Daily News', 'Educational Papers', 'Other']
-            }
+        window.adminSubcategories = {}; // Now it is dynamically loaded from Firebase
+
+        window.loadCategoriesConfig = () => {
+            const ref = doc(db, 'settings', 'categories_config');
+            onSnapshot(ref, (docSnap) => {
+                if (docSnap.exists()) {
+                    window.adminSubcategories = docSnap.data().data || {};
+                    window.updateSubcategoryOptions(document.getElementById('p-subcategory')?.value);
+                    // Also update category manager if modal is open
+                    if(!document.getElementById('category-modal').classList.contains('hidden')) {
+                        tempCategories = JSON.parse(JSON.stringify(window.adminSubcategories));
+                        window.renderCategoryManager();
+                    }
+                }
+            });
         };
 
         // Update subcategory dropdown based on selected category
@@ -2585,8 +2630,23 @@ Hello! We have exciting news for you!
             const subcategorySelect = document.getElementById('p-subcategory');
             if (!categorySelect || !subcategorySelect) return;
 
+            // Make sure the main Categories dropdown matches the DB keys
+            if (Object.keys(window.adminSubcategories).length > 0 && categorySelect.options.length <= 4) {
+                const currentCatVal = categorySelect.value;
+                categorySelect.innerHTML = '';
+                Object.keys(window.adminSubcategories).sort().forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = cat;
+                    categorySelect.appendChild(opt);
+                });
+                if(window.adminSubcategories[currentCatVal]) {
+                    categorySelect.value = currentCatVal;
+                }
+            }
+
             const category = categorySelect.value;
-            const catData = adminSubcategories[category];
+            const catData = window.adminSubcategories[category];
 
             // Reset options
             subcategorySelect.innerHTML = '<option value="">-- Select Subcategory --</option>';
@@ -2607,6 +2667,141 @@ Hello! We have exciting news for you!
                     });
                     subcategorySelect.appendChild(optgroup);
                 }
+            }
+        };
+
+        // --- CATEGORY MANAGER LOGIC ---
+        let tempCategories = {}; // Used for editing inside the modal before saving
+
+        window.openCategoryModal = () => {
+            tempCategories = JSON.parse(JSON.stringify(window.adminSubcategories));
+            window.renderCategoryManager();
+            document.getElementById('category-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('category-modal-content').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        };
+
+        window.closeCategoryModal = () => {
+            document.getElementById('category-modal-content').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('category-modal').classList.add('hidden');
+            }, 300);
+        };
+
+        window.renderCategoryManager = () => {
+            const container = document.getElementById('category-manager-body');
+            container.innerHTML = '';
+            
+            if (Object.keys(tempCategories).length === 0) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-500">No categories found. Add one below.</div>';
+                return;
+            }
+
+            for (const [mainCat, groups] of Object.entries(tempCategories)) {
+                const catHtml = document.createElement('div');
+                catHtml.className = 'bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden';
+                
+                let groupsHtml = '';
+                for (const [groupName, subs] of Object.entries(groups)) {
+                    const subsHtml = Array.isArray(subs) ? subs.map((sub, sIdx) => `
+                        <div class="flex items-center justify-between py-1 border-b border-gray-50 last:border-0 pl-4 group/sub">
+                            <span class="text-sm text-gray-600">${window.escapeHtml(sub)}</span>
+                            <button onclick="window.deleteCategoryItem('${window.escapeJs(mainCat)}', '${window.escapeJs(groupName)}', ${sIdx})" class="text-red-400 hover:text-red-600 opacity-0 group-hover/sub:opacity-100 transition-opacity" title="Remove Subcategory"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        </div>
+                    `).join('') : '';
+
+                    groupsHtml += `
+                        <div class="bg-gray-50/50 p-4 border-b border-gray-100 last:border-0">
+                            <div class="flex justify-between flex-wrap gap-2 items-center mb-3">
+                                <h5 class="font-bold text-xs uppercase tracking-widest text-gray-700 flex items-center gap-2">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                                    ${window.escapeHtml(groupName)}
+                                </h5>
+                                <div class="flex gap-2">
+                                    <button onclick="window.addNewSubcategory('${window.escapeJs(mainCat)}', '${window.escapeJs(groupName)}')" class="text-[10px] bg-white border border-gray-200 text-black px-2 py-1 rounded hover:bg-black hover:text-white transition-colors font-bold">+ SUB</button>
+                                    <button onclick="window.deleteCategoryGroup('${window.escapeJs(mainCat)}', '${window.escapeJs(groupName)}')" class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 transition-colors font-bold">DEL GRP</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1 bg-white p-3 rounded-lg border border-gray-200 shadow-sm">${subsHtml || '<p class="text-[10px] text-gray-400">Empty group</p>'}</div>
+                        </div>
+                    `;
+                }
+
+                catHtml.innerHTML = `
+                    <div class="p-4 bg-black text-white flex justify-between items-center">
+                        <h4 class="font-bold text-lg font-heading">${window.escapeHtml(mainCat)}</h4>
+                        <div class="flex gap-2">
+                            <button onclick="window.addNewGroup('${window.escapeJs(mainCat)}')" class="text-[10px] bg-white text-black px-3 py-1.5 rounded uppercase font-bold hover:bg-gray-200">Add Group (Folder)</button>
+                            <button onclick="window.deleteMainCategory('${window.escapeJs(mainCat)}')" class="text-[10px] bg-red-600 text-white px-3 py-1.5 rounded uppercase font-bold hover:bg-red-700">Delete</button>
+                        </div>
+                    </div>
+                    <div>${groupsHtml}</div>
+                `;
+                container.appendChild(catHtml);
+            }
+        };
+
+        window.addNewMainCategory = () => {
+            const name = prompt("Enter new Main Category name (e.g. 'Hardware'):");
+            if (name && name.trim()) {
+                if(!tempCategories[name]) tempCategories[name] = { "Default Group": [] };
+                window.renderCategoryManager();
+            }
+        };
+
+        window.addNewGroup = (mainCat) => {
+            const name = prompt(`Enter new group name for ${mainCat} (e.g. 'Tools'):`);
+            if (name && name.trim()) {
+                if(!tempCategories[mainCat][name]) tempCategories[mainCat][name] = [];
+                window.renderCategoryManager();
+            }
+        };
+
+        window.addNewSubcategory = (mainCat, group) => {
+            const name = prompt(`Enter new subcategory for ${mainCat} -> ${group}:`);
+            if (name && name.trim()) {
+                tempCategories[mainCat][group].push(name.trim());
+                window.renderCategoryManager();
+            }
+        };
+
+        window.deleteCategoryItem = (mainCat, group, sIdx) => {
+            if(confirm("Remove this subcategory?")) {
+                tempCategories[mainCat][group].splice(sIdx, 1);
+                window.renderCategoryManager();
+            }
+        };
+        
+        window.deleteCategoryGroup = (mainCat, group) => {
+            if(confirm(`Delete entire group '${group}'?`)) {
+                delete tempCategories[mainCat][group];
+                window.renderCategoryManager();
+            }
+        };
+
+        window.deleteMainCategory = (mainCat) => {
+            if(confirm(`Delete entire Category '${mainCat}'? This might break existing products.`)) {
+                delete tempCategories[mainCat];
+                window.renderCategoryManager();
+            }
+        };
+
+        window.saveCategoriesToDB = async () => {
+            const btn = document.getElementById('btn-save-categories');
+            btn.innerText = 'Saving...';
+            btn.disabled = true;
+            try {
+                const ref = doc(db, 'settings', 'categories_config');
+                await setDoc(ref, { data: tempCategories }, { merge: true });
+                showToast("Categories Updated!", "success");
+                window.closeCategoryModal();
+            } catch(e) {
+                console.error(e);
+                showToast("Failed to save categories", "error");
+            } finally {
+                btn.innerText = 'Save Changes';
+                btn.disabled = false;
             }
         };
 
