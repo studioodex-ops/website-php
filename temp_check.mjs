@@ -1,457 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS System | Buddika Stores</title>
-    <meta name="description" content="Point of Sale system for Buddika Stores.">
-    <meta name="robots" content="noindex, nofollow">
-
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest-pos.json">
-    <meta name="theme-color" content="#0c0c0c">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Buddika POS">
-    <link rel="apple-touch-icon" href="assets/img/icons/icon-152x152.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192x192.png">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        black: '#0c0c0c',
-                        gray: {
-                            50: '#fcfcfc',
-                            100: '#f4f4f5',
-                            900: '#18181b',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Outfit', 'sans-serif'],
-                        sinhala: ['Noto Sans Sinhala', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-    <link rel="stylesheet" href="assets/css/admin-style.css">
-    <link rel="stylesheet" href="assets/css/receipt.css">
-
-    <!-- Sinhala Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
-
-    <style>
-        .product-grid-item:hover {
-            transform: scale(1.02);
-        }
-
-        .cart-item {
-            animation: slideIn 0.2s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-    </style>
-</head>
-
-<body class="bg-gray-100 text-black antialiased">
-
-    <!-- Loading/Auth Check Container -->
-    <div id="login-container" class="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-black mx-auto mb-4"></div>
-            <p class="text-gray-500 text-sm">Checking authentication...</p>
-            <p class="text-xs text-gray-400 mt-2">Redirecting if not logged in...</p>
-        </div>
-    </div>
-
-    <!-- Main POS Interface -->
-    <div id="pos-container" class="hidden h-screen flex flex-col">
-
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-xl font-bold font-heading tracking-tighter flex items-center gap-2">
-                    <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                        <span class="text-white text-lg">B</span>
-                    </div>
-                    <span>POS System</span>
-                </a>
-                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Online</span>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="text-right">
-                    <p class="text-xs text-gray-500">Logged in as</p>
-                    <p id="cashier-name" class="font-bold text-sm">Cashier</p>
-                </div>
-                <button onclick="handleLogout()"
-                    class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition-colors">
-                    Logout
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="flex-1 flex overflow-hidden">
-
-            <!-- Left: Products Section -->
-            <div class="flex-1 flex flex-col p-6 overflow-hidden">
-
-                <!-- Search & Filter -->
-                <div class="flex gap-4 mb-6">
-                    <div class="flex-1 relative">
-                        <input type="text" id="product-search" placeholder="Search products or scan barcode..."
-                            class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 pl-12 pr-14 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <!-- Barcode Scan Button -->
-                        <button onclick="openBarcodeScanner()"
-                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                            title="Scan Barcode">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
-                        <button onclick="filterByCategory('all')"
-                            class="category-btn whitespace-nowrap bg-black text-white px-4 py-2 rounded-lg text-sm font-bold flex-shrink-0"
-                            data-cat="all">All</button>
-                        <button onclick="filterByCategory('Grocery')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0"
-                            data-cat="Grocery">🛒 Grocery</button>
-                        <button onclick="toggleCategoryDropdown('Stationery')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
-                            data-cat="Stationery">✏️ Stationery <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg></button>
-                        <button onclick="toggleCategoryDropdown('Newspapers')"
-                            class="category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1"
-                            data-cat="Newspapers">📰 Newspapers <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg></button>
-                    </div>
-                </div>
-
-                <!-- Subcategory Chips Row -->
-                <div id="subcategory-row" class="hidden mb-4 -mt-2">
-                    <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="subcategory-chips">
-                        <!-- Chips will be dynamically inserted here -->
-                    </div>
-                </div>
-
-                <!-- Products Grid -->
-                <div id="products-grid"
-                    class="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pr-2">
-                    <!-- Products will be loaded here -->
-                    <div class="col-span-full text-center py-20 text-gray-400">
-                        <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        <p>Loading products...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Cart Section -->
-            <div class="w-96 bg-white border-l border-gray-200 flex flex-col">
-
-                <!-- Cart Header -->
-                <div class="p-4 border-b border-gray-100">
-                    <div class="flex items-center justify-between">
-                        <h2 class="font-bold text-lg font-heading">Current Sale</h2>
-                        <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-bold">Clear
-                            All</button>
-                    </div>
-                </div>
-
-                <!-- Cart Items -->
-                <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <div class="text-center py-12 text-gray-400">
-                        <svg class="w-10 h-10 mx-auto mb-2 opacity-30" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                            </path>
-                        </svg>
-                        <p class="text-sm">No items in cart</p>
-                    </div>
-                </div>
-
-                <!-- Cart Totals -->
-                <div class="border-t border-gray-100 p-4 space-y-3">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Subtotal</span>
-                        <span id="cart-subtotal" class="font-bold">Rs. 0.00</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-500">Discount</span>
-                        <div class="flex items-center gap-2">
-                            <input type="number" id="discount-input" value="0" min="0"
-                                class="w-16 text-right bg-gray-50 border border-gray-200 rounded px-2 py-1 text-sm"
-                                onchange="updateTotals()">
-                            <button id="discount-type-btn" onclick="toggleDiscountType()"
-                                class="text-xs font-bold bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300 w-8">Rs</button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-xl font-bold border-t border-gray-100 pt-3">
-                        <span>Total</span>
-                        <span id="cart-total">Rs. 0.00</span>
-                    </div>
-                </div>
-
-                <!-- Payment Section -->
-                <div class="border-t border-gray-100 p-4 space-y-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs text-gray-500 block mb-1">Received</label>
-                            <input type="number" id="received-amount" placeholder="0.00"
-                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-lg font-bold text-right"
-                                oninput="calculateChange()">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-500 block mb-1">Change</label>
-                            <div id="change-amount"
-                                class="w-full bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-lg font-bold text-right text-green-700">
-                                Rs. 0.00</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="completeSale('cash')"
-                            class="bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
-                                </path>
-                            </svg>
-                            Cash
-                        </button>
-                        <button onclick="completeSale('card')"
-                            class="bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                </path>
-                            </svg>
-                            Card
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quantity Input Modal -->
-    <div id="qty-modal" class="fixed inset-0 bg-black/80 z-[250] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-bold" id="qty-modal-title">Add Product</h3>
-                <button onclick="closeQtyModal()" class="text-gray-400 hover:text-black">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-            <div class="p-6">
-                <p class="text-sm text-gray-500 mb-4" id="qty-modal-desc">Enter quantity</p>
-                <div class="flex items-center gap-3 mb-6">
-                    <button onclick="adjustQtyInput(-1)"
-                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">-</button>
-                    <input type="number" id="qty-input" value="1" min="0.1" step="0.1"
-                        class="flex-1 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl py-3 focus:ring-2 focus:ring-black outline-none">
-                    <button onclick="adjustQtyInput(1)"
-                        class="w-12 h-12 bg-gray-100 text-gray-700 rounded-xl font-bold text-xl hover:bg-gray-200 transition-colors">+</button>
-                    <span id="qty-unit-label" class="text-lg font-bold text-gray-500 w-12">unit</span>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="closeQtyModal()"
-                        class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
-                        Cancel
-                    </button>
-                    <button onclick="confirmAddToCart()"
-                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Receipt Print Modal -->
-    <div id="receipt-modal" class="fixed inset-0 bg-black/80 z-[300] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between no-print">
-                <h3 class="font-bold">Receipt Preview</h3>
-                <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-black">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Receipt Content -->
-            <div id="receipt-print-area" class="p-4">
-                <div id="receipt-content" class="receipt-container">
-                    <!-- Receipt will be generated here -->
-                </div>
-            </div>
-
-            <!-- WhatsApp Send Section -->
-            <div class="p-4 border-t border-gray-100 no-print space-y-3">
-                <div class="flex flex-col gap-2">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Share Receipt via WhatsApp</label>
-                    <div class="flex gap-2">
-                        <div class="flex-1 relative">
-                            <input type="tel" id="receipt-phone" placeholder="Customer phone (07XXXXXXXX)"
-                                list="customer-suggestions"
-                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
-                            <datalist id="customer-suggestions">
-                                <!-- Customer suggestions will be populated here -->
-                            </datalist>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="sendReceiptWhatsAppText()"
-                            class="bg-green-600 text-white px-3 py-2 rounded-lg font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2 text-sm">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                            </svg>
-                            Quick Text
-                        </button>
-                        <button onclick="sendReceiptWhatsApp()"
-                            class="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 text-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            Image Receipt
-                        </button>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="printReceipt()"
-                        class="flex-1 bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                            </path>
-                        </svg>
-                        Print Receipt
-                    </button>
-                    <button onclick="closeReceiptModal()"
-                        class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">
-                        Done
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Barcode Scanner Modal -->
-    <div id="barcode-modal" class="fixed inset-0 bg-black/90 z-[350] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-black text-white">
-                <div class="flex items-center gap-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h2m10 0h2m-6-6V4m0 2H8m-2 6h2m-2 2h2m0 4v2m6 0v2m-6-6h6">
-                        </path>
-                    </svg>
-                    <h3 class="font-bold text-lg">Scan Barcode</h3>
-                </div>
-                <button onclick="closeBarcodeScanner()" class="text-white/70 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Scanner View -->
-            <div class="relative bg-black" style="height: 300px;">
-                <div id="barcode-scanner-view" class="w-full h-full"></div>
-                <!-- Scan Line Animation -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-64 h-48 border-2 border-green-400 rounded-lg relative">
-                        <div class="absolute inset-x-0 h-0.5 bg-green-400 animate-pulse"
-                            style="top: 50%; animation: scanLine 2s infinite;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Manual Entry -->
-            <div class="p-4 space-y-3">
-                <div class="text-center text-sm text-gray-500">
-                    Or enter barcode manually:
-                </div>
-                <div class="flex gap-2">
-                    <input type="text" id="manual-barcode-input" placeholder="Enter barcode number..."
-                        class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none">
-                    <button onclick="searchByBarcode()"
-                        class="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
-                        Search
-                    </button>
-                </div>
-                <div id="barcode-result" class="text-center text-sm hidden">
-                    <!-- Result will show here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scan Line Animation Style -->
-    <style>
-        @keyframes scanLine {
-
-            0%,
-            100% {
-                top: 20%;
-            }
-
-            50% {
-                top: 80%;
-            }
-        }
-    </style>
-
-    <!-- html2canvas for receipt image capture -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <!-- QuaggaJS Barcode Scanner Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-
-    <!-- Scripts -->
-    <script type="module">
-        import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, getDocs, doc, setDoc, updateDoc, increment, query, orderBy, addDoc } from './assets/js/firebase-config.js';
+        import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, getDocs, getDoc, doc, setDoc, updateDoc, increment, query, orderBy, addDoc, onSnapshot } from './assets/js/firebase-config.js';
         import { escapeHtml } from './assets/js/utils.js';
 
         // Global State
@@ -463,18 +11,88 @@
         let discountMode = 'rs'; // rs or percent
         let lastSaleData = null; // Store last sale for WhatsApp
         let allCustomers = []; // NEW: For auto-suggest
+        let categoriesData = {}; // NEW: Store dynamic category config
 
-        // Subcategory Definitions (Matching Website Structure)
-        const subcategories = {
-            'Stationery': {
-                'Sathara Publications': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11 O Level', 'Grade 12 A Level', 'O/L Past Papers', 'A/L Past Papers', 'Past Papers', 'Story Books', 'Monthly Magazines'],
-                'CR Books & Tools': ['B5 Exercise Books', 'A5 Exercise Books', 'Square Rule Books', 'Notebooks'],
-                'Other': ['Educational Books', "Children's Books", 'Sinhala Literature', 'Religious Books']
-            },
-            'Newspapers': {
-                'Papers': ['Daily Papers', 'Sunday Papers', 'Women Papers', 'English Papers']
+        // --- DYNAMIC CATEGORIES ENGINE ---
+        function loadDynamicCategories() {
+            const ref = doc(db, 'settings', 'categories_config');
+            onSnapshot(ref, (docSnap) => {
+                if (docSnap.exists()) {
+                    console.log('[POS] Category config updated');
+                    categoriesData = docSnap.data().data || {};
+                    renderDynamicCategoryBar(categoriesData);
+                }
+            }, (error) => {
+                console.warn('[POS] Failed to load categories:', error);
+                renderDynamicCategoryBar({}); // Fallback to empty to allow UI to show
+            });
+        }
+
+        function renderDynamicCategoryBar(categories) {
+            const row = document.getElementById('dynamic-categories-row');
+            if (!row) return;
+            
+            // Keep the 'All' button
+            row.innerHTML = `
+                <button onclick="filterByCategory('all')"
+                    class="category-btn whitespace-nowrap bg-black text-white px-4 py-2 rounded-lg text-sm font-bold flex-shrink-0"
+                    data-cat="all">All Category</button>
+            `;
+
+            try {
+                Object.keys(categories).sort().forEach(catName => {
+                    const catData = categories[catName];
+                    if (!catData || typeof catData !== 'object') return;
+
+                    const hasSubcategories = Object.values(catData).some(subs => Array.isArray(subs) && subs.length > 0);
+
+                    const btn = document.createElement('button');
+                    btn.className = "category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1";
+                    btn.dataset.cat = catName;
+                    
+                    if (hasSubcategories) {
+                        btn.onclick = () => toggleCategoryDropdown(catName);
+                        btn.innerHTML = `${catName} <svg class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+                    } else {
+                        btn.onclick = () => filterByCategory(catName);
+                        btn.innerText = catName;
+                    }
+
+                    row.appendChild(btn);
+                });
+
+                // --- ADDED: CATEGORY 6 (OFFERS) Manual Entry ---
+                // In index.html, Category 6 is "Special Offers & Promotions"
+                const offerCat = "Special Offers & Promotions";
+                if (!categories[offerCat]) {
+                    const offerBtn = document.createElement('button');
+                    offerBtn.className = "category-btn whitespace-nowrap bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 flex-shrink-0 flex items-center gap-1";
+                    offerBtn.dataset.cat = offerCat;
+                    offerBtn.onclick = () => filterByCategory(offerCat);
+                    offerBtn.innerText = "Offers"; // Short label for POS
+                    row.appendChild(offerBtn);
+                }
+            } catch (err) {
+                console.error('[POS] Error rendering categories:', err);
             }
-        };
+            
+            // Restore active state
+            if (typeof updateCategoryUI === 'function') {
+                updateCategoryUI(currentCategory);
+            }
+        }
+
+        function updateCategoryUI(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.add('bg-black', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.remove('bg-black', 'text-white');
+                }
+            });
+        }
 
         // DOM Elements
         const loginContainer = document.getElementById('login-container');
@@ -491,6 +109,19 @@
         window.addDoc = addDoc;
         window.collection = collection;
         window.increment = increment;
+
+        // ==================== HELAPAY MODAL ====================
+        window.openHelaPayModal = () => {
+            if (cart.length === 0) {
+                showToast('Cart is empty!', 'error');
+                return;
+            }
+            document.getElementById('helapay-modal').classList.remove('hidden');
+        };
+
+        window.closeHelaPayModal = () => {
+            document.getElementById('helapay-modal').classList.add('hidden');
+        };
 
         // ==================== BARCODE SCANNER ====================
         let scannerActive = false;
@@ -630,17 +261,51 @@
             handleBarcodeResult(barcode);
         };
 
-        // Enter key on manual input
-        document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('manual-barcode-input');
-            if (input) {
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        searchByBarcode();
-                    }
-                });
+        // Custom Item Functions
+        window.openCustomItemModal = () => {
+            document.getElementById('custom-item-modal').classList.remove('hidden');
+            document.getElementById('custom-item-name').value = '';
+            document.getElementById('custom-item-price').value = '';
+            document.getElementById('custom-item-cost').value = '';
+            document.getElementById('custom-item-qty').value = '1';
+        };
+
+        window.closeCustomItemModal = () => {
+            document.getElementById('custom-item-modal').classList.add('hidden');
+        };
+
+        window.addCustomItemToCart = () => {
+            const name = document.getElementById('custom-item-name').value.trim();
+            const price = parseFloat(document.getElementById('custom-item-price').value);
+            const cost = parseFloat(document.getElementById('custom-item-cost').value) || 0;
+            const qty = parseFloat(document.getElementById('custom-item-qty').value);
+
+            if (!name) {
+                showToast('Please enter an item name', 'error');
+                return;
             }
-        });
+            if (isNaN(price) || price < 0) {
+                showToast('Please enter a valid price', 'error');
+                return;
+            }
+            if (isNaN(qty) || qty <= 0) {
+                showToast('Please enter a valid quantity', 'error');
+                return;
+            }
+
+            const customProduct = {
+                id: 'custom-' + Date.now(),
+                name: name,
+                price: price,
+                cost: cost,
+                stock: 99999, // Infinite stock for custom items
+                unit: 'unit'
+            };
+
+            addItemToCart(customProduct, qty);
+            closeCustomItemModal();
+        };
+
 
         // Play beep sound on scan
         function playBeep() {
@@ -688,16 +353,7 @@
             // Hide subcategory row
             document.getElementById('subcategory-row').classList.add('hidden');
 
-            // Update UI
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if (btn.dataset.cat === category) {
-                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    btn.classList.add('bg-black', 'text-white');
-                } else {
-                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    btn.classList.remove('bg-black', 'text-white');
-                }
-            });
+            updateCategoryUI(category);
 
             renderProducts();
         };
@@ -707,19 +363,10 @@
             currentCategory = category;
             currentSubcategory = null;
 
-            // Update category button styling
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if (btn.dataset.cat === category) {
-                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    btn.classList.add('bg-black', 'text-white');
-                } else {
-                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-                    btn.classList.remove('bg-black', 'text-white');
-                }
-            });
+            updateCategoryUI(category);
 
-            // Get subcategories for this category
-            const catData = subcategories[category];
+            // Get subcategories for this category from dynamic data
+            const catData = categoriesData[category];
             if (!catData) {
                 document.getElementById('subcategory-row').classList.add('hidden');
                 renderProducts();
@@ -735,13 +382,15 @@
 
             // Add grouped subcategories
             for (const [group, items] of Object.entries(catData)) {
-                items.forEach(subcat => {
-                    chipsHtml += `<button onclick="filterBySubcategory('${subcat}')" 
-                        class="subcategory-chip whitespace-nowrap bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-gray-200 flex-shrink-0"
-                        data-subcat="${subcat}">
-                        ${subcat}
-                    </button>`;
-                });
+                if (Array.isArray(items)) {
+                    items.forEach(subcat => {
+                        chipsHtml += `<button onclick="filterBySubcategory('${subcat}')" 
+                            class="subcategory-chip whitespace-nowrap bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-gray-200 flex-shrink-0"
+                            data-subcat="${subcat}">
+                            ${subcat}
+                        </button>`;
+                    });
+                }
             }
 
             chipsContainer.innerHTML = chipsHtml;
@@ -800,20 +449,55 @@
 
         // Auth State - Redirect to admin if not logged in
         onAuthStateChanged(auth, (user) => {
-            // DESKTOP BYPASS
-            const isDesktop = true;
+            if (user) {
+                console.log('[POS] User identified:', user.email);
+                
+                // Hide overlay and show POS regardless of data state (defensive)
+                setTimeout(() => {
+                    const overlay = document.getElementById('login-container');
+                    if (overlay) overlay.classList.add('hidden');
+                    
+                    const posUI = document.getElementById('pos-container');
+                    if (posUI) posUI.classList.remove('hidden');
 
-            if (user || isDesktop) {
-                if (!user) {
-                    // Mock User for Offline Mode
-                    user = { displayName: 'Local Cashier', email: 'offline@pos', uid: 'local_admin' };
+                    // --- ATTACH KEYPAD LISTENERS HERE (Surer that elements exist) ---
+                    const priceInputs = ['received-amount', 'custom-item-price', 'discount-input'];
+                    priceInputs.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.addEventListener('keydown', (e) => {
+                                if (e.key === 'Enter') {
+                                    const val = parseFloat(el.value) || 0;
+                                    if (val > 0) {
+                                        el.value = (val / 100).toFixed(2);
+                                        if (id === 'received-amount') calculateChange();
+                                        if (id === 'discount-input') updateTotals();
+                                        e.preventDefault();
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // Add barcode manual listener
+                    const barcodeInput = document.getElementById('manual-barcode-input');
+                    if (barcodeInput) {
+                        barcodeInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') searchByBarcode();
+                        });
+                    }
+                }, 500);
+
+                document.getElementById('cashier-name').innerText = user.displayName || user.email;
+                
+                // Start loading sequence safely
+                try {
+                    loadDynamicCategories();
+                    loadProducts().catch(e => console.error('[POS] loadProducts failed:', e));
+                    loadCustomers().catch(e => console.error('[POS] loadCustomers failed:', e));
+                } catch (initErr) {
+                    console.error('[POS] Initialization crash:', initErr);
                 }
-                currentUser = user;
-                loginContainer.classList.add('hidden');
-                posContainer.classList.remove('hidden');
-                document.getElementById('cashier-name').innerText = user.displayName || user.email || 'Cashier';
-                loadProducts();
-                loadCustomers(); // Load customer autocomplete suggestions
             } else {
                 // Not logged in - redirect to admin panel for login
                 window.location.href = 'admin.html';
@@ -833,13 +517,28 @@
                 // Check if online
                 if (navigator.onLine) {
                     // Online: Load from Firebase and cache to IndexedDB
-                    const q = query(collection(db, 'products'), orderBy('name'));
-                    const snapshot = await getDocs(q);
+                    console.log('[POS] Fetching products from Firebase...');
+                    
+                    // Create a timeout for the fetch
+                    const fetchWithTimeout = new Promise(async (resolve, reject) => {
+                        const timeout = setTimeout(() => reject('timeout'), 8000);
+                        try {
+                            const q = query(collection(db, 'products'), orderBy('name'));
+                            const snapshot = await getDocs(q);
+                            clearTimeout(timeout);
+                            resolve(snapshot);
+                        } catch (e) {
+                            clearTimeout(timeout);
+                            reject(e);
+                        }
+                    });
+
+                    const snapshot = await fetchWithTimeout;
 
                     allProducts = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
-                    }));
+                    })).filter(p => !p.automated); // Filter out automated items (News/Updates)
 
                     // Cache to IndexedDB for offline use
                     if (typeof offlineDB !== 'undefined' && offlineDB.saveProducts) {
@@ -879,6 +578,8 @@
                 if (typeof offlineDB !== 'undefined' && offlineDB.getProducts) {
                     try {
                         allProducts = await offlineDB.getProducts();
+                        // Also filter for offline fallback
+                        allProducts = allProducts.filter(p => !p.automated);
                         if (allProducts.length > 0) {
                             updateOnlineStatus(false);
                             renderProducts();
@@ -1356,24 +1057,6 @@
             document.getElementById('change-amount').innerText = `Rs. ${change.toFixed(2)}`;
         };
 
-        // Filter by Category
-        window.filterByCategory = (category) => {
-            currentCategory = category;
-
-            // Update button styles
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if (btn.dataset.cat === category) {
-                    btn.classList.add('bg-black', 'text-white');
-                    btn.classList.remove('bg-gray-100', 'text-gray-700');
-                } else {
-                    btn.classList.remove('bg-black', 'text-white');
-                    btn.classList.add('bg-gray-100', 'text-gray-700');
-                }
-            });
-
-            renderProducts();
-        };
-
         // Search Products
         searchInput.addEventListener('input', renderProducts);
 
@@ -1434,10 +1117,13 @@
 
                     // Update product stock & Log Movement
                     for (const item of cart) {
-                        const productRef = doc(db, 'products', item.id);
-                        await updateDoc(productRef, {
-                            stock: increment(-item.qty)
-                        });
+                        // Skip stock modification for custom items
+                        if (!item.id.startsWith('custom-')) {
+                            const productRef = doc(db, 'products', item.id);
+                            await updateDoc(productRef, {
+                                stock: increment(-item.qty)
+                            });
+                        }
 
                         // Log Movement
                         try {
@@ -1475,9 +1161,11 @@
 
                 // Update local products (both online and offline)
                 cart.forEach(item => {
-                    const product = allProducts.find(p => p.id === item.id);
-                    if (product) {
-                        product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                    if (!item.id.startsWith('custom-')) {
+                        const product = allProducts.find(p => p.id === item.id);
+                        if (product) {
+                            product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                        }
                     }
                 });
 
@@ -1537,9 +1225,11 @@
 
                         // Update local products
                         cart.forEach(item => {
-                            const product = allProducts.find(p => p.id === item.id);
-                            if (product) {
-                                product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                            if (!item.id.startsWith('custom-')) {
+                                const product = allProducts.find(p => p.id === item.id);
+                                if (product) {
+                                    product.stock = Math.max(0, (product.stock || 0) - item.qty);
+                                }
                             }
                         });
 
@@ -1639,7 +1329,7 @@
                     </div>
                     <div class="total-row">
                         <span>Payment / ගෙවීම</span>
-                        <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
+                        <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : (sale.paymentMethod === 'helapay' ? 'HelaPay / QR' : 'Card / කාඩ්')}</span>
                     </div>
                 </div>
                 
@@ -1786,8 +1476,7 @@
                                 <span>Rs. ${sale.change.toFixed(2)}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px;">
-                                <span>Payment / ගෙවීම</span>
-                                <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : 'Card / කාඩ්'}</span>
+                                <span>${sale.paymentMethod === 'cash' ? 'Cash / මුදල්' : (sale.paymentMethod === 'helapay' ? 'HelaPay / QR' : 'Card / කාඩ්')}</span>
                             </div>
                         </div>
 
@@ -1874,6 +1563,9 @@
                     showToast('📱 Receipt image downloaded! Attach it to WhatsApp', 'success');
                 }, 'image/png', 1.0);
 
+            } catch (error) {
+                console.error('Error generating WhatsApp receipt:', error);
+                showToast('Failed to generate receipt: ' + error.message, 'error');
             }
         };
 
@@ -1987,12 +1679,8 @@
                 return;
             }
 
-            // Optional: Save customer phone as before
-            try {
-                if (navigator.onLine && lastSaleData.id) {
-                    await updateDoc(doc(db, 'sales', lastSaleData.id), { customerPhone: phoneInput });
-                }
-            } catch (e) {}
+            // Save customer data and update sale record
+            await saveCustomerPurchaseData(phoneInput, lastSaleData);
 
             const sale = lastSaleData;
             const receiptDate = new Date(sale.createdAt).toLocaleString('en-LK', {
@@ -2029,33 +1717,4 @@
                 setTimeout(() => toast.remove(), 300);
             }, 2000);
         }
-    </script>
-
-    <!-- Offline Database Module -->
-    <script src="assets/js/offline-db.js"></script>
-
-    <!-- Offline Indicator -->
-    <div id="offline-indicator"
-        class="hidden fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
-        <span class="w-2 h-2 bg-white rounded-full"></span>
-        <span class="text-sm font-bold">Offline Mode</span>
-    </div>
-
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('SW registered:', registration.scope);
-                    })
-                    .catch((err) => {
-                        console.log('SW registration failed:', err);
-                    });
-            });
-        }
-    </script>
-
-</body>
-
-</html>
+    

@@ -6,14 +6,17 @@ import { db, doc, getDoc } from './firebase-config.js';
 (async function () {
     'use strict';
 
-    // Default fallback dates (used if Firebase data not available)
+    // Default fallback dates (dynamically set to 7 days from now to avoid 'expired' look)
+    const sevenDaysLater = new Date();
+    sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
+
     const DEFAULT_TIMERS = {
         'book-list-offer': {
-            endDate: new Date('2026-01-09T23:59:59'),
+            endDate: sevenDaysLater,
             message: '⏰ Offer ends in:'
         },
         'bundles': {
-            endDate: new Date('2026-01-07T23:59:59'),
+            endDate: sevenDaysLater,
             message: '🔥 Limited time:'
         }
     };
@@ -23,6 +26,11 @@ import { db, doc, getDoc } from './firebase-config.js';
     // Fetch timer settings from Firebase
     async function fetchTimerSettings() {
         console.log('🔥 Fetching timer settings from Firebase...');
+        // Bug Fix #2: Add db validation before query
+        if (!db) {
+            console.warn('Firebase db not initialized, using defaults');
+            return;
+        }
         try {
             const docRef = doc(db, "settings", "store_config");
             const docSnap = await getDoc(docRef);
@@ -151,7 +159,8 @@ import { db, doc, getDoc } from './firebase-config.js';
         });
 
         if (activeTimers.length > 0) {
-            setInterval(() => {
+            // Bug Fix #19: Store interval reference for cleanup
+            let countdownInterval = setInterval(() => {
                 activeTimers.forEach(({ timerEl, containerId }) => {
                     // Get current endDate from OFFER_TIMERS (allows dynamic updates)
                     const currentConfig = OFFER_TIMERS[containerId];
@@ -160,6 +169,14 @@ import { db, doc, getDoc } from './firebase-config.js';
                     }
                 });
             }, 1000);
+
+            // Cleanup on page unload to prevent memory leak
+            window.addEventListener('beforeunload', () => {
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+            });
 
             // Initial update
             activeTimers.forEach(({ timerEl, containerId }) => {

@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, limit } from './firebase-config.js';
+import { db, collection, getDocs, query, limit, orderBy } from './firebase-config.js';
 import { escapeHtml, escapeJs } from './utils.js';
 
 const MOCK_PROMOS = [
@@ -30,14 +30,28 @@ const MOCK_PROMOS = [
 
 async function fetchPromotions() {
     const container = document.getElementById('promotions-grid');
-    if (!container) return;
+    // Bug Fix #8: Add db null check
+    if (!container || !db) {
+        console.log("Promotions: Container or DB not available");
+        return;
+    }
 
+    console.log("🔥 Promotions module v3.0 initializing...");
     try {
-        const q = query(collection(db, "promotions"));
-        const querySnapshot = await getDocs(q);
+        // Try with orderBy first
+        let q = query(collection(db, "promotions"), orderBy("createdAt", "desc"), limit(6));
+        let querySnapshot = await getDocs(q);
 
-        // USE MOCK DATA IF EMPTY
-        if (querySnapshot.empty || true) { // Force mock for demo
+        // If empty, try without orderBy (in case some docs lack the field)
+        if (querySnapshot.empty) {
+            console.log("⚠️ Sorted promotions empty, trying plain fetch...");
+            q = query(collection(db, "promotions"), limit(6));
+            querySnapshot = await getDocs(q);
+        }
+
+        // FALLBACK TO MOCK ONLY IF STILL EMPTY
+        if (querySnapshot.empty) {
+            console.log("No promotions found in Firestore, loading mocks...");
             container.innerHTML = '';
             MOCK_PROMOS.forEach((promo) => {
                 const card = createPromoCard(promo);
@@ -117,5 +131,39 @@ function createPromoCard(promo) {
     `;
 }
 
+// --- Seasonal Product Highlighting ---
+function highlightSeasonalPromos() {
+    const season = window.currentSeason;
+    if (!season || !season.productKeywords) return;
+
+    const cards = document.querySelectorAll('#promotions-grid > div');
+    cards.forEach(card => {
+        const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+        const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
+        const text = title + ' ' + desc;
+
+        const isSeasonal = season.productKeywords.some(kw => text.includes(kw.toLowerCase()));
+        if (isSeasonal) {
+            card.classList.add('seasonal-highlight');
+            // Add seasonal card badge if not already present
+            if (!card.querySelector('.seasonal-card-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'seasonal-card-badge';
+                badge.textContent = season.heroBadge || season.name;
+                card.style.position = 'relative';
+                card.insertBefore(badge, card.firstChild);
+            }
+        }
+    });
+}
+
 // Init
-document.addEventListener('DOMContentLoaded', fetchPromotions);
+document.addEventListener('DOMContentLoaded', () => {
+    fetchPromotions().then(() => {
+        // Wait a bit for DOM to render, then highlight seasonal promos
+        setTimeout(highlightSeasonalPromos, 1000);
+    });
+});
+
+// Re-highlight when season changes
+window.addEventListener('season-changed', highlightSeasonalPromos);

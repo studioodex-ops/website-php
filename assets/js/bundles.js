@@ -43,74 +43,47 @@ async function fetchAndDisplayBundles() {
     const grid = document.getElementById('bundles-display-grid');
     if (!grid) return;
 
-    // Use Mock Data directly for demo
-    const activeBundles = MOCK_BUNDLES.filter(b => b.active);
+    console.log("📦 Bundles module v3.0 initializing...");
+    let activeBundles = [];
+    try {
+        // Query ACTIVE ONLY without orderBy (avoids mandatory composite index error)
+        const q = query(collection(db, "bundles"), where("active", "==", true));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+            // Sort in memory instead of Firestore to avoid index requirement
+            activeBundles = snapshot.docs.sort((a, b) => {
+                const nameA = (a.data().name || "").toLowerCase();
+                const nameB = (b.data().name || "").toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+        }
+    } catch (e) {
+        console.warn("Bundles fetch error, falling back to mocks:", e);
+    }
 
-    // Original Logic Shim
+    // FALLBACK TO MOCK IF DB IS EMPTY
     if (activeBundles.length === 0) {
-        grid.innerHTML = `
-                 <div class="col-span-full text-center py-12">
-                     <p class="text-gray-400">No bundles available at the moment.</p>
-                 </div>
-             `;
+        console.log("No active bundles in Firestore, loading mocks...");
+        const mocks = MOCK_BUNDLES.filter(b => b.active);
+        let html = '';
+        for (const bundle of mocks) {
+            const totalPrice = bundle.mockPrice + bundle.mockSaving;
+            const discountedPrice = bundle.mockPrice;
+            const savings = bundle.mockSaving;
+            const productNames = bundle.products;
+
+            html += renderBundleCard(bundle, totalPrice, discountedPrice, savings, productNames, null);
+        }
+        grid.innerHTML = html;
         return;
     }
 
-    // Custom Renderer for Mock Data
-    let html = '';
-    for (const bundle of activeBundles) {
-        // Using mock values since we skipped DB fetch
-        const totalPrice = bundle.mockPrice + bundle.mockSaving;
-        const discountedPrice = bundle.mockPrice;
-        const savings = bundle.mockSaving;
-        const productNames = bundle.products;
-
-        html += `
-                <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-sm border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="bg-red-600 text-white p-4 text-center">
-                        <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-1 text-gray-900 dark:text-white">${escapeHtml(bundle.name)}</h3>
-                        ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
-                        
-                        <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4 max-h-24 overflow-y-auto">
-                            ${productNames.map(name => `<div class="flex items-center gap-2"><span class="text-green-500">✓</span> ${escapeHtml(name)}</div>`).join('')}
-                        </div>
-                        
-                        <div class="border-t border-gray-100 pt-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
-                                <span class="text-green-600 dark:text-green-400 font-bold text-xs bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">Save Rs. ${savings.toFixed(0)}</span>
-                            </div>
-                            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
-                            
-                            <button onclick="alert('Added mock bundle to cart!')" 
-                                class="w-full bg-red-600 text-white font-bold py-3 rounded-xl transition-colors hover:bg-red-700 flex items-center justify-center gap-2 shadow hover:shadow-lg">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                Add Bundle
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-    }
-    grid.innerHTML = html;
-    return; // Exit function so we don't run the original DB logic below
-
-    /* ORIGINAL LOGIC BELOW IGNORED */
     try {
-
-
         let html = '';
-
         for (const bundleDoc of activeBundles) {
             const bundle = bundleDoc.data();
             const products = bundle.products || [];
 
-            // Calculate bundle price
             let totalPrice = 0;
             let productNames = [];
 
@@ -119,32 +92,17 @@ async function fetchAndDisplayBundles() {
                 const qty = typeof p === 'object' ? p.qty : 1;
                 const productName = typeof p === 'object' ? p.name : '';
 
-                // Fetch product details for price
                 try {
-                    console.log('Fetching product:', productId);
                     const prodSnap = await getDoc(doc(db, "products", productId));
-                    console.log('Product exists:', prodSnap.exists());
-
                     if (prodSnap.exists()) {
                         const prodData = prodSnap.data();
-                        console.log('Product data:', prodData);
-                        console.log('Raw price:', prodData.price);
-
-                        // Extract numeric price - FIRST remove "Rs." or "Rs " prefix, THEN parse
                         let priceStr = String(prodData.price || '0');
-                        // Remove Rs. or Rs prefix first
                         priceStr = priceStr.replace(/^Rs\.?\s*/i, '');
-                        // Now parse the remaining number (remove commas for thousands)
                         let price = parseFloat(priceStr.replace(/,/g, '')) || 0;
-
-                        console.log('Parsed price:', price, 'Qty:', qty);
-
                         totalPrice += price * qty;
                         productNames.push(`${productName || prodData.name} x${qty}`);
-                    } else {
-                        console.warn('Product not found:', productId);
-                        // Use name from bundle if product not in DB
-                        if (productName) productNames.push(`${productName} x${qty}`);
+                    } else if (productName) {
+                        productNames.push(`${productName} x${qty}`);
                     }
                 } catch (e) {
                     console.error('Error fetching product:', productId, e);
@@ -155,40 +113,56 @@ async function fetchAndDisplayBundles() {
             const discountedPrice = totalPrice * (1 - discountPercent / 100);
             const savings = totalPrice - discountedPrice;
 
-            html += `
-                <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-lg border border-gray-100 dark:border-white/10 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="bg-purple-600 text-white p-4 text-center">
-                        <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-bold text-xl mb-1 text-gray-900 dark:text-white">${escapeHtml(bundle.name)}</h3>
-                        ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
-                        
-                        <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4 max-h-24 overflow-y-auto">
-                            ${productNames.map(name => `<div class="flex items-center gap-2"><span>✓</span> ${escapeHtml(name)}</div>`).join('')}
-                        </div>
-                        
-                        <div class="border-t pt-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
-                                <span class="text-green-600 dark:text-green-400 text-xs font-bold">Save Rs. ${savings.toFixed(0)}</span>
-                            </div>
-                            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
-                            
-                            <button onclick="addBundleToCart('${bundleDoc.id}')" 
-                                class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                Add Bundle to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+            html += renderBundleCard(bundle, totalPrice, discountedPrice, savings, productNames, bundleDoc.id);
         }
-
         grid.innerHTML = html;
+    } catch (e) {
+        console.error('Error processing bundles:', e);
+    }
+}
+
+// Helper to keep card HTML DRY
+function renderBundleCard(bundle, totalPrice, discountedPrice, savings, productNames, bundleId) {
+    const isMock = !bundleId;
+    return `
+        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-sm border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <div class="bg-red-600 text-white p-4 text-center">
+                <span class="text-sm font-bold uppercase tracking-widest">${bundle.discount}% OFF</span>
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-xl mb-1 text-gray-900 dark:text-white">${escapeHtml(bundle.name)}</h3>
+                ${bundle.nameSi ? `<p class="text-gray-500 text-sm font-sinhala mb-3">${escapeHtml(bundle.nameSi)}</p>` : ''}
+                
+                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 mb-4 max-h-24 overflow-y-auto">
+                    ${productNames.map(name => `<div class="flex items-center gap-2"><span class="text-green-500">✓</span> ${escapeHtml(name)}</div>`).join('')}
+                </div>
+                
+                <div class="border-t border-gray-100 pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-gray-400 line-through text-sm">Rs. ${totalPrice.toLocaleString()}</span>
+                        <span class="text-green-600 dark:text-green-400 font-bold text-xs bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">Save Rs. ${savings.toFixed(0)}</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rs. ${discountedPrice.toLocaleString()}</div>
+                    
+                    ${isMock ? `
+                        <button onclick="alert('Demo bundle: Please check again in a few moments.')" 
+                            class="w-full bg-red-600 text-white font-bold py-3 rounded-xl transition-colors hover:bg-red-700 flex items-center justify-center gap-2 shadow">
+                            Demo Bundle
+                        </button>
+                    ` : `
+                        <button onclick="addBundleToCart('${bundleId}')" 
+                            class="w-full bg-red-600 text-white font-bold py-3 rounded-xl transition-colors hover:bg-red-700 flex items-center justify-center gap-2 shadow">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            Add Bundle
+                        </button>
+                    `}
+                </div>
+            </div>
+        </div>
+    `;
+}
 
     } catch (e) {
         console.error('Error fetching bundles:', e);

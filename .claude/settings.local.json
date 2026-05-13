@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr *)",
+      "Bash(npx claudepluginhub *)",
+      "Bash(npx claude-code-templates@latest --agent development-tools/error-detective)"
+    ]
+  }
+}

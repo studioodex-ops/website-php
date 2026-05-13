@@ -48,14 +48,14 @@ function formatNewsDate(isoString) {
 }
 
 async function fetchNews() {
+    console.log("📰 News module v3.0 initializing...");
     const list = document.getElementById('news-grid');
     if (!list) return;
 
     try {
-        // Fetch from "products" collection where automation uploads newspaper data
+        // Fetch from "news" collection which matches admin panel saving logic
         const q = query(
-            collection(db, "products"),
-            where("category", "==", "News"),
+            collection(db, "news"),
             orderBy('createdAt', 'desc'),
             limit(3)
         );

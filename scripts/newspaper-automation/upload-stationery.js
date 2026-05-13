@@ -17,7 +17,7 @@ function addProduct(name, nameSi, subcategory, gradeTag) {
     products.push({
         name,
         nameSi,
-        category: "Stationery",
+        category: "Stationery & Office Supplies",
         subcategory,
         price: 0,
         cost: 0,

@@ -180,6 +180,8 @@ async function runAutomation() {
             delete item.docId; // Remove from the actual stored data if you want clean data
 
             const docRef = productsRef.doc(docId);
+            // Explicitly mark as not for POS
+            item.isPOS = false;
             batch.set(docRef, item, { merge: true });
         });
 

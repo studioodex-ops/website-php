@@ -470,16 +470,25 @@ function checkout() {
         orderItems.push({ ...item, itemTotal });
     });
 
-    message += `\n*Items Total: Rs. ${total.toLocaleString()}.00*`;
+    message += `\n*Items Total: Rs. ${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`;
 
     let boxFee = 0;
-    if (shippingMethod === 'courier' && courierFee > 0) {
-        boxFee = courierFee;
-        message += `\n*Shipping Fee:* Rs. ${boxFee.toLocaleString()}.00`;
-        total += boxFee;
+    if (shippingMethod === 'courier') {
+        // Determine fee based on selected courier area
+        const areaSelect = document.getElementById('courier-area-select');
+        const area = areaSelect ? areaSelect.value : '';
+        if (area === 'colombo' && courierFeeColombo > 0) {
+            boxFee = courierFeeColombo;
+        } else if (area === 'outstation' && courierFeeOutstation > 0) {
+            boxFee = courierFeeOutstation;
+        }
+        if (boxFee > 0) {
+            message += `\n*Shipping Fee:* Rs. ${boxFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            total += boxFee;
+        }
     }
 
-    message += `\n*Grand Total: Rs. ${total.toLocaleString()}.00*`;
+    message += `\n*Grand Total: Rs. ${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`;
 
     // --- SAVE ORDER TO FIRESTORE ---
     saveOrderToHistory(currentUser, {
