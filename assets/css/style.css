@@ -120,6 +120,18 @@ h6,
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* Category Circle Hover Effect */
+.category-circle-premium {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.group:hover .category-circle-premium {
+    transform: scale(1.12) translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: currentColor; /* Inherits the hover border color from parent if set */
+}
+
+
 /* General Small Glass Icon Button (Header etc) */
 .icon-glass-btn {
     display: inline-flex;

@@ -15,4 +15,4 @@ Disallow: /debug_chat.html
 Allow: /assets/
 
 # Sitemap location
-Sitemap: https://buddikastores.com/sitemap.xml
+Sitemap: https://buddika-stores-web.web.app/sitemap.xml

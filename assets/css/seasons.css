@@ -1,0 +1,198 @@
+/* ============================================
+   BUDDIKA STORES - SEASONAL THEME SYSTEM
+   Sri Lankan Festival Themes
+   ============================================ */
+
+/* --- Seasonal CSS Variable Fallbacks --- */
+:root {
+    --season-primary: var(--accent-color);
+    --season-secondary: transparent;
+    --season-gradient: linear-gradient(135deg, var(--accent-color), var(--season-secondary));
+}
+
+[data-theme='dark'] {
+    --season-primary: var(--accent-color);
+    --season-secondary: transparent;
+    --season-gradient: linear-gradient(135deg, var(--accent-color), var(--season-secondary));
+}
+
+/* --- Seasonal Accent Bar (top of page) --- */
+[data-season]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--season-primary, var(--accent-color));
+    z-index: 9999;
+    transition: background 0.5s ease;
+}
+
+/* --- Seasonal Hero Overlay Gradients --- */
+[data-season="newyear"] .hero-overlay {
+    background: linear-gradient(to right, rgba(212, 160, 23, 0.75), rgba(192, 57, 43, 0.45)) !important;
+}
+
+[data-season="wesak"] .hero-overlay {
+    background: linear-gradient(to right, rgba(245, 197, 24, 0.7), rgba(26, 58, 107, 0.45)) !important;
+}
+
+[data-season="poson"] .hero-overlay {
+    background: linear-gradient(to right, rgba(245, 197, 24, 0.65), rgba(34, 139, 34, 0.4)) !important;
+}
+
+[data-season="christmas"] .hero-overlay {
+    background: linear-gradient(to right, rgba(200, 30, 30, 0.75), rgba(34, 100, 34, 0.5)) !important;
+}
+
+[data-season="independence"] .hero-overlay {
+    background: linear-gradient(to right, rgba(0, 51, 153, 0.7), rgba(200, 160, 0, 0.5)) !important;
+}
+
+/* --- Seasonal Badge Styles --- */
+.seasonal-promo-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--season-primary);
+    color: white;
+    animation: season-badge-pulse 2s ease-in-out infinite;
+}
+
+/* --- Seasonal Card Highlight --- */
+.seasonal-highlight {
+    border-color: var(--season-primary) !important;
+    box-shadow: 0 0 0 1px var(--season-primary), 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+.seasonal-card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--season-primary);
+    color: white;
+    z-index: 2;
+}
+
+/* --- Decoration Container --- */
+.seasonal-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* --- Wesak Lantern Animations --- */
+.seasonal-decoration .lantern {
+    position: absolute;
+    animation: sway 4s ease-in-out infinite;
+    transform-origin: top center;
+    opacity: 0.85;
+}
+
+.seasonal-decoration .lantern:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; }
+.seasonal-decoration .lantern:nth-child(2) { top: 3%; right: 8%; animation-delay: 1.5s; }
+.seasonal-decoration .lantern:nth-child(3) { top: 8%; left: 15%; animation-delay: 0.8s; }
+.seasonal-decoration .lantern:nth-child(4) { top: 2%; right: 18%; animation-delay: 2.2s; }
+
+@keyframes sway {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+/* --- Christmas Lights Animation --- */
+.seasonal-decoration .christmas-lights {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 20px;
+}
+
+.seasonal-decoration .christmas-light {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: twinkle 1.5s ease-in-out infinite alternate;
+}
+
+.seasonal-decoration .christmas-light:nth-child(odd) { animation-delay: 0.3s; }
+.seasonal-decoration .christmas-light:nth-child(3n) { animation-delay: 0.8s; }
+
+@keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* --- New Year Sparkle Animation --- */
+.seasonal-decoration .sparkle {
+    position: absolute;
+    animation: sparkle-float 6s ease-in-out infinite;
+    opacity: 0.7;
+}
+
+.seasonal-decoration .sparkle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.seasonal-decoration .sparkle:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+.seasonal-decoration .sparkle:nth-child(3) { top: 40%; left: 5%; animation-delay: 4s; }
+.seasonal-decoration .sparkle:nth-child(4) { top: 15%; right: 5%; animation-delay: 1s; }
+.seasonal-decoration .sparkle:nth-child(5) { top: 50%; left: 20%; animation-delay: 3s; }
+
+@keyframes sparkle-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+    25% { transform: translateY(-15px) rotate(90deg); opacity: 1; }
+    50% { transform: translateY(-5px) rotate(180deg); opacity: 0.5; }
+    75% { transform: translateY(-20px) rotate(270deg); opacity: 0.9; }
+}
+
+/* --- Flag Animation (Independence Day) --- */
+.seasonal-decoration .flag {
+    position: absolute;
+    animation: flag-wave 3s ease-in-out infinite;
+}
+
+.seasonal-decoration .flag:nth-child(1) { top: 5%; left: 8%; animation-delay: 0s; }
+.seasonal-decoration .flag:nth-child(2) { top: 3%; right: 10%; animation-delay: 1s; }
+
+@keyframes flag-wave {
+    0%, 100% { transform: rotate(-2deg) scaleX(1); }
+    50% { transform: rotate(2deg) scaleX(1.05); }
+}
+
+/* --- Season Badge Pulse --- */
+@keyframes season-badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* --- Mobile: Hide heavy decorations --- */
+@media (max-width: 768px) {
+    .seasonal-decoration .lantern,
+    .seasonal-decoration .sparkle {
+        opacity: 0.4;
+        transform: scale(0.6);
+    }
+    .seasonal-decoration .christmas-light {
+        width: 5px;
+        height: 5px;
+    }
+}
+
+/* --- Smooth Season Transition --- */
+[data-season] * {
+    transition: color 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
+}

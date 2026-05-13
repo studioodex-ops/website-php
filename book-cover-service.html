@@ -23,6 +23,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/seasons.css">
 
     <style>
         .font-sinhala {
@@ -36,6 +37,7 @@
 </head>
 
 <body class="bg-gray-50 text-black antialiased">
+    <div id="seasonal-decoration" class="seasonal-decoration"></div>
     <!-- Dynamic Header -->
     <div id="header-container"></div>
 
@@ -279,7 +281,7 @@
     <!-- Scripts -->
     <script type="module" src="assets/js/components.js?v=2.0"></script>
     <script type="module" src="assets/js/cart.js?v=2.2"></script>
-    <script type="module" src="assets/js/nex_v5_gold.js?v=2.0"></script>
+    <script type="module" src="assets/js/nex_v5_gold.js?v=9.9"></script>
 
     <script type="module">
         import { db, collection, doc, setDoc } from './assets/js/firebase-config.js';
@@ -382,6 +384,7 @@
             }
         });
     </script>
+    <script type="module" src="assets/js/seasonal.js?v=1.0"></script>
 </body>
 
 </html>

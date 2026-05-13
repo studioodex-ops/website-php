@@ -1,5 +1,5 @@
 {
-    "version": "3.0.1",
-    "buildDate": "2026-04-09",
-    "releaseNotes": "🚀 Final Release: Comprehensive Branding Fix (Sathara Publications), News Categorization cleanup, and Dark Mode visibility improvements."
+  "version": "3.8.0",
+  "buildDate": "2026-05-12",
+  "changes": "Seasonal theme system with admin CRUD, festival decorations, and product highlighting"
 }

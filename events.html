@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Event Hub | Buddika Stores</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['class', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#0c0c0c',
+                        gray: {
+                            50: '#fcfcfc',
+                            100: '#f4f4f5',
+                            900: '#18181b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=2">
+    <link rel="stylesheet" href="assets/css/seasons.css">
+
+    <style>
+        #map {
+            height: 500px;
+            border-radius: 1rem;
+            z-index: 10;
+        }
+        .event-card {
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-4px);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px border rgba(255, 255, 255, 0.2);
+        }
+        .dark .glass-panel {
+            background: rgba(12, 12, 12, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-black selection:text-white page-transition bg-gray-50 dark:bg-black text-gray-900 dark:text-white">
+    <!-- Seasonal Decoration -->
+    <div id="seasonal-decoration" class="seasonal-decoration"></div>
+
+    <!-- Header (simplified or imported) -->
+    <nav class="glass-nav sticky top-0 z-[100] transition-shadow duration-300 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/5" id="navbar">
+        <div class="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold font-heading tracking-tighter flex items-center gap-2 group">
+                <div class="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                    <span class="text-white dark:text-black text-lg">B</span>
+                </div>
+                <span>Buddika Stores</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="products.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black dark:hover:text-white transition-colors">Shop</a>
+                <a href="events.html" class="nav-link text-sm font-bold uppercase tracking-wide text-black dark:text-white border-b-2 border-black dark:border-white transition-colors">Events</a>
+                <a href="contact.html" class="nav-link text-sm font-bold uppercase tracking-wide text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <header class="mb-12 text-center">
+            <span class="inline-block px-4 py-1.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+                🏮 Seasonal Community Portal
+            </span>
+            <h1 class="text-4xl md:text-6xl font-bold font-heading mb-4 tracking-tight">Community Event Hub</h1>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Find local "Dansals" and community events during festivals. 
+                Discover locations, check status, and join the celebration!
+            </p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Sidebar: Search & List -->
+            <div class="lg:col-span-4 space-y-6 order-2 lg:order-1">
+                <div class="glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5">
+                    <div class="relative mb-6">
+                        <input type="text" id="event-search" placeholder="Search events..." class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 pl-11 text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+
+                    <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
+                        <button class="filter-btn active bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap" data-type="all">All</button>
+                        <button class="filter-btn bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/10 transition-colors" data-type="rice">🍚 Rice</button>
+                        <button class="filter-btn bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/10 transition-colors" data-type="drinks">🥤 Drinks</button>
+                        <button class="filter-btn bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/10 transition-colors" data-type="ice_cream">🍦 Ice Cream</button>
+                    </div>
+
+                    <div id="event-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Loading State -->
+                        <div class="text-center py-12 text-gray-400">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-4"></div>
+                            <p class="text-sm">Loading events...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Event CTA -->
+                <div class="bg-gradient-to-br from-amber-500 to-orange-600 p-8 rounded-3xl text-white shadow-xl shadow-amber-500/20 relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-2">Hosting an Event?</h3>
+                        <p class="text-white/80 text-sm mb-6">Register your Dansal or event to help people find you!</p>
+                        <button onclick="openSubmitModal()" class="w-full bg-white text-amber-600 font-bold py-3 rounded-xl hover:bg-amber-50 transition-colors shadow-lg active:scale-95 transition-transform">
+                            Submit Your Event
+                        </button>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+                        <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main: Map View -->
+            <div class="lg:col-span-8 order-1 lg:order-2">
+                <div class="glass-panel p-2 rounded-3xl shadow-lg border border-gray-100 dark:border-white/5 sticky top-24">
+                    <div id="map"></div>
+                    <div class="p-4 flex justify-between items-center text-xs text-gray-500 font-medium">
+                        <div class="flex items-center gap-4">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Ongoing</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Upcoming</span>
+                        </div>
+                        <div>Map data © OpenStreetMap contributors</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Submission Modal -->
+    <div id="submit-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+                <h3 class="text-xl font-bold font-heading">Submit Your Event</h3>
+                <button onclick="closeSubmitModal()" class="text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="event-form" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Event Name / Dansal Title</label>
+                        <input type="text" id="ev-name" required placeholder="Ex: Walapane Town Rice Dansal" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Event Type</label>
+                        <select id="ev-type" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
+                            <option value="rice">Rice (බත්)</option>
+                            <option value="drinks">Drinks (පැන්)</option>
+                            <option value="ice_cream">Ice Cream (අයිස් ක්‍රීම්)</option>
+                            <option value="noodles">Noodles (නූඩ්ල්ස්)</option>
+                            <option value="coffee">Tea/Coffee (තේ/කෝපි)</option>
+                            <option value="other">Other / Multi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Date</label>
+                        <input type="date" id="ev-date" required class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Location / Address</label>
+                        <input type="text" id="ev-address" required placeholder="Ex: Near Buddika Stores, Kandy Road" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none mb-2">
+                        <p class="text-[10px] text-gray-400 italic">Tip: You can also pick the exact location on the map after submitting (feature coming soon).</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Description / Notes</label>
+                        <textarea id="ev-desc" rows="3" placeholder="Ex: Starting from 6:00 PM. All are welcome!" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-black dark:bg-white text-white dark:text-black font-bold py-4 rounded-xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Submit for Approval
+                    </button>
+                    <p class="text-center text-[10px] text-gray-400 mt-4">Note: Your event will be visible once approved by the admin.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Scripts -->
+    <script type="module" src="assets/js/events.js?v=1.0"></script>
+    <script src="assets/js/theme-switch.js"></script>
+    <script type="module" src="assets/js/seasonal.js"></script>
+
+    <script>
+        // Simple UI controls
+        window.openSubmitModal = () => document.getElementById('submit-modal').classList.remove('hidden');
+        window.closeSubmitModal = () => document.getElementById('submit-modal').classList.add('hidden');
+        
+        // Form submission (placeholder until events.js is ready)
+        // document.getElementById('event-form').addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     alert('Thank you! Your event has been submitted for approval.');
+        //     closeSubmitModal();
+        // });
+    </script>
+</body>
+
+</html>

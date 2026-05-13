@@ -1,9 +1,9 @@
 // Service Worker for Buddika Stores - Offline Mode
 // Handles caching of static assets and provides offline functionality
 
-const CACHE_NAME = 'buddika-stores-v10';
-const DYNAMIC_CACHE = 'buddika-dynamic-v10';
-const IMAGE_CACHE = 'buddika-images-v1';
+const CACHE_NAME = 'buddika-stores-v52';
+const DYNAMIC_CACHE = 'buddika-dynamic-v45';
+const IMAGE_CACHE = 'buddika-images-v2';
 
 // Static assets to cache on install
 const STATIC_ASSETS = [
@@ -18,6 +18,8 @@ const STATIC_ASSETS = [
     '/assets/js/utils.js',
     '/assets/js/stock-management.js',
     '/assets/js/supplier-management.js',
+    '/assets/css/seasons.css',
+    '/assets/js/seasonal.js',
     '/manifest.json'
 ];
 
@@ -109,27 +111,10 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Network-first strategy for HTML pages
+    // Network-only for HTML pages to prevent stale admin dashboard
     if (request.headers.get('accept')?.includes('text/html')) {
         event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    // Clone and cache successful responses
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(DYNAMIC_CACHE).then((cache) => {
-                            cache.put(request, clone);
-                        });
-                    }
-                    return response;
-                })
-                .catch(() => {
-                    // Try cache, then offline page
-                    return caches.match(request)
-                        .then((cached) => {
-                            return cached || caches.match('/offline.html');
-                        });
-                })
+            fetch(request).catch(() => caches.match('/offline.html'))
         );
         return;
     }
@@ -144,8 +129,8 @@ self.addEventListener('fetch', (event) => {
                 // Not in cache, fetch from network
                 return fetch(request)
                     .then((response) => {
-                        // Cache successful responses
-                        if (response.ok) {
+                        // Cache successful responses (only http/https)
+                        if (response.ok && request.url.startsWith('http')) {
                             const clone = response.clone();
                             caches.open(DYNAMIC_CACHE).then((cache) => {
                                 cache.put(request, clone);
@@ -155,12 +140,8 @@ self.addEventListener('fetch', (event) => {
                     })
                     .catch(() => {
                         // Return placeholder for images
-                        if (request.url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
-                            return new Response(
-                                '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="#f3f4f6" width="100" height="100"/><text fill="#9ca3af" x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="10">📷</text></svg>',
-                                { headers: { 'Content-Type': 'image/svg+xml' } }
-                            );
-                        }
+                        // For other requests, just let the error propagate or return a minimal null response 
+                        return Promise.reject('Network error');
                     });
             })
     );
