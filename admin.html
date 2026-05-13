@@ -2058,9 +2058,15 @@ Hello! We have exciting news for you!
                         <h2 class="text-3xl font-bold font-heading text-gray-900">Community Events Hub</h2>
                         <p class="text-gray-500 text-sm mt-1">Manage public event submissions (Dansals, etc.).</p>
                     </div>
-                    <button onclick="fetchEventsAdmin()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors flex items-center gap-2 text-sm">
-                        🔄 Refresh List
-                    </button>
+                    <div class="flex gap-3">
+                        <button onclick="openAdminEventModal()" class="bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-colors flex items-center gap-2 text-sm shadow-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Add New Event
+                        </button>
+                        <button onclick="fetchEventsAdmin()" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors flex items-center gap-2 text-sm shadow-sm">
+                            🔄 Refresh List
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -2470,6 +2476,53 @@ Hello! We have exciting news for you!
                         class="px-4 py-2 font-bold text-gray-500 hover:bg-gray-50 rounded-lg">Cancel</button>
                     <button type="submit"
                         class="bg-black text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-800">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN EVENT MODAL -->
+    <div id="admin-event-modal"
+        class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0"
+            id="admin-event-modal-content">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-bold font-heading">Add Official Community Event</h3>
+                <button onclick="closeAdminEventModal()" class="text-gray-400 hover:text-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="admin-event-form" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Event Name</label>
+                        <input type="text" id="ae-name" required placeholder="Ex: Grand Vesak Pandol"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Type</label>
+                        <select id="ae-type" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                            <option value="rice">Rice (බත්)</option>
+                            <option value="drinks">Drinks (පැන්)</option>
+                            <option value="ice_cream">Ice Cream (අයිස් ක්‍රීම්)</option>
+                            <option value="other">Other / Festival</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Date</label>
+                        <input type="date" id="ae-date" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Address / Location</label>
+                        <input type="text" id="ae-address" required placeholder="Ex: Walapane Bus Stand"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-black outline-none">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-6 mt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeAdminEventModal()" class="px-4 py-2 font-bold text-gray-500 hover:bg-gray-50 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-black text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-800">Save Event</button>
                 </div>
             </form>
         </div>
@@ -6546,6 +6599,55 @@ Special discounts are now available! Don't miss out on these amazing deals!
                 showToast("Error deleting event", "error");
             }
         };
+
+        window.openAdminEventModal = () => {
+            const modal = document.getElementById('admin-event-modal');
+            const content = document.getElementById('admin-event-modal-content');
+            if (modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => content?.classList.remove('scale-95', 'opacity-0'), 10);
+            }
+        };
+
+        window.closeAdminEventModal = () => {
+            const modal = document.getElementById('admin-event-modal');
+            const content = document.getElementById('admin-event-modal-content');
+            if (modal) {
+                content?.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        };
+
+        document.getElementById('admin-event-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            try {
+                const data = {
+                    name: document.getElementById('ae-name').value,
+                    type: document.getElementById('ae-type').value,
+                    date: document.getElementById('ae-date').value,
+                    address: document.getElementById('ae-address').value,
+                    status: 'approved',
+                    createdAt: new Date().toISOString(),
+                    submittedBy: 'Admin'
+                };
+
+                await addDoc(collection(db, 'events'), data);
+                showToast('Event added successfully!', 'success');
+                e.target.reset();
+                window.closeAdminEventModal();
+                window.fetchEventsAdmin();
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to add event', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Event';
+            }
+        });
 
         // Driver Stub (to prevent errors)
         window.addDriver = () => {

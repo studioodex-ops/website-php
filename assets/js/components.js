@@ -38,6 +38,13 @@ async function loadHeader() {
             <div class="hidden md:flex space-x-8">
                 <a href="index.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Home</a>
                 <a href="products.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Shop</a>
+                <a href="events.html" class="nav-link text-sm font-bold uppercase tracking-wide text-amber-600 hover:text-amber-700 transition-colors relative flex items-center gap-1 group/hub">
+                    Events Hub
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                </a>
                 <a href="about.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">About</a>
                 <a href="contact.html" class="nav-link text-sm font-bold uppercase tracking-wide text-secondary hover:text-primary transition-colors relative">Contact</a>
             </div>
@@ -89,6 +96,10 @@ async function loadHeader() {
         <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-black backdrop-blur-xl border-t border-gray-100 dark:border-white/10 absolute w-full left-0 top-20 shadow-xl">
             <a href="index.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">HOME</a>
             <a href="products.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">PRODUCTS</a>
+            <a href="events.html" class="block py-4 px-6 text-sm font-bold text-amber-600 border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-between">
+                EVENTS HUB
+                <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full">LIVE</span>
+            </a>
             <a href="contact.html" class="block py-4 px-6 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5">CONTACT</a>
         </div>
     </nav>
@@ -213,6 +224,7 @@ function loadFooter() {
                             <li><a href="index.html" class="text-sm text-gray-300 hover:text-white transition-colors">Home</a></li>
                             <li><a href="about.html" class="text-sm text-gray-300 hover:text-white transition-colors">About Us</a></li>
                             <li><a href="products.html" class="text-sm text-gray-300 hover:text-white transition-colors">Products</a></li>
+                            <li><a href="events.html" class="text-sm text-amber-500 hover:text-amber-400 font-bold transition-colors">Community Event Hub</a></li>
                             <li><a href="contact.html" class="text-sm text-gray-300 hover:text-white transition-colors">Contact</a></li>
                             <!-- Link Removed -->
                         </ul>
