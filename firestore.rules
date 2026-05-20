@@ -1,0 +1,77 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidStudent(data) {
+      return data.shortName is string && data.shortName.size() <= 100
+          && data.fullName is string && data.fullName.size() <= 200
+          && (data.grade == null || (data.grade is string && data.grade.size() <= 50))
+          && (data.pickupLocation == null || (data.pickupLocation is string && data.pickupLocation.size() <= 200))
+          && (data.school == null || (data.school is string && data.school.size() <= 200))
+          && data.whatsappNumber is string && data.whatsappNumber.size() <= 20
+          && data.ownerId is string && data.ownerId == request.auth.uid
+          && (data.lastPaymentReminderAt == null || data.lastPaymentReminderAt is timestamp);
+    }
+
+    match /students/{studentId} {
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+                    && isValidId(studentId)
+                    && isValidStudent(incoming())
+                    && incoming().createdAt == request.time;
+      
+      allow update: if isSignedIn()
+                    && isValidStudent(incoming())
+                    && existing().ownerId == request.auth.uid
+                    && incoming().ownerId == existing().ownerId
+                    && incoming().createdAt == existing().createdAt
+                    && (
+                      // Action: Update metadata
+                      incoming().diff(existing()).affectedKeys().hasOnly(['shortName', 'fullName', 'grade', 'pickupLocation', 'school', 'whatsappNumber']) ||
+                      // Action: Send reminder
+                      incoming().diff(existing()).affectedKeys().hasOnly(['lastPaymentReminderAt'])
+                    );
+      
+      allow delete: if isSignedIn() && existing().ownerId == request.auth.uid;
+    }
+
+    // Events collection
+    match /events/{eventId} {
+      // Anyone can read approved/ongoing events
+      allow read: if resource.data.status in ['approved', 'ongoing'];
+      // Anyone can create an event (it will be pending by default, so they can't see it immediately)
+      // For now, let's allow anyone to create to support "Guest" submissions
+      allow create: if true;
+      // Optionally restrict updates/deletes to admin or owner if needed
+      allow update, delete: if isSignedIn(); 
+    }
+  }
+}

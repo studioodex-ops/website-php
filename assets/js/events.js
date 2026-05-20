@@ -1,19 +1,21 @@
 // ============================================
 // BUDDIKA STORES - COMMUNITY EVENT HUB (JS)
 // Map & Event Logic for Dansal Hub
+// Using Google Maps tiles via Leaflet
 // ============================================
 
-import { db, auth, onAuthStateChanged } from './firebase-config.js';
 import { 
+    db, 
+    auth, 
+    onAuthStateChanged,
     collection, 
     addDoc, 
     query, 
     where, 
     getDocs, 
     orderBy, 
-    onSnapshot,
-    serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    onSnapshot
+} from './firebase-config.js';
 
 // --- Configuration ---
 const WALAPANE_COORDS = [7.0873, 80.8014]; // Town Center
@@ -21,6 +23,7 @@ let map = null;
 let markers = [];
 let events = [];
 let currentFilter = 'all';
+let submitPinMarker = null; // For the submission form map picker
 
 // --- Initialization ---
 async function init() {
@@ -43,8 +46,11 @@ function initMap() {
 
     map = L.map('map').setView(WALAPANE_COORDS, 14);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+    // Google Maps Tile Layer (Road Map)
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '© Google Maps'
     }).addTo(map);
 
     // Custom Icon Factory
@@ -53,20 +59,22 @@ function initMap() {
         if (type === 'rice') color = '#ef4444';
         if (type === 'drinks') color = '#10b981';
         if (type === 'ice_cream') color = '#f59e0b';
+        if (type === 'noodles') color = '#8b5cf6';
+        if (type === 'coffee') color = '#78350f';
 
         return L.divIcon({
             className: 'custom-marker',
             html: `
                 <div class="relative flex items-center justify-center">
-                    <div class="w-8 h-8 rounded-full shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform" style="background: ${color}; border: 2px solid white;">
-                        <span class="text-white text-xs">${getEmoji(type)}</span>
+                    <div class="w-10 h-10 rounded-full shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform" style="background: ${color}; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                        <span class="text-white text-sm">${getEmoji(type)}</span>
                     </div>
-                    <div class="absolute -bottom-1 w-2 h-2 rotate-45" style="background: ${color}"></div>
+                    <div class="absolute -bottom-1.5 w-3 h-3 rotate-45" style="background: ${color}"></div>
                 </div>
             `,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [0, -32]
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+            popupAnchor: [0, -40]
         });
     };
 
@@ -85,6 +93,46 @@ function getEmoji(type) {
     return emojis[type] || '🏮';
 }
 
+// --- Initialize the map picker for submission form ---
+function initSubmitMapPicker() {
+    const pickerEl = document.getElementById('submit-map-picker');
+    if (!pickerEl || pickerEl._leaflet_id) return; // Already initialized
+
+    const pickerMap = L.map('submit-map-picker').setView(WALAPANE_COORDS, 14);
+
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '© Google Maps'
+    }).addTo(pickerMap);
+
+    // Pin marker
+    submitPinMarker = L.marker(WALAPANE_COORDS, { draggable: true }).addTo(pickerMap);
+
+    // Update coordinates on drag
+    submitPinMarker.on('dragend', function () {
+        const pos = submitPinMarker.getLatLng();
+        document.getElementById('ev-lat').value = pos.lat.toFixed(6);
+        document.getElementById('ev-lng').value = pos.lng.toFixed(6);
+    });
+
+    // Click on map to move pin
+    pickerMap.on('click', function (e) {
+        submitPinMarker.setLatLng(e.latlng);
+        document.getElementById('ev-lat').value = e.latlng.lat.toFixed(6);
+        document.getElementById('ev-lng').value = e.latlng.lng.toFixed(6);
+    });
+
+    // Set initial coords
+    document.getElementById('ev-lat').value = WALAPANE_COORDS[0].toFixed(6);
+    document.getElementById('ev-lng').value = WALAPANE_COORDS[1].toFixed(6);
+
+    // Fix map rendering after modal opens
+    setTimeout(() => pickerMap.invalidateSize(), 300);
+    
+    window._submitPickerMap = pickerMap;
+}
+
 // --- Data Logic ---
 function listenToEvents() {
     if (!db) return;
@@ -92,12 +140,15 @@ function listenToEvents() {
     // Only show 'approved' events to public
     const eventsQuery = query(
         collection(db, 'events'), 
-        where('status', 'in', ['approved', 'ongoing']),
-        orderBy('createdAt', 'desc')
+        where('status', 'in', ['approved', 'ongoing'])
     );
 
     onSnapshot(eventsQuery, (snapshot) => {
         events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Sort in JS (robust against missing fields/index)
+        events.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
         renderEvents();
     }, (error) => {
         console.error('[Events] Error fetching events:', error);
@@ -136,30 +187,31 @@ function renderEvents() {
         listEl.appendChild(card);
 
         // Add to Map
-        if (event.location) {
+        if (event.location && event.location.lat && event.location.lng) {
             const marker = L.marker([event.location.lat, event.location.lng], {
                 icon: window.createEventIcon(event.type)
             }).addTo(map);
 
+            const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${event.location.lat},${event.location.lng}`;
+            
             marker.bindPopup(`
-                <div class="p-1">
+                <div class="p-2 min-w-[200px]">
                     <h3 class="font-bold text-sm mb-1">${event.name}</h3>
-                    <p class="text-[10px] text-gray-500 mb-2">${event.address}</p>
-                    <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[9px] font-bold uppercase">
-                        ${event.type}
+                    <p class="text-[11px] text-gray-500 mb-1">📍 ${event.address}</p>
+                    <p class="text-[10px] text-gray-400 mb-2">${event.date || ''}</p>
+                    <span class="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[9px] font-bold uppercase mb-2">
+                        ${event.type.replace('_', ' ')}
                     </span>
+                    <br>
+                    <a href="${directionsUrl}" target="_blank" class="inline-flex items-center gap-1 mt-1 px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded-lg hover:bg-blue-700 transition-colors no-underline">
+                        🧭 Get Directions
+                    </a>
                 </div>
             `);
             
             markers.push(marker);
         }
     });
-
-    // If search active, further filter
-    const searchVal = document.getElementById('event-search')?.value.toLowerCase();
-    if (searchVal) {
-        // ... handled by a separate search listener usually
-    }
 }
 
 function createEventCard(event) {
@@ -197,7 +249,10 @@ function createEventCard(event) {
         if (event.location && map) {
             map.setView([event.location.lat, event.location.lng], 16);
             // find marker and open popup
-            const marker = markers.find(m => m.getLatLng().lat === event.location.lat);
+            const marker = markers.find(m => {
+                const ll = m.getLatLng();
+                return Math.abs(ll.lat - event.location.lat) < 0.0001 && Math.abs(ll.lng - event.location.lng) < 0.0001;
+            });
             if (marker) marker.openPopup();
         }
     };
@@ -245,10 +300,9 @@ function setupListeners() {
             btn.textContent = 'Submitting...';
 
             try {
-                // Approximate coordinates for Walapane Area (Randomize slightly around center)
-                // In a real app, you'd use a map picker
-                const lat = WALAPANE_COORDS[0] + (Math.random() - 0.5) * 0.01;
-                const lng = WALAPANE_COORDS[1] + (Math.random() - 0.5) * 0.01;
+                // Get coordinates from the map picker
+                const lat = parseFloat(document.getElementById('ev-lat')?.value) || WALAPANE_COORDS[0];
+                const lng = parseFloat(document.getElementById('ev-lng')?.value) || WALAPANE_COORDS[1];
 
                 const eventData = {
                     name: document.getElementById('ev-name').value,
@@ -258,8 +312,8 @@ function setupListeners() {
                     description: document.getElementById('ev-desc').value,
                     status: 'pending', // Requires admin approval
                     location: { lat, lng },
-                    createdAt: serverTimestamp(),
-                    submittedBy: auth.currentUser ? auth.currentUser.email : 'Guest'
+                    createdAt: new Date().toISOString(),
+                    submittedBy: auth.currentUser ? (auth.currentUser.email || auth.currentUser.uid) : 'Guest'
                 };
 
                 await addDoc(collection(db, 'events'), eventData);
@@ -268,14 +322,24 @@ function setupListeners() {
                 form.reset();
                 window.closeSubmitModal();
             } catch (err) {
-                console.error(err);
-                alert('Error submitting event. Please try again.');
+                console.error('[Events] Submission Error:', err);
+                alert(`Error submitting event: ${err.message || 'Please try again'}`);
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Submit for Approval';
             }
         };
     }
+
+    // Open submit modal — also init map picker
+    const origOpen = window.openSubmitModal;
+    window.openSubmitModal = () => {
+        document.getElementById('submit-modal').classList.remove('hidden');
+        setTimeout(() => {
+            initSubmitMapPicker();
+            if (window._submitPickerMap) window._submitPickerMap.invalidateSize();
+        }, 350);
+    };
 }
 
 function showErrorInList() {

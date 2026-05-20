@@ -152,7 +152,7 @@
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Ongoing</span>
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Upcoming</span>
                         </div>
-                        <div>Map data © OpenStreetMap contributors</div>
+                        <div>© Google Maps</div>
                     </div>
                 </div>
             </div>
@@ -193,7 +193,17 @@
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Location / Address</label>
                         <input type="text" id="ev-address" required placeholder="Ex: Near Buddika Stores, Kandy Road" class="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none mb-2">
-                        <p class="text-[10px] text-gray-400 italic">Tip: You can also pick the exact location on the map after submitting (feature coming soon).</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">📍 Pin Exact Location on Map</label>
+                        <p class="text-[10px] text-gray-400 mb-2">Click on the map or drag the pin to mark the exact dansala/event location.</p>
+                        <div id="submit-map-picker" style="height: 250px; border-radius: 12px; z-index: 10; border: 2px solid #e5e7eb;"></div>
+                        <input type="hidden" id="ev-lat">
+                        <input type="hidden" id="ev-lng">
+                        <div class="flex gap-2 mt-2">
+                            <div class="flex-1 bg-gray-50 dark:bg-white/5 rounded-lg px-3 py-1.5 text-[10px] text-gray-400">Lat: <span id="ev-lat-display">-</span></div>
+                            <div class="flex-1 bg-gray-50 dark:bg-white/5 rounded-lg px-3 py-1.5 text-[10px] text-gray-400">Lng: <span id="ev-lng-display">-</span></div>
+                        </div>
                     </div>
                     <div class="col-span-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Description / Notes</label>
@@ -214,7 +224,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Scripts -->
-    <script type="module" src="assets/js/events.js?v=1.0"></script>
+    <script type="module" src="assets/js/events.js?v=2.0"></script>
     <script src="assets/js/theme-switch.js"></script>
     <script type="module" src="assets/js/seasonal.js"></script>
 
